@@ -1,5 +1,11 @@
-import "@/styles/globals.css";
-
-export default function App({ Component, pageProps }) {
-  return <Component {...pageProps} />;
+import { ThemeProvider } from 'next-themes';
+import '@/styles/globals.css'; 
+import '../styles/index.css'
+function MyApp({ Component, pageProps }) {
+  return (
+    <ThemeProvider attribute="class" defaultTheme="dark">
+      <Component {...pageProps} />
+    </ThemeProvider>
+  );
 }
+export default MyApp;
