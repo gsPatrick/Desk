@@ -159,7 +159,7 @@ export default function DashboardPage() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {bootComplete && <Header />}
+      {bootComplete && <Header pageType="dashboard" />} 
 
       <main className="bg-light-bg dark:bg-dark-bg relative">
         <AnimatePresence>
