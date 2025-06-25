@@ -2,11 +2,11 @@
 import { useState, useMemo } from 'react';
 import Head from 'next/head';
 import { motion } from 'framer-motion';
-import FinanceHeader from '../../components/Finance/Header/FinanceHeader';
-import LogEntry from '../../components/Finance/Transactions/LogEntry';
-import TimelineChart from '../../components/Finance/Transactions/SummaryChart';
-import AddTransactionModal from '../../components/Finance/Transactions/AddTransactionModal';
-import { transactionsLog } from '../../data/financeData';
+import FinanceHeader from '@/componentsFinance/Header/FinanceHeader';
+import LogEntry from '@/componentsFinance/Transactions/LogEntry';
+import TimelineChart from '@/componentsFinance/Transactions/SummaryChart';
+import AddTransactionModal from '@/componentsFinance/Transactions/AddTransactionModal';
+import { transactionsLog } from '@/data/financeData';
 import { PlusIcon } from '@heroicons/react/24/solid';
 
 const FilterPill = ({ label, value, activeFilter, onFilterChange }) => {
