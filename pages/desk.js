@@ -9,6 +9,7 @@ import ContactSection from '../componentsDesk/Contact/ContactSection.js';
 import AboutSection from '../componentsDesk/About/AboutSection.js'; 
 import Footer from '@/componentsDesk/Footer/Footer.js';
 import DeskPortalSection from '../componentsDesk/DeskPortal/DeskPortalSection.js'; // 1. Importar
+import ProfessionalSection from '../componentsDesk/Professional/ProfessionalSection.js'; // 1. Importar
 
 export default function DeskPage() {
   return (
@@ -28,6 +29,7 @@ export default function DeskPage() {
         <ProjectsSection />
         <TransitionSection />
         <AboutSection />
+         <ProfessionalSection />
                 <DeskPortalSection />
 
         <ContactSection />

@@ -1,8 +1,36 @@
-  @import "tailwindcss";
+/* globals.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=Playfair+Display:wght@900&display=swap');
 
-  :root {
-    --background: #ffffff;
-    --foreground: #171717;
-  }
+@import "tailwindcss";
 
+:root {
+  --background: #ffffff;         /* Cor de fundo para tema claro */
+  --foreground: #171717;       /* Cor de primeiro plano para tema claro */
+  --border-color: rgba(0, 0, 0, 0.1);
+  
+  /* Cores de texto primárias e secundárias para TEMA CLARO */
+  --text-primary: #1c1c1c;       /* Corresponde a 'light-text' no Tailwind config */
+  --text-secondary: #525252;     /* CORRIGIDO: Corresponde a 'light-subtle' no Tailwind config */
+  
+  --hover-bg-color: rgba(0, 0, 0, 0.05);
+  --today-bg-color: rgba(59, 130, 246, 0.05);
+  --accent-color: #3b82f6;
+}
 
+.dark {
+  --background: #0a0a0a;         /* Cor de fundo para tema escuro (exemplo, ajuste se necessário) */
+  --foreground: #f0f0f0;       /* Cor de primeiro plano para tema escuro (exemplo) */
+  --border-color: rgba(255, 255, 255, 0.1);
+
+  /* Cores de texto primárias e secundárias para TEMA ESCURO */
+  --text-primary: #f0f0f0;       /* Corresponde a 'dark-text' no Tailwind config */
+  --text-secondary: #a0a0a0;     /* Corresponde a 'dark-subtle' no Tailwind config */
+  
+  --hover-bg-color: rgba(255, 255, 255, 0.1);
+  --today-bg-color: rgba(59, 130, 246, 0.1);
+  --accent-color: #3b82f6;       /* Mantido, mas poderia ser diferente para o tema escuro se desejado */
+}
+
+.text-reveal-mask {
+  clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0% 100%);
+}
