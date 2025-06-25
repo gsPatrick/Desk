@@ -9,7 +9,6 @@ import EventFilters from '../../componentsFinance/Calendar/EventFilters';
 import UpcomingEvents from '../../componentsFinance/Calendar/UpcomingEvents'; // Importe o componente de volta
 import { calendarEvents, eventTypes } from '../../data/financeData';
 import { PlusIcon } from '@heroicons/react/24/solid';
-import '../../styles/calendar-custom.css';
 
 export default function FinanceCalendarPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
