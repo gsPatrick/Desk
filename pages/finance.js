@@ -1,5 +1,5 @@
-// pages/finance/transactions.js (PAINEL FIXO E LISTA ROLÁVEL)
-import { useState, useMemo } from 'react';
+// pages/finance/transactions.js
+import { useState, useMemo, useEffect } from 'react'; // Importei useEffect para verificar o tamanho da tela
 import Head from 'next/head';
 import { motion } from 'framer-motion';
 import FinanceHeader from '@/componentsFinance/Header/FinanceHeader';
@@ -18,12 +18,10 @@ const FilterPill = ({ label, value, activeFilter, onFilterChange }) => {
         px-3 py-1 text-sm rounded-md transition-all duration-150 ease-in-out
         focus:outline-none focus:ring-2 focus:ring-opacity-50 dark:focus:ring-offset-dark-surface focus:ring-offset-2
         ${isActive
-          // Estilos para o botão ATIVO (INVERTIDO com cores HEX)
           ? 'font-semibold bg-[#131312] text-[#f8f6eb] dark:bg-[#f8f6eb] dark:text-[#131312] shadow-md focus:ring-blue-500'
-          // Estilos para o botão INATIVO - AGORA COM HOVER INVERTIDO
           : `text-light-subtle dark:text-dark-subtle 
-             hover:bg-[#131312] hover:text-[#f8f6eb]  /* Hover tema claro: Fundo preto, Texto creme */
-             dark:hover:bg-[#f8f6eb] dark:hover:text-[#131312] /* Hover tema escuro: Fundo creme, Texto preto */
+             hover:bg-[#131312] hover:text-[#f8f6eb]
+             dark:hover:bg-[#f8f6eb] dark:hover:text-[#131312]
              focus:ring-blue-400`
         }
       `}
@@ -34,6 +32,17 @@ const FilterPill = ({ label, value, activeFilter, onFilterChange }) => {
 export default function FinanceTransactionsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filters, setFilters] = useState({ type: 'all', status: 'all', recurring: 'all' });
+  const [isMobile, setIsMobile] = useState(false); // Estado para verificar se é mobile
+
+  // Hook para detectar se a tela é mobile (usando breakpoint padrão do Tailwind xs: 640px)
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640); // 640px é o breakpoint do Tailwind para 'sm'
+    };
+    handleResize(); // Executa uma vez ao montar o componente
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize); // Limpa o listener ao desmontar
+  }, []);
 
   const filteredTransactions = useMemo(() => transactionsLog.sort((a,b) => new Date(b.date) - new Date(a.date)).filter(tx => {
     const typeMatch = filters.type === 'all' || tx.type === filters.type;
@@ -44,14 +53,20 @@ export default function FinanceTransactionsPage() {
   
   const containerVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.05, delayChildren: 0.2 } } };
 
+  // Define a classe de overflow com base no estado isMobile
+  const listWrapperClasses = isMobile
+    ? 'flex-1 overflow-y-visible' // No mobile, o scroll é na página, então removemos o overflow-y-auto aqui
+    : 'flex-1 overflow-y-auto'; // No desktop, a lista tem seu próprio scroll
+
   return (
     <>
-      <div className="bg-light-bg dark:bg-dark-bg h-screen flex flex-col overflow-hidden">
+      {/* O body não deve ter overflow-y: hidden no mobile se quisermos que a página role */}
+      <div className={`${isMobile ? '' : 'h-screen overflow-hidden'} bg-light-bg dark:bg-dark-bg flex flex-col`}>
         <Head><title>Lançamentos | Finance OS</title></Head>
         
         <FinanceHeader />
 
-        <main className="flex-1 flex flex-col pt-32 pb-10 overflow-hidden">
+        <main className="flex-1 flex flex-col pt-32 pb-10"> {/* pt-32 garante espaço para o header fixo */}
           <div className="container mx-auto px-6 flex flex-col flex-shrink-0">
             <motion.div 
                 className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6" 
@@ -68,6 +83,7 @@ export default function FinanceTransactionsPage() {
             </motion.div>
           </div>
 
+          {/* Container principal para o gráfico, filtros e lista */}
           <div className="container mx-auto px-6 flex-1 flex flex-col min-h-0">
             <motion.div 
                 className="bg-light-surface dark:bg-dark-surface p-4 sm:p-6 rounded-2xl border border-black/5 dark:border-white/10 flex flex-col h-full"
@@ -103,8 +119,9 @@ export default function FinanceTransactionsPage() {
                     </div>
                 </div>
 
-                {/* --- LISTA DE LANÇAMENTOS - ROLÁVEL --- */}
-                <div className="flex-1 overflow-y-auto -mr-2 pr-2">
+                {/* --- LISTA DE LANÇAMENTOS - ROLÁVEL CONFORME O DISPOSITIVO --- */}
+                {/* A classe overflow-y-auto será aplicada aqui no desktop, e removida (tornando visível o scroll da página) no mobile */}
+                <div className={`${listWrapperClasses} no-scrollbar-visible`}> {/* Adicionei no-scrollbar-visible para exibir a barra de scroll */}
                     <motion.div variants={containerVariants}>
                         {filteredTransactions.map(tx => <LogEntry key={tx.id} transaction={tx} />)}
                     </motion.div>
