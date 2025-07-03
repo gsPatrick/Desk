@@ -14,9 +14,9 @@ import {
   PlusIcon,
   SunIcon,
   MoonIcon,
-  BeakerIcon,
-  ClipboardDocumentListIcon,
-  Cog8ToothIcon
+  UserIcon, // Ícone de perfil
+  CurrencyDollarIcon,
+  ClipboardDocumentListIcon // Ícone de moeda
 } from '@heroicons/react/24/solid';
 
 const navLinks = [
@@ -24,9 +24,9 @@ const navLinks = [
   { name: 'Lançamentos', href: '/finance/transactions', icon: ClipboardDocumentListIcon },
   { name: 'Faturas', href: '/finance/invoices', icon: CreditCardIcon },
   { name: 'Calendário', href: '/finance/calendar', icon: CalendarDaysIcon },
-  { name: 'Investimentos', href: '/finance/investments', icon: BeakerIcon },
+  { name: 'Investimentos', href: '/finance/investments', icon: CurrencyDollarIcon }, // Ícone de moeda para Investimentos
   { name: 'Relatórios', href: '/finance/reports', icon: DocumentChartBarIcon },
-  { name: 'Configurações', href: '/finance/settings', icon: Cog8ToothIcon },
+  { name: 'Perfil', href: '/finance/settings', icon: UserIcon }, // Ícone de perfil para Configurações
 ];
 
 const FinanceHeader = () => {
@@ -47,32 +47,28 @@ const FinanceHeader = () => {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div className="flex items-center justify-between p-2 bg-finance-cream/80 dark:bg-finance-black/50 backdrop-blur-xl rounded-full border border-black/5 dark:border-white/10 shadow-lg 
-                      h-16 sm:h-auto max-h-16 sm:max-h-none"> {/* Define altura fixa e max-height para evitar scroll vertical no container principal */}
+      {/* Container principal sem scroll vertical visível */}
+      <div className="flex flex-wrap items-center justify-between p-2 bg-finance-cream/80 dark:bg-finance-black/50 backdrop-blur-xl rounded-full border border-black/5 dark:border-white/10 shadow-lg 
+                      h-16 sm:h-auto max-h-16 sm:max-h-none overflow-hidden">
 
-        <div className="flex items-center gap-x-3 pl-3 flex-shrink-0">
+        <div className="flex items-center gap-x-3 pl-3 flex-shrink-0 min-w-[80px]"> {/* min-w para garantir espaço para 'OS' */}
           <Link href="/finance/dashboard" className="text-lg font-bold text-finance-pink">
             OS
           </Link>
-          <Image
-            src="https://placehold.co/200x200/png"
-            alt="Patrick Siqueira"
-            width={36}
-            height={36}
-            className="rounded-full"
-            unoptimized
-          />
+          <div className="h-6 w-px bg-white/10 dark:bg-white/10 mx-2"></div> {/* Divisor à direita do OS */}
         </div>
 
+        {/* Navegação principal com scroll horizontal oculto */}
         <nav className="
-          flex-1 min-w-0 
-          overflow-x-auto /* APENAS scroll horizontal */
-          overflow-y-hidden /* EXPLICITAMENTE proibir scroll vertical aqui */
-          scrollbar-hide /* Para esconder a barra de scroll visualmente */
-          mx-2
-          py-1 /* Adiciona um pequeno padding vertical para garantir que os itens não causem overflow no pai */
+          flex-1 
+          min-w-0 
+          overflow-x-auto /* Permite scroll horizontal apenas */
+          overflow-y-hidden /* Bloqueia scroll vertical explícito */
+          no-scrollbar /* Usando a classe customizada para esconder a scrollbar visualmente */
+          py-2 
+          px-1 
         ">
-          <div className="flex items-center gap-x-1 sm:gap-x-2 whitespace-nowrap px-1">
+          <div className="flex items-center justify-center gap-x-1 sm:gap-x-2 whitespace-nowrap"> {/* justify-center centraliza os itens de navegação */}
             {navLinks.map((link) => {
               const isActive = router.pathname === link.href;
               return (
@@ -80,8 +76,8 @@ const FinanceHeader = () => {
                   key={link.name}
                   href={link.href}
                   className={`
-                    relative group flex items-center justify-center gap-x-2 px-3 sm:px-4 py-2 rounded-full
-                    transition-colors duration-300 flex-shrink-0
+                    relative group flex items-center justify-center gap-x-1 sm:gap-x-2 px-2 sm:px-3 py-1 sm:py-2 rounded-full
+                    transition-colors duration-300 flex-shrink-0 text-sm sm:text-base 
                     ${isActive
                       ? 'bg-finance-pink text-finance-cream shadow-md'
                       : 'text-light-text dark:text-dark-subtle hover:text-finance-pink dark:hover:text-finance-pink'
@@ -89,7 +85,8 @@ const FinanceHeader = () => {
                   `}
                   title={link.name}
                 >
-                  <link.icon className={`h-5 sm:h-6 w-5 sm:w-6 ${
+                  <link.icon className={`h-4 sm:h-5 w-4 sm:w-5 
+                    ${
                     isActive
                       ? 'text-finance-cream'
                       : 'text-light-text dark:text-dark-subtle group-hover:text-finance-pink dark:group-hover:text-finance-pink'
@@ -115,16 +112,8 @@ const FinanceHeader = () => {
           </div>
         </nav>
 
-        <div className="flex items-center gap-x-2 pr-3 flex-shrink-0">
-          <motion.button
-            className="flex items-center justify-center p-2 sm:p-3 bg-finance-pink text-white rounded-full"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            title="Adicionar Transação"
-          >
-            <PlusIcon className="h-5 sm:h-6 w-5 sm:w-6" />
-          </motion.button>
-
+        <div className="flex items-center gap-x-2 pr-3 flex-shrink-0 min-w-[80px]"> {/* min-w para garantir espaço para os botões */}
+          <div className="h-6 w-px bg-white/10 dark:bg-white/10 mx-2"></div> {/* Divisor à esquerda da lua/sol */}
           <motion.button
             onClick={toggleTheme}
             className="p-2 sm:p-3 rounded-full hover:bg-black/10 dark:hover:bg-white/10"

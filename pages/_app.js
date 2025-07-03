@@ -1,13 +1,18 @@
+// pages/_app.js (MODIFICADO)
+
+import '../styles/globals.css';
+import '../styles/calendar-custom.css'; // Importa o CSS customizado do FullCalendar
 import { ThemeProvider } from 'next-themes';
-import '@/styles/globals.css'; 
-import '../styles/index.css'
-import '@/styles/calendar-custom.css';
+import { AuthProvider } from '../contexts/authContext'; // Importa o AuthProvider
 
 function MyApp({ Component, pageProps }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="dark">
-      <Component {...pageProps} />
-    </ThemeProvider>
+    <AuthProvider> {/* Envolve toda a aplicação com o AuthProvider */}
+      <ThemeProvider attribute="class">
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </AuthProvider>
   );
 }
+
 export default MyApp;
