@@ -1,0 +1,114 @@
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Duas colunas de tamanho igual */
+  gap: 20px 24px; /* Espaçamento vertical e horizontal */
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--colab-text-secondary);
+}
+
+.input, .textarea, .select {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--colab-border);
+  border-radius: 6px;
+  color: var(--colab-text-primary);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input:focus, .textarea:focus, .select:focus {
+  outline: none;
+  border-color: var(--colab-accent);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.fullWidth {
+  grid-column: 1 / -1; /* Ocupa as duas colunas */
+}
+
+.sectionTitle {
+  grid-column: 1 / -1;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--colab-text-primary);
+  margin-top: 12px;
+  margin-bottom: -8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--colab-border);
+}
+
+/* Estilos para a criação de novo cliente */
+.clientSelection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.clientToggle {
+  font-size: 13px;
+  color: var(--colab-accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+}
+
+.clientToggle:hover {
+  text-decoration: underline;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 24px;
+  margin-top: 24px;
+  border-top: 1px solid var(--colab-border);
+}
+
+.cancelButton {
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  background-color: var(--colab-surface);
+  border: 1px solid var(--colab-border);
+  color: var(--colab-text-primary);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cancelButton:hover {
+  background-color: var(--colab-border);
+}
+
+.saveButton {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  background-color: var(--colab-accent);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.saveButton:hover {
+  background-color: var(--colab-accent-hover);
+}

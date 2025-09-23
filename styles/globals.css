@@ -43,3 +43,45 @@
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+/* COLE ESTE BLOCO NO FINAL DO SEU ARQUIVO globals.css */
+
+/* --- INÍCIO: ESTILOS PARA O MÓDULO COLABORATIVO --- */
+
+/* 
+  Define uma classe 'container de tema' para a nossa seção. 
+  Todas as variáveis e estilos base para a seção colaborativa 
+  só serão aplicados dentro de um elemento com esta classe.
+*/
+.colab-theme {
+  --colab-background: #111111;
+  --colab-surface: #1E1E1E;
+  --colab-border: #2A2A2A;
+  --colab-text-primary: #EAEAEA;
+  --colab-text-secondary: #888888;
+  --colab-accent: #3b82f6;
+  --colab-accent-hover: #2563eb;
+  --colab-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  
+  /* Aplica a fonte e a cor de fundo base para a seção */
+  font-family: var(--colab-font-sans);
+  background-color: var(--colab-background);
+  color: var(--colab-text-primary);
+}
+
+/* 
+  Reset simples que só afeta elementos DENTRO da nossa seção,
+  para não interferir com os resets do Tailwind ou outros estilos globais.
+*/
+.colab-theme *,
+.colab-theme *::before,
+.colab-theme *::after {
+  box-sizing: border-box;
+}
+
+/* Garante que a seção ocupe a altura total da tela */
+.colab-theme {
+  min-height: 100vh;
+}
+
+/* --- FIM: ESTILOS PARA O MÓDULO COLABORATIVO --- */

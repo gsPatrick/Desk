@@ -1,0 +1,36 @@
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  gap: 8px;
+  margin-top: 32px;
+}
+
+.pageItem .pageLink {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: var(--colab-surface);
+  border: 1px solid var(--colab-border);
+  color: var(--colab-text-secondary);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pageItem .pageLink:hover {
+  border-color: var(--colab-accent);
+  color: var(--colab-text-primary);
+}
+
+.pageItem .pageLink.active {
+  background-color: var(--colab-accent);
+  border-color: var(--colab-accent);
+  color: #fff;
+}

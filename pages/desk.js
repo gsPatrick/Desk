@@ -26,12 +26,11 @@ export default function DeskPage() {
       {/* Usamos bg-light-surface para ter o fundo branco puro no tema claro */}
       <main className="bg-light-surface dark:bg-dark-bg">
         <Hero />
+        <AboutSection />
         <ProjectsSection />
         <TransitionSection />
-        <AboutSection />
+        
          <ProfessionalSection />
-                <DeskPortalSection />
-
         <ContactSection />
 
       </main>

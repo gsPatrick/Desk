@@ -1,0 +1,78 @@
+.pageWrapper {
+  padding: 84px 24px 24px 24px;
+  width: 100%;
+  max-width: 1400px; /* Dashboard pode ser mais largo */
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.headerLabel {
+  font-size: 14px;
+  color: var(--colab-text-secondary);
+}
+
+.headerValue {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--colab-text-primary);
+  letter-spacing: -2px;
+}
+
+.grid {
+  display: grid;
+  gap: 24px;
+  /* Grid de 4 colunas que se adapta */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+
+/* --- INÍCIO: NOVO ESTILO PARA MENSAGENS DE ESTADO --- */
+.messageState {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--colab-text-secondary);
+}
+/* Em telas maiores, forçamos 4 colunas */
+@media (min-width: 1280px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Classes de helper para controlar o tamanho dos cards */
+.colSpan2 {
+  grid-column: span 2;
+}
+.rowSpan2 {
+  grid-row: span 2;
+}
+
+/* --- INÍCIO: NOVOS ESTILOS PARA RESPONSIVIDADE MOBILE --- */
+@media (max-width: 768px) {
+  .pageWrapper {
+    padding: 72px 16px 16px; /* Padding menor para telas pequenas */
+  }
+
+  .headerValue {
+    font-size: 36px; /* Fonte do título principal menor no mobile */
+  }
+
+  .grid {
+    grid-template-columns: 1fr; /* Força uma única coluna */
+  }
+
+  .colSpan2, .rowSpan2 {
+    /* Reseta a expansão dos cards para que todos tenham o mesmo tamanho */
+    grid-column: auto;
+    grid-row: auto;
+  }
+}
+/* --- FIM: NOVOS ESTILOS PARA RESPONSIVIDADE MOBILE --- */

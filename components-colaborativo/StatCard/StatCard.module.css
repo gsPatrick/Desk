@@ -1,0 +1,70 @@
+.card {
+  /* Cor de fundo mais escura para o card */
+  background-color: #1C1C1C; 
+  border: 1px solid var(--colab-border);
+  border-radius: 12px;
+  padding: 24px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--colab-text-secondary);
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+}
+
+.value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--colab-text-primary);
+  margin-top: 8px;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: var(--colab-text-secondary);
+  margin-top: 4px;
+}
+
+/* --- INÍCIO: NOVOS ESTILOS PARA A LISTA DE PROJETOS --- */
+.projectList {
+  list-style: none;
+  padding: 0;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Espaçamento entre os itens */
+  flex-grow: 1; /* Ocupa o espaço disponível */
+}
+
+.projectList li {
+  font-size: 14px;
+  color: var(--colab-text-primary);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Adiciona '...' se o nome for muito longo */
+}
+
+.clickable {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.clickable:hover {
+    background-color: var(--colab-border);
+}
+/* --- FIM: NOVOS ESTILOS --- */

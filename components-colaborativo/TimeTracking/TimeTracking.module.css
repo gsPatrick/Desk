@@ -1,0 +1,160 @@
+.section {
+    background-color: var(--colab-surface);
+    border: 1px solid var(--colab-border);
+    border-radius: 12px;
+    padding: 24px;
+}
+.section h2 { 
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--colab-text-primary);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--colab-border);
+    display: flex; 
+    align-items: center;
+    gap: 8px;
+}
+
+.timerControl {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.timerControl input {
+    flex-grow: 1;
+    padding: 10px 12px;
+    font-size: 14px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--colab-border);
+    border-radius: 6px;
+    color: var(--colab-text-primary);
+    font-family: inherit; /* Garante que a fonte seja herdada */
+}
+
+.timerControl input::placeholder {
+    color: var(--colab-text-secondary);
+    opacity: 0.7;
+}
+
+.timerControl input:focus { outline: none; border-color: var(--colab-accent); }
+.timerControl input:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.startButton, .stopButton {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centraliza o ícone e texto */
+    gap: 8px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 6px;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    flex-shrink: 0; /* Impede que o botão encolha */
+    min-width: 100px;
+}
+.startButton { background-color: #22c55e; } /* Verde */
+.startButton:hover { background-color: #16a34a; }
+
+.stopButton { background-color: #ef4444; } /* Vermelho */
+.stopButton:hover { background-color: #dc2626; }
+
+.runningTimerBar {
+    background-color: rgba(59, 130, 246, 0.1); /* Azul claro */
+    border: 1px solid #3b82f6; /* Azul */
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.runningTimerBar p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--colab-text-primary);
+}
+.runningTimerBar p strong {
+    font-weight: 600;
+}
+
+
+.summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    margin-top: 24px;
+    border-top: 1px solid var(--colab-border);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--colab-text-primary);
+}
+
+.summary span:first-child {
+    color: var(--colab-text-secondary);
+    font-weight: 500;
+}
+
+.totalTime {
+    color: var(--colab-accent); /* Cor de destaque */
+}
+
+.entryList {
+    margin-top: 24px;
+    border: 1px solid var(--colab-border);
+    border-radius: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.entryItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--colab-border);
+}
+.entryItem:last-child {
+    border-bottom: none;
+}
+
+.entryInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.entryDesc {
+    font-weight: 500;
+    color: var(--colab-text-primary);
+    font-size: 14px;
+}
+
+.entryDate {
+    font-size: 12px;
+    color: var(--colab-text-secondary);
+}
+
+.entryDuration {
+    font-weight: 600;
+    color: var(--colab-text-primary);
+    font-size: 14px;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 600px) {
+    .timerControl {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .timerControl input, .startButton, .stopButton {
+        width: 100%;
+        min-width: unset;
+    }
+}

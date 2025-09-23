@@ -1,0 +1,161 @@
+.pageWrapper {
+    padding-top: 84px;
+    padding-left: 24px;
+    padding-right: 24px;
+    padding-bottom: 24px;
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.pageTitle {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--colab-text-primary);
+}
+
+.pageSubtitle {
+    color: var(--colab-text-secondary);
+    font-size: 16px;
+    margin-top: 4px;
+}
+
+.loading {
+    text-align: center;
+    padding-top: 100px;
+    color: var(--colab-text-secondary);
+}
+
+.tabs {
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid var(--colab-border);
+    margin: 32px 0;
+}
+
+.tabButton {
+    padding: 10px 16px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--colab-text-secondary);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tabButton:hover {
+    color: var(--colab-text-primary);
+}
+
+.tabButton.active {
+    color: var(--colab-accent);
+    border-bottom-color: var(--colab-accent);
+}
+
+.tabContent {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.section {
+    background-color: var(--colab-surface);
+    border: 1px solid var(--colab-border);
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.section h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: var(--colab-text-primary);
+}
+
+.section p {
+    color: var(--colab-text-secondary);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    max-width: 600px;
+}
+
+.infoGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 24px 32px;
+}
+
+.infoItem {
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    font-size: 12px;
+    color: var(--colab-text-secondary);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.value {
+    font-size: 16px;
+    color: var(--colab-text-primary);
+    font-weight: 500;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 400px;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.formGroup label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--colab-text-secondary);
+}
+
+.formGroup input {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--colab-border);
+    border-radius: 6px;
+    color: var(--colab-text-primary);
+}
+
+.formGroup input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.actionButton {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    background-color: var(--colab-accent);
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 8px;
+    align-self: flex-start;
+}
+
+.actionButton:disabled {
+    background-color: var(--colab-border);
+    cursor: not-allowed;
+}

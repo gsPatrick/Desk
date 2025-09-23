@@ -1,0 +1,109 @@
+.card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background-color: var(--colab-surface);
+  border: 1px solid var(--colab-border);
+  border-radius: 8px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--colab-accent);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.info {
+  flex-grow: 1;
+}
+
+.name {
+  font-weight: 600;
+  color: var(--colab-text-primary);
+}
+
+.email {
+  font-size: 14px;
+  color: var(--colab-text-secondary);
+}
+
+.statusAndActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.statusBadge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 99px;
+  text-transform: uppercase;
+}
+/* Cores para os status */
+.statusAccepted { background-color: rgba(34, 197, 94, 0.1); color: #4ade80; }
+.statusPending { background-color: rgba(249, 115, 22, 0.1); color: #fb923c; }
+.statusDeclined { background-color: rgba(239, 68, 68, 0.1); color: #f87171; }
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.actionButton {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  text-align: center; /* Garante alinhamento do texto */
+}
+
+.actionButton:hover {
+  opacity: 0.8;
+}
+
+.accept { background-color: #22c55e; color: #fff; }
+.decline { background-color: #ef4444; color: #fff; }
+.remove { border: 1px solid #ef4444; color: #ef4444; background-color: transparent; }
+.cancel { border: 1px solid var(--colab-text-secondary); color: var(--colab-text-secondary); background-color: transparent; }
+
+/* --- INÍCIO: NOVOS ESTILOS PARA RESPONSIVIDADE MOBILE --- */
+@media (max-width: 768px) {
+    .card {
+        flex-wrap: wrap; /* Permite que as seções quebrem para a próxima linha */
+    }
+
+    .info {
+        /* Garante que o nome e e-mail ocupem um espaço mínimo */
+        min-width: calc(100% - 60px); 
+    }
+
+    .statusAndActions {
+        width: 100%; /* Ocupa a largura total na nova linha */
+        flex-direction: column; /* Empilha o status e os botões */
+        align-items: stretch; /* Estica os itens */
+        gap: 12px;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid var(--colab-border);
+    }
+
+    .actions {
+        display: grid;
+        /* Cria 2 colunas se houver espaço, senão 1 coluna */
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        width: 100%;
+    }
+}
+/* --- FIM: NOVOS ESTILOS PARA RESPONSIVIDADE MOBILE --- */

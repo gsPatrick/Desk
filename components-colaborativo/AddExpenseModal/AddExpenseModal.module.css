@@ -1,0 +1,27 @@
+.addExpenseFormGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Duas colunas padrão */
+    gap: 20px 24px;
+}
+
+/* Garante que o footer ocupe a largura total no grid */
+.addExpenseFormGrid .formGroup:last-of-type,
+.addExpenseFormGrid .formStyles.modalFooter {
+    grid-column: 1 / -1;
+}
+
+/* Ajustes para o footer ficar como no Modal.module.css */
+.addExpenseFormGrid .formStyles.modalFooter {
+    padding-top: 24px;
+    margin-top: 24px;
+    border-top: 1px solid var(--colab-border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+@media (max-width: 768px) {
+    .addExpenseFormGrid {
+        grid-template-columns: 1fr; /* Uma coluna no mobile */
+    }
+}

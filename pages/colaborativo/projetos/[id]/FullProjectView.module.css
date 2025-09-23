@@ -1,0 +1,296 @@
+.pageWrapper {
+    padding-top: 84px;
+    padding-left: 24px;
+    padding-right: 24px;
+    padding-bottom: 24px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.header {
+    margin-bottom: 32px;
+}
+
+.header h1 {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--colab-text-primary);
+    margin-top: 12px;
+}
+
+.header p {
+    color: var(--colab-text-secondary);
+    font-size: 16px;
+    margin-top: 4px;
+}
+
+.backButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    color: var(--colab-text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 4px 8px;
+    margin-left: -8px;
+    border-radius: 6px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.backButton:hover {
+    background-color: var(--colab-surface);
+    color: var(--colab-text-primary);
+}
+
+/* --- ESTILOS PARA AS ABAS (TABS) --- */
+.tabs {
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid var(--colab-border);
+    margin-bottom: 32px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+
+.tabButton {
+    padding: 10px 16px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--colab-text-secondary);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.tabButton:hover { color: var(--colab-text-primary); }
+.tabButton.active { color: var(--colab-accent); border-bottom-color: var(--colab-accent); }
+
+.contentGrid {
+    display: grid;
+    grid-template-columns: 2.5fr 1fr;
+    gap: 32px;
+    align-items: flex-start;
+}
+
+.mainContent {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.section {
+    background-color: var(--colab-surface);
+    border: 1px solid var(--colab-border);
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.section h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--colab-text-primary);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--colab-border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: space-between; /* Permite que o botão de salvar fique à direita */
+}
+.section h2 button { /* Estilo para o botão de salvar nas seções */
+    background: none;
+    border: none;
+    color: var(--colab-text-secondary);
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+.section h2 button:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: var(--colab-text-primary);
+}
+
+
+.sidebar {
+    position: sticky;
+    top: 84px;
+}
+
+.sidebar .section p { /* Estilos de parágrafo dentro da sidebar (já existia no ClientInfoCard.module.css) */
+    font-size: 14px;
+    color: var(--colab-text-primary);
+    margin-bottom: 10px;
+}
+
+.sidebar .section p strong { /* Estilos de strong dentro da sidebar */
+    color: var(--colab-text-secondary);
+    display: block;
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--colab-text-secondary);
+}
+
+/* --- ABA: VISÃO GERAL --- */
+.overviewGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+.overviewGrid .label { font-size: 12px; color: var(--colab-text-secondary); text-transform: uppercase; margin-bottom: 4px; }
+.overviewGrid .value { font-size: 16px; color: var(--colab-text-primary); font-weight: 500; }
+.overviewGrid .fullWidth { grid-column: 1 / -1; }
+
+.editInput { /* Estilo para o select de prioridade e textareas editáveis */
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--colab-border);
+  border-radius: 6px;
+  color: var(--colab-text-primary);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+}
+.editInput:focus { outline: none; border-color: var(--colab-accent); box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); }
+.editInput[type="textarea"] { min-height: 100px; resize: vertical; }
+
+
+/* --- ABA: DOCUMENTAÇÃO --- */
+.docsSection {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px; /* Espaço entre os textareas e os EditableSections */
+}
+.docsSection .formGroup { display: flex; flex-direction: column; gap: 6px; }
+
+
+/* --- ABA: PAGAMENTOS --- */
+.paymentSummary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+.paymentSummary .summaryItem { display: flex; flex-direction: column; gap: 4px; }
+.paymentSummary .summaryItem span { font-size: 12px; color: var(--colab-text-secondary); text-transform: uppercase; }
+.paymentSummary .receivedAmount { font-size: 24px; font-weight: 700; color: #4ade80; }
+.paymentSummary .remainingAmount { font-size: 24px; font-weight: 700; color: #f59e0b; }
+
+.fullPaymentContainer { margin-bottom: 24px; }
+.fullPaymentButton {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    background-color: rgba(74, 222, 128, 0.1);
+    border: 1px solid #4ade80;
+    color: #4ade80;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.fullPaymentButton:hover { background-color: #4ade80; color: #fff; }
+
+.subTitle { 
+    font-size: 16px; 
+    font-weight: 600; 
+    margin-bottom: 12px; 
+    padding-bottom: 8px; 
+    border-bottom: 1px solid var(--colab-border); 
+    color: var(--colab-text-primary);
+}
+
+.transactionList { /* ... (estilos já definidos no modal de detalhes) ... */ }
+.transactionItem { /* ... */ }
+.transactionAmount { /* ... */ }
+.transactionDate { /* ... */ }
+.noTransactions { /* ... */ }
+.deleteButton { /* ... */ }
+
+.addTransactionForm {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 12px;
+    margin-top: 16px;
+    border-top: 1px solid var(--colab-border);
+    padding-top: 16px;
+}
+.addTransactionForm input { /* ... */ }
+.addTransactionForm button { /* ... */ }
+
+
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 900px) {
+    .contentGrid {
+        grid-template-columns: 1fr;
+    }
+    .sidebar {
+        position: static;
+        top: auto;
+    }
+    .tabs {
+        margin-left: -24px; /* Ajusta o padding do wrapper */
+        margin-right: -24px;
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .pageWrapper { padding: 72px 16px 16px; }
+    .header h1 { font-size: 28px; }
+
+    .tabs {
+        margin-left: -16px;
+        margin-right: -16px;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .overviewGrid { grid-template-columns: 1fr; } /* Uma coluna no mobile */
+    .paymentSummary { grid-template-columns: 1fr; } /* Uma coluna no mobile */
+    .addTransactionForm { grid-template-columns: 1fr; } /* Uma coluna no mobile */
+    
+    .section h2 {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .section h2 button {
+        width: 100%;
+        justify-content: center;
+        margin-top: 8px;
+    }
+}

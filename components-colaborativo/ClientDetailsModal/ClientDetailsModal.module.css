@@ -1,0 +1,195 @@
+.detailsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.section {
+    background-color: var(--colab-surface);
+    border: 1px solid var(--colab-border);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.section h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--colab-text-primary);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--colab-border);
+}
+
+.infoGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.detailItem {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.label {
+    font-size: 12px;
+    color: var(--colab-text-secondary);
+    text-transform: uppercase;
+}
+
+.value {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--colab-text-primary);
+}
+
+.valueLink {
+    text-decoration: none;
+    color: var(--colab-text-primary);
+    font-weight: 500;
+    font-size: 15px;
+    transition: color 0.2s;
+}
+.valueLink:hover {
+    color: var(--colab-accent);
+}
+
+.interactiveValue {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.copyButton {
+    background: none;
+    border: none;
+    color: var(--colab-text-secondary);
+    cursor: pointer;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+}
+.copiedIcon {
+    color: #4ade80; /* Verde sucesso */
+}
+
+.notesText {
+    font-size: 14px;
+    color: var(--colab-text-primary);
+    line-height: 1.6;
+    white-space: pre-wrap; /* Preserva quebras de linha e espaços */
+}
+
+/* --- ESTILOS PARA A LISTA DE PROJETOS NO MODAL --- */
+.projectList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 250px;
+    overflow-y: auto;
+    border: 1px solid var(--colab-border);
+    border-radius: 8px;
+}
+
+.projectItem {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--colab-border);
+}
+.projectItem:last-child {
+    border-bottom: none;
+}
+
+.projectLink {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+    color: var(--colab-text-primary);
+    transition: color 0.2s;
+}
+.projectLink:hover {
+    color: var(--colab-accent);
+}
+
+.projectName {
+    font-weight: 600;
+    flex-grow: 1;
+}
+
+.projectStatus {
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background-color: rgba(59, 130, 246, 0.1);
+    color: #60a5fa;
+    font-weight: 500;
+    flex-shrink: 0;
+    margin-left: 16px;
+}
+
+.projectBudget {
+    font-weight: 600;
+    flex-shrink: 0;
+    margin-left: 16px;
+}
+
+.projectLinkIcon {
+    margin-left: 8px;
+    color: var(--colab-text-secondary);
+    transition: color 0.2s;
+}
+.projectLink:hover .projectLinkIcon {
+    color: var(--colab-accent);
+}
+
+.noProjects {
+    text-align: center;
+    padding: 20px;
+    color: var(--colab-text-secondary);
+    font-size: 14px;
+}
+
+.viewProjectsButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: 1px solid var(--colab-border);
+    color: var(--colab-text-secondary);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    margin-top: 16px;
+}
+.viewProjectsButton:hover {
+    border-color: var(--colab-text-primary);
+    color: var(--colab-text-primary);
+}
+
+
+/* --- Rodapé do Modal (reutilizado do ProjectDetailsModal) --- */
+.modalFooter {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 24px;
+    margin-top: 24px;
+    border-top: 1px solid var(--colab-border);
+}
+
+.cancelButton {
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  background-color: var(--colab-surface);
+  border: 1px solid var(--colab-border);
+  color: var(--colab-text-primary);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.cancelButton:hover { background-color: var(--colab-border); }
