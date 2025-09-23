@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import api from '../../../services/colaborativo-api';
 import styles from './Login.module.css';
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();

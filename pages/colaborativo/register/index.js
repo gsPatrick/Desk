@@ -4,6 +4,7 @@
   import api from '../../../services/colaborativo-api';
   import styles from '../login/Login.module.css';
   import { AnimatePresence, motion } from 'framer-motion';
+import Link from "next/link";
 
   // Estado inicial do formulário
   const initialFormData = {
@@ -111,7 +112,12 @@
               <button type="submit" className={styles.button} disabled={isLoading || success}>{isLoading ? 'Cadastrando...' : 'Criar Conta'}</button>
           </form>
 
-          <p className={styles.footerText}>Já tem uma conta?{' '}<a href="/colaborativo/login">Faça login</a></p>
+<p className={styles.footerText}>
+  Já tem uma conta?{' '}
+  <Link href="/colaborativo/login" className={styles.loginLink}>
+    Faça login
+  </Link>
+</p>
         </div>
       </div>
     );
