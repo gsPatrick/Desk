@@ -135,9 +135,9 @@ export default function ClientesPage() {
                                 />
                             ))
                         ) : (
-                            <div className={styles.emptyState}>
-                                Nenhum cliente cadastrado. Clique em "Novo Cliente" para começar.
-                            </div>
+                        <div className={styles.emptyState}>
+                            Nenhum cliente cadastrado. Clique em {"\"Novo Cliente\""} para começar.
+                        </div>
                         )}
                     </div>
                 )}

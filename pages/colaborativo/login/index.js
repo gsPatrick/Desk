@@ -82,9 +82,9 @@ export default function LoginPage() {
 
         <p className={styles.footerText}>
           Não tem uma conta?{' '}
-          <a href="/colaborativo/register">Cadastre-se</a>
+          <Link href="/colaborativo/register">Registrar</Link>
         </p>
       </div>
     </div>
   );
-}
+}   
