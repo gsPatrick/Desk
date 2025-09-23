@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Define a URL base da sua API
-const API_URL = 'http://localhost:5001/api';
+const API_URL = 'https://n8n-colaborativo-api.r954jc.easypanel.host/api';
 
 // Cria uma instância do Axios com a configuração base
 const api = axios.create({
