@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import api from '../../services/colaborativo-api';
 import styles from './Header.module.css';
-import { IoBriefcase, IoPeople, IoFolder, IoGrid, IoReceiptOutline, IoPerson } from 'react-icons/io5'; // IoPerson adicionado para o avatar genérico
+import { IoBriefcase, IoPeople, IoFolder, IoGrid, IoReceiptOutline, IoPerson, IoShareSocial } from 'react-icons/io5';
 
 const NavLink = ({ href, icon, label, isActive }) => (
     <Link href={href} className={`${styles.navLink} ${isActive ? styles.active : ''}`}>
@@ -13,7 +13,7 @@ const NavLink = ({ href, icon, label, isActive }) => (
 
 export default function Header({ activePage }) {
     const [user, setUser] = useState(null);
-    const [isMenuOpen, setIsMenuOpen] = useState(false); // NOVO: Estado para controlar a abertura do menu mobile
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -23,7 +23,7 @@ export default function Header({ activePage }) {
             } catch (error) {
                 console.error("Erro ao buscar dados do usuário no header:", error);
                 // Em caso de erro (ex: token inválido), redirecionar para o login
-                // if (window.location.pathname !== '/colaborativo/login' && window.location.pathname !== '/colaborativo/register') {
+                // if (typeof window !== 'undefined' && window.location.pathname !== '/colaborativo/login' && window.location.pathname !== '/colaborativo/register') {
                 //     window.location.href = '/colaborativo/login';
                 // }
             }
@@ -31,7 +31,7 @@ export default function Header({ activePage }) {
         fetchUser();
     }, []);
 
-    const toggleMenu = () => { // NOVO: Função para alternar o menu mobile
+    const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
 
@@ -40,7 +40,6 @@ export default function Header({ activePage }) {
             <div className={styles.leftSection}>
                 <Link href="/colaborativo/dashboard" className={styles.logo}>OS</Link>
                 
-                {/* --- NOVO: Botão de menu hambúrguer para mobile --- */}
                 <button className={styles.menuToggle} onClick={toggleMenu} aria-label="Abrir menu de navegação">
                     <div className={`${styles.hamburger} ${isMenuOpen ? styles.open : ''}`}>
                         <span></span>
@@ -50,18 +49,19 @@ export default function Header({ activePage }) {
                 </button>
 
                 <div className={styles.separator}></div>
-                <nav className={`${styles.navLinks} ${isMenuOpen ? styles.active : ''}`}> {/* NOVO: Classe active */}
+                <nav className={`${styles.navLinks} ${isMenuOpen ? styles.active : ''}`}>
                     <NavLink href="/colaborativo/dashboard" label="Dashboard" icon={<IoGrid size={20} />} isActive={activePage === 'dashboard'} />
                     <NavLink href="/colaborativo/projetos" label="Projetos" icon={<IoFolder size={20} />} isActive={activePage === 'projetos'} />
                     <NavLink href="/colaborativo/clientes" label="Clientes" icon={<IoBriefcase size={20} />} isActive={activePage === 'clientes'} />
                     <NavLink href="/colaborativo/despesas" label="Despesas" icon={<IoReceiptOutline size={20} />} isActive={activePage === 'despesas'} />
+                    <NavLink href="/colaborativo/plataformas" label="Plataformas" icon={<IoShareSocial size={20} />} isActive={activePage === 'plataformas'} />
                     <NavLink href="/colaborativo/colaboradores" label="Colaboradores" icon={<IoPeople size={20} />} isActive={activePage === 'colaboradores'} />
                 </nav>
             </div>
 
             <div className={styles.rightSection}>
                 {user ? (
-                    <Link href="/colaborativo/perfil" className={styles.userProfile}>
+                    <Link href="/colaborativo/perfil" className={`${styles.userProfile} ${activePage === 'perfil' ? styles.profileActive : ''}`}>
                         <div className={styles.userAvatar}>
                             {(user.name || 'U').substring(0, 1)}
                         </div>

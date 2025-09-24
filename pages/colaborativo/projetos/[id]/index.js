@@ -9,7 +9,7 @@ import EditableSection from '../../../../components-colaborativo/EditableSection
 import ClientInfoCard from '../../../../components-colaborativo/ClientInfoCard/ClientInfoCard';
 import TimeTracking from '../../../../components-colaborativo/TimeTracking/TimeTracking';
 import ExpenseTracker from '../../../../components-colaborativo/ExpenseTracker/ExpenseTracker';
-import ClientDetailsModal from '../../../../components-colaborativo/ClientDetailsModal/ClientDetailsModal'; // Importar o modal de detalhes do cliente
+import ClientDetailsModal from '../../../../components-colaborativo/ClientDetailsModal/ClientDetailsModal';
 
 // Estilos e Ícones
 import styles from './FullProjectView.module.css';
@@ -230,7 +230,8 @@ export default function FullProjectViewPage() {
                                             {priorities.map(p => (<option key={p.id} value={p.id}>{p.name}</option>))}
                                         </select>
                                     </div>
-                                    <div className={styles.fullWidth}><span className={styles.label}>Plataforma</span><p className={styles.value}>{project.platform || 'Venda Direta'}</p></div>
+                                    <div className={styles.fullWidth}><span className={styles.label}>Plataforma</span><p className={styles.value}>{project.AssociatedPlatform?.name || 'Venda Direta'}</p></div>
+                                    <div className={styles.fullWidth}><span className={styles.label}>Comissão Plataforma</span><p className={styles.value}>{project.platformCommissionPercent || 0}%</p></div>
                                 </div>
                             </div>
                         )}

@@ -1,4 +1,3 @@
-
 import { Fragment } from 'react';
 import Image from 'next/image';
 import styles from './ProjectCard.module.css';
@@ -30,8 +29,8 @@ const getDeadlineInfo = (deadline) => {
 };
 
 const getPaymentStatusInfo = (payment) => {
-    if (!payment) return { Icon: IoAlertCircle, className: styles.paymentStatusUnpaid, title: 'Status de pagamento não definido' };
-    const { clientStatus } = payment;
+    if (!payment || !payment.client) return { Icon: IoAlertCircle, className: styles.paymentStatusUnpaid, title: 'Status de pagamento não definido' };
+    const { status: clientStatus } = payment.client;
     if (clientStatus === 'paid') {
         return { Icon: IoCheckmarkCircle, className: styles.paymentStatusPaid, title: 'Totalmente pago' };
     }
@@ -48,13 +47,40 @@ export default function ProjectCard({ project, onOpenModal, onStatusChange, onEd
     const { className: deadlineClass, text: deadlineText } = getDeadlineInfo(project.deadline);
     const { Icon: PaymentIcon, className: paymentClass, title: paymentTitle } = getPaymentStatusInfo(project.paymentDetails);
     
-    const budget = parseFloat(project.budget) || 0;
-    const paymentDetails = project.paymentDetails || {};
-    const amountPaid = parseFloat(paymentDetails.clientAmountPaid) || 0;
+    const budget = parseFloat(project.budget || 0);
+    const paymentDetails = project.paymentDetails?.client || {}; // Acessa o objeto client dentro de paymentDetails
+    const amountPaid = parseFloat(paymentDetails.amountPaid || 0);
     const remainingAmount = budget - amountPaid;
     
-    const platformFee = budget * ((project.platformCommissionPercent || 0) / 100);
-    const netProfitToShow = budget - platformFee;
+    // Calcula comissão da plataforma
+    const platformCommissionPercent = parseFloat(project.platformCommissionPercent || 0);
+    const platformFee = budget * (platformCommissionPercent / 100);
+
+    // Calcula comissão do dono (se houver parceiros)
+    const ownerCommissionType = project.ownerCommissionType;
+    const ownerCommissionValue = parseFloat(project.ownerCommissionValue || 0);
+    let ownerFee = 0;
+    if (ownerCommissionType === 'percentage') {
+        ownerFee = budget * (ownerCommissionValue / 100);
+    } else if (ownerCommissionType === 'fixed') {
+        ownerFee = ownerCommissionValue;
+    }
+
+    // Lucro do dono (o que sobra do bruto após plataforma e comissão de parceiros)
+    let netProfitToShow = budget - platformFee - ownerFee;
+
+    // Se o usuário logado for um PARCEIRO, mostra o lucro dele (comissão)
+    const userAsPartner = project.Partners?.find(p => p.id === currentUserRole); // Assumindo currentUserRole é o ID do usuário
+    if (userAsPartner) {
+        // A comissão do parceiro vem diretamente da ProjectShare
+        const partnerShare = userAsPartner.ProjectShare;
+        if (partnerShare.commissionType === 'percentage') {
+            netProfitToShow = budget * (parseFloat(partnerShare.commissionValue) / 100);
+        } else if (partnerShare.commissionType === 'fixed') {
+            netProfitToShow = parseFloat(partnerShare.commissionValue);
+        }
+    }
+
 
     const statusOptions = Object.entries(STATUS_MAP).map(([value, { label }]) => ({ value, label }));
 
@@ -95,10 +121,10 @@ export default function ProjectCard({ project, onOpenModal, onStatusChange, onEd
                     <span className={styles.value}>{formatCurrency(budget)}</span>
                 </div>
                 <div className={styles.paymentDetails}>
-                    {paymentDetails.clientStatus === 'paid' && (
+                    {paymentDetails.status === 'paid' && (
                         <div className={styles.financialRow}><span className={styles.label}>Pagamento Total</span><span className={`${styles.paymentValue} ${styles.paymentPaid}`}>{formatCurrency(budget)}</span></div>
                     )}
-                    {paymentDetails.clientStatus === 'partial' && (
+                    {paymentDetails.status === 'partial' && (
                         <>
                             <div className={styles.financialRow}><span className={styles.label}>Recebido</span><span className={`${styles.paymentValue} ${styles.paymentPaid}`}>{formatCurrency(amountPaid)}</span></div>
                             <div className={styles.financialRow}><span className={styles.label}>Falta Receber</span><span className={`${styles.paymentValue} ${styles.paymentRemaining}`}>{formatCurrency(remainingAmount)}</span></div>
@@ -118,8 +144,21 @@ export default function ProjectCard({ project, onOpenModal, onStatusChange, onEd
                     <div className={`${styles.paymentStatusIcon} ${paymentClass}`} title={paymentTitle}><PaymentIcon size={18} /></div>
                     <div className={`${styles.statusIndicator} ${styles[statusInfo.className]}`}>{statusInfo.label}</div>
                 </div>
-                {project.platform && (
-                    <div className={styles.platformLogoContainer}><Image src={project.platform === 'Workana' ? '/platforms/workana-logo.png' : '/platforms/99-logo.png'} alt={`Logo ${project.platform}`} width={36} height={36} /></div>
+                {/* --- EXIBIÇÃO DA PLATAFORMA --- */}
+                {project.AssociatedPlatform && (
+                    <div className={styles.platformLogoContainer}>
+                        {project.AssociatedPlatform.logoUrl && (
+                            <img src={project.AssociatedPlatform.logoUrl} alt={`Logo ${project.AssociatedPlatform.name}`} className={styles.platformLogo} />
+                        )}
+                        {!project.AssociatedPlatform.logoUrl && (
+                            <span className={styles.platformNameText}>{project.AssociatedPlatform.name}</span>
+                        )}
+                    </div>
+                )}
+                {!project.AssociatedPlatform && project.platformCommissionPercent > 0 && (
+                    <div className={styles.platformLogoContainer}>
+                        <span className={styles.platformNameText}>Plataforma Externa ({project.platformCommissionPercent}%)</span>
+                    </div>
                 )}
             </div>
         </div>

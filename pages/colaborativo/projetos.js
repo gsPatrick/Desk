@@ -10,9 +10,9 @@ import StatusFilter from '../../components-colaborativo/StatusFilter/StatusFilte
 import PriorityFilter from '../../components-colaborativo/PriorityFilter/PriorityFilter';
 import DateFilter from '../../components-colaborativo/DateFilter/DateFilter';
 import Pagination from '../../components-colaborativo/Pagination/Pagination';
-import MobileFilterDrawer from '../../components-colaborativo/MobileFilterDrawer/MobileFilterDrawer'; // NOVO IMPORT
+import MobileFilterDrawer from '../../components-colaborativo/MobileFilterDrawer/MobileFilterDrawer';
 import styles from './projetos.module.css';
-import { IoAdd, IoRefresh, IoFilter } from 'react-icons/io5'; // IoFilter adicionado
+import { IoAdd, IoRefresh, IoFilter } from 'react-icons/io5';
 
 const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value || 0);
 const PROJECTS_PER_PAGE = 6;
@@ -31,7 +31,8 @@ export default function ProjetosPage() {
   const [paginationInfo, setPaginationInfo] = useState(initialPaginationInfo);
   const [clientList, setClientList] = useState([]);
   const [collaborators, setCollaborators] = useState([]);
-  const [priorityList, setPriorityList] = useState([]);
+  const [priorityList, setPriorities] = useState([]);
+  const [platformList, setPlatformList] = useState([]); // NOVO ESTADO
 
   // Estados de controle da UI
   const [isLoading, setIsLoading] = useState(true);
@@ -50,7 +51,7 @@ export default function ProjetosPage() {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [projectToEdit, setProjectToEdit] = useState(null);
 
-  // --- NOVO ESTADO PARA O DRAWER DE FILTROS MOBILE ---
+  // Estado para o drawer de filtros mobile
   const [isMobileFilterDrawerOpen, setIsMobileFilterDrawerOpen] = useState(false);
 
 
@@ -87,15 +88,17 @@ export default function ProjetosPage() {
             const meResponse = await api.get('/users/me');
             setCurrentUserId(meResponse.data.id);
             
-            const [clientsResponse, collabsResponse, prioritiesResponse] = await Promise.all([
+            const [clientsResponse, collabsResponse, prioritiesResponse, platformsResponse] = await Promise.all([
                 api.get('/clients'),
                 api.get('/collaborations?status=accepted'),
-                api.get('/priorities')
+                api.get('/priorities'),
+                api.get('/platforms')
             ]);
 
             setClientList(clientsResponse.data || []);
             setCollaborators(collabsResponse.data || []);
-            setPriorityList(prioritiesResponse.data || []);
+            setPriorities(prioritiesResponse.data || []);
+            setPlatformList(platformsResponse.data || []);
             
         } catch (err) {
             console.error("Não foi possível carregar dados para os formulários.", err);
@@ -210,7 +213,7 @@ export default function ProjetosPage() {
                   Novo Projeto
               </button>
             </div>
-            {/* --- NOVO: BOTÃO DE FILTROS PARA MOBILE --- */}
+            {/* --- BOTÃO DE FILTROS PARA MOBILE --- */}
             <div className={styles.mobileActionsContainer}>
                 <button onClick={() => setIsMobileFilterDrawerOpen(true)} className={styles.filterToggleButton}>
                     <IoFilter size={20} /> Filtros
@@ -249,7 +252,7 @@ export default function ProjetosPage() {
                   onPriorityChange={handlePriorityChange}
                   onEdit={handleEdit}
                   onDelete={handleDelete}
-                  currentUserRole={currentUserRole}
+                  currentUserRole={"dev"} // Ou pegue do contexto do usuário
                   priorities={priorityList}
                 />
             ) : (
@@ -282,6 +285,7 @@ export default function ProjetosPage() {
         clients={clientList}
         collaborators={collaborators}
         currentUserId={currentUserId}
+        platforms={platformList}
       />
       {/* --- DRAWER DE FILTROS PARA MOBILE --- */}
       <MobileFilterDrawer

@@ -1,15 +1,20 @@
 .card {
-  background-color: #1C1C1C;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 24px;
+  background-color: #1C1C1C; /* Fundo mais escuro */
   border: 1px solid var(--colab-border);
   border-left: 4px solid transparent; 
   border-radius: 10px;
-  padding: 24px;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
   gap: 20px;
   transition: transform 0.2s ease-in-out, border-color 0.3s ease;
+  cursor: pointer;
 }
 
 .card:hover {
@@ -25,6 +30,7 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
+  width: 100%; /* Garante que o header ocupe a largura total */
 }
 
 .titleGroup {
@@ -38,14 +44,14 @@
   font-size: 18px;
   font-weight: 600;
   color: var(--colab-text-primary);
-  cursor: pointer;
+  /* cursor: pointer; REMOVIDO: O card inteiro é clicável agora */
 }
 
 .clientInfo {
   display: flex;
   align-items: center;
   gap: 8px;
-  cursor: pointer;
+  /* cursor: pointer; REMOVIDO */
 }
 
 .clientName {
@@ -57,7 +63,8 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  cursor: pointer;
+  /* cursor: pointer; REMOVIDO */
+  width: 100%; /* Ocupa a largura total */
 }
 
 .financialRow {
@@ -77,17 +84,48 @@
   color: var(--colab-text-primary);
 }
 
+.profitRow {
+    padding-top: 12px;
+    border-top: 1px solid var(--colab-border);
+    margin-top: 8px; /* Pequeno espaçamento da seção de pagamentos */
+}
+
 .profitValue {
   font-size: 24px;
   font-weight: 700;
   color: #4ade80;
 }
 
+.paymentDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 0;
+    margin: 4px 0;
+}
+
+.paymentValue {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.paymentPaid {
+    color: #4ade80; /* Verde */
+}
+
+.paymentRemaining {
+    color: #f59e0b; /* Amarelo/Laranja */
+}
+
+
 .costsSection {
   display: flex;
   flex-direction: column;
   gap: 8px;
   padding-left: 12px;
+  padding-top: 12px; /* Adicionado para separar de outras seções */
+  border-top: 1px solid var(--colab-border); /* Adicionado separador */
+  margin-top: 8px;
 }
 
 .costItem {
@@ -116,13 +154,14 @@
   margin-top: auto;
   padding-top: 20px;
   border-top: 1px solid var(--colab-border);
+  width: 100%; /* Ocupa a largura total */
 }
 
 .footerLeft {
   display: flex;
   align-items: center; /* Alinha todos os itens do rodapé */
   gap: 16px; /* Aumenta o espaçamento */
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* Permite quebrar linha em telas pequenas */
 }
 
 .deadline, .priorityIndicator, .paymentStatusIcon {
@@ -155,10 +194,29 @@
 .statusInProgress { background-color: rgba(59, 130, 246, 0.1); color: #60a5fa; }
 .statusCompleted { background-color: rgba(34, 197, 94, 0.1); color: #4ade80; }
 .statusPaused { background-color: rgba(249, 115, 22, 0.1); color: #fb923c; }
+.statusDraft { background-color: rgba(107, 114, 128, 0.1); color: #9ca3af; } /* Cor para Rascunho */
+
 
 .platformLogoContainer {
-  opacity: 0.7;
+  opacity: 0.8;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
+
+.platformLogo {
+    width: 32px; /* Tamanho ajustado */
+    height: 32px;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.platformNameText {
+    font-size: 13px; /* Tamanho ajustado */
+    font-weight: 500;
+    color: var(--colab-text-secondary);
+}
+
 
 .actionsMenu {
   position: absolute;
@@ -179,10 +237,19 @@
   background-color: #2a2a2a; border: 1px solid var(--colab-border);
   border-radius: 8px; padding: 8px;
   box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-  z-index: 20; /* <-- CORREÇÃO AQUI */
+  z-index: 20;
 }
 
 .menuSection { padding-bottom: 4px; margin-bottom: 4px; border-bottom: 1px solid var(--colab-border); }
+
+.menuLabel {
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--colab-text-secondary);
+  text-transform: uppercase;
+  display: block; /* Garante que o label ocupe sua própria linha */
+}
 
 .menuItem {
   display: flex; align-items: center; justify-content: space-between;
@@ -191,39 +258,6 @@
   border-radius: 4px; cursor: pointer; transition: background-color 0.2s;
 }
 .menuItem:hover { background-color: var(--colab-accent); color: #fff; }
-
-.checkIcon { color: var(--colab-accent); }
-.menuItem:hover .checkIcon { color: #fff; }
-
-/* --- INÍCIO: NOVOS ESTILOS PARA DETALHES DE PAGAMENTO --- */
-.paymentDetails {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 10px 0;
-    margin: 4px 0;
-}
-
-.paymentValue {
-    font-size: 15px;
-    font-weight: 600;
-}
-
-.paymentPaid {
-    color: #4ade80; /* Verde */
-}
-
-.paymentRemaining {
-    color: #f59e0b; /* Amarelo/Laranja */
-}
-
-.menuLabel {
-  padding: 8px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--colab-text-secondary);
-  text-transform: uppercase;
-}
 
 .menuItemIcon {
     display: flex;
@@ -238,4 +272,61 @@
 .menuItemDanger:hover {
     background-color: #ef4444;
     color: #fff;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 600px) {
+    .card {
+        padding: 16px;
+        gap: 16px;
+    }
+    .cardHeader {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    .actionsMenu {
+        position: static; /* Remove o posicionamento absoluto no mobile */
+        width: 100%;
+        display: flex;
+        justify-content: flex-end; /* Mantém o botão de menu à direita */
+        margin-top: -12px; /* Puxa para cima um pouco */
+        margin-right: -12px; /* Ajusta padding */
+    }
+    .titleGroup {
+        width: 100%;
+    }
+    .financialSection {
+        padding: 12px 0;
+    }
+    .profitRow {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    .profitValue {
+        font-size: 20px;
+    }
+    .paymentDetails {
+        gap: 6px;
+    }
+    .costsSection {
+        padding-left: 0;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .cardFooter {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    .footerLeft {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .platformLogoContainer {
+        margin-top: 12px;
+        width: 100%;
+        justify-content: flex-end;
+    }
 }
