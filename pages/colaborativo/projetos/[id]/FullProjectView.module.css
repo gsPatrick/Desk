@@ -52,9 +52,9 @@
     gap: 8px;
     border-bottom: 1px solid var(--colab-border);
     margin-bottom: 32px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+    overflow-x: auto; /* Permite rolagem horizontal em telas menores */
+    -webkit-overflow-scrolling: touch; /* Rolagem suave em iOS */
+    scrollbar-width: none; /* Esconde a barra de rolagem no Firefox */
 }
 .tabs::-webkit-scrollbar { display: none; }
 
@@ -71,8 +71,8 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    white-space: nowrap;
-    flex-shrink: 0;
+    white-space: nowrap; /* Evita que o texto da aba quebre */
+    flex-shrink: 0; /* Impede que os botões da aba encolham */
 }
 
 .tabButton:hover { color: var(--colab-text-primary); }
@@ -108,9 +108,9 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    justify-content: space-between; /* Permite que o botão de salvar fique à direita */
+    justify-content: space-between;
 }
-.section h2 button { /* Estilo para o botão de salvar nas seções */
+.section h2 button {
     background: none;
     border: none;
     color: var(--colab-text-secondary);
@@ -135,13 +135,13 @@
     top: 84px;
 }
 
-.sidebar .section p { /* Estilos de parágrafo dentro da sidebar (já existia no ClientInfoCard.module.css) */
+.sidebar .section p {
     font-size: 14px;
     color: var(--colab-text-primary);
     margin-bottom: 10px;
 }
 
-.sidebar .section p strong { /* Estilos de strong dentro da sidebar */
+.sidebar .section p strong {
     color: var(--colab-text-secondary);
     display: block;
     font-size: 12px;
@@ -188,7 +188,7 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    margin-bottom: 24px; /* Espaço entre os textareas e os EditableSections */
+    margin-bottom: 24px;
 }
 .docsSection .formGroup { display: flex; flex-direction: column; gap: 6px; }
 
@@ -199,6 +199,8 @@
     grid-template-columns: 1fr 1fr;
     gap: 20px;
     margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--colab-border);
 }
 .paymentSummary .summaryItem { display: flex; flex-direction: column; gap: 4px; }
 .paymentSummary .summaryItem span { font-size: 12px; color: var(--colab-text-secondary); text-transform: uppercase; }
@@ -232,12 +234,40 @@
     color: var(--colab-text-primary);
 }
 
-.transactionList { /* ... (estilos já definidos no modal de detalhes) ... */ }
-.transactionItem { /* ... */ }
-.transactionAmount { /* ... */ }
-.transactionDate { /* ... */ }
-.noTransactions { /* ... */ }
-.deleteButton { /* ... */ }
+.transactionList {
+    margin-top: 12px;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid var(--colab-border);
+    border-radius: 6px;
+}
+
+.transactionItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--colab-border);
+}
+.transactionItem:last-child { border-bottom: none; }
+
+.transactionAmount { font-weight: 600; color: var(--colab-text-primary); }
+.transactionDate { font-size: 12px; color: var(--colab-text-secondary); }
+.noTransactions { text-align: center; padding: 20px; color: var(--colab-text-secondary); font-size: 14px; }
+
+.deleteButton {
+    background: none;
+    border: none;
+    color: var(--colab-text-secondary);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.deleteButton:hover { color: #f87171; background-color: rgba(239, 68, 68, 0.1); }
 
 .addTransactionForm {
     display: grid;
@@ -247,8 +277,18 @@
     border-top: 1px solid var(--colab-border);
     padding-top: 16px;
 }
-.addTransactionForm input { /* ... */ }
-.addTransactionForm button { /* ... */ }
+.addTransactionForm input {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--colab-border);
+    border-radius: 6px;
+    color: var(--colab-text-primary);
+    font-family: inherit;
+}
+.addTransactionForm input:focus { outline: none; border-color: var(--colab-accent); box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); }
+.addTransactionForm button { /* Já usa o saveButton */ }
 
 
 /* --- RESPONSIVIDADE --- */
@@ -261,7 +301,7 @@
         top: auto;
     }
     .tabs {
-        margin-left: -24px; /* Ajusta o padding do wrapper */
+        margin-left: -24px;
         margin-right: -24px;
         padding-left: 24px;
         padding-right: 24px;
@@ -279,10 +319,30 @@
         padding-right: 16px;
     }
 
-    .overviewGrid { grid-template-columns: 1fr; } /* Uma coluna no mobile */
-    .paymentSummary { grid-template-columns: 1fr; } /* Uma coluna no mobile */
-    .addTransactionForm { grid-template-columns: 1fr; } /* Uma coluna no mobile */
+    .overviewGrid { grid-template-columns: 1fr; }
+    .paymentSummary { grid-template-columns: 1fr; }
+    .addTransactionForm { grid-template-columns: 1fr; }
     
+    .fullPaymentButton {
+        font-size: 13px;
+        padding: 10px;
+    }
+    .transactionItem {
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .transactionAmount {
+        width: 100%;
+        order: -1;
+    }
+    .transactionDate {
+        flex-grow: 1;
+    }
+    .deleteButton {
+        margin-left: auto;
+    }
+
     .section h2 {
         flex-direction: column;
         align-items: flex-start;

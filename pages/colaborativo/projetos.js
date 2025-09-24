@@ -10,8 +10,9 @@ import StatusFilter from '../../components-colaborativo/StatusFilter/StatusFilte
 import PriorityFilter from '../../components-colaborativo/PriorityFilter/PriorityFilter';
 import DateFilter from '../../components-colaborativo/DateFilter/DateFilter';
 import Pagination from '../../components-colaborativo/Pagination/Pagination';
+import MobileFilterDrawer from '../../components-colaborativo/MobileFilterDrawer/MobileFilterDrawer'; // NOVO IMPORT
 import styles from './projetos.module.css';
-import { IoAdd, IoRefresh } from 'react-icons/io5';
+import { IoAdd, IoRefresh, IoFilter } from 'react-icons/io5'; // IoFilter adicionado
 
 const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value || 0);
 const PROJECTS_PER_PAGE = 6;
@@ -48,6 +49,10 @@ export default function ProjetosPage() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [projectToEdit, setProjectToEdit] = useState(null);
+
+  // --- NOVO ESTADO PARA O DRAWER DE FILTROS MOBILE ---
+  const [isMobileFilterDrawerOpen, setIsMobileFilterDrawerOpen] = useState(false);
+
 
   // Função centralizada para buscar projetos
   const fetchProjects = async () => {
@@ -186,7 +191,8 @@ export default function ProjetosPage() {
                   {`Exibindo ${projects.length} de ${paginationInfo.totalProjects} projetos no total.`}
                 </p>
             </div>
-            <div className={styles.actionsContainer}>
+            {/* --- FILTROS PARA DESKTOP --- */}
+            <div className={styles.desktopActionsContainer}>
               <StatusFilter activeFilter={statusFilter} onFilterChange={setStatusFilter} />
               <PriorityFilter 
                   activeFilter={priorityFilter} 
@@ -203,6 +209,15 @@ export default function ProjetosPage() {
                   <IoAdd size={20} />
                   Novo Projeto
               </button>
+            </div>
+            {/* --- NOVO: BOTÃO DE FILTROS PARA MOBILE --- */}
+            <div className={styles.mobileActionsContainer}>
+                <button onClick={() => setIsMobileFilterDrawerOpen(true)} className={styles.filterToggleButton}>
+                    <IoFilter size={20} /> Filtros
+                </button>
+                <button className={styles.addButton} onClick={handleOpenCreateModal}>
+                    <IoAdd size={20} /> Novo Projeto
+                </button>
             </div>
         </div>
         
@@ -238,7 +253,7 @@ export default function ProjetosPage() {
                   priorities={priorityList}
                 />
             ) : (
-                <div className={styles.messageState}>Nenhum projeto encontrado com os filtros selecionados.</div>
+                <div className={styles.emptyState}>Nenhum projeto encontrado com os filtros selecionados.</div>
             )}
         </div>
 
@@ -267,6 +282,19 @@ export default function ProjetosPage() {
         clients={clientList}
         collaborators={collaborators}
         currentUserId={currentUserId}
+      />
+      {/* --- DRAWER DE FILTROS PARA MOBILE --- */}
+      <MobileFilterDrawer
+        isOpen={isMobileFilterDrawerOpen}
+        onClose={() => setIsMobileFilterDrawerOpen(false)}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        priorityFilter={priorityFilter}
+        setPriorityFilter={setPriorityFilter}
+        dateFilter={dateFilter}
+        setDateFilter={setDateFilter}
+        priorities={priorityList}
+        onClearFilters={handleClearFilters}
       />
     </div>
   );

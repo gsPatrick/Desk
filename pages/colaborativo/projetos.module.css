@@ -14,7 +14,7 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 32px;
-    flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+    flex-wrap: wrap;
     gap: 16px;
 }
 
@@ -30,12 +30,42 @@
     font-size: 16px;
 }
 
-.actionsContainer {
+/* --- CONTAINER PARA FILTROS DESKTOP --- */
+.desktopActionsContainer {
     display: flex;
     align-items: center;
     gap: 16px;
     flex-wrap: wrap;
 }
+
+/* --- CONTAINER PARA FILTROS MOBILE (ESCONDIDO POR PADRÃO) --- */
+.mobileActionsContainer {
+    display: none; /* Escondido por padrão */
+    align-items: center;
+    gap: 16px;
+    width: 100%; /* Ocupa a largura total no mobile */
+    justify-content: space-between;
+}
+
+.filterToggleButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--colab-surface);
+    color: var(--colab-text-primary);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--colab-border);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    height: 44px;
+}
+.filterToggleButton:hover {
+    background-color: var(--colab-border);
+}
+
 
 .addButton {
     display: inline-flex;
@@ -50,6 +80,7 @@
     border: none;
     cursor: pointer;
     transition: background-color 0.2s ease;
+    height: 44px;
 }
 
 .addButton:hover {
@@ -64,7 +95,7 @@
     border: 1px solid var(--colab-border);
     color: var(--colab-text-secondary);
     padding: 10px;
-    height: 44px; /* Mesma altura dos outros filtros */
+    height: 44px;
     width: 44px;
     border-radius: 8px;
     cursor: pointer;
@@ -77,7 +108,7 @@
 }
 
 .projectListContainer {
-    min-height: 500px; /* Garante altura mínima para a lista, evitando que a paginação "pule" na tela */
+    min-height: 500px;
 }
 
 .financialSummary {
@@ -108,32 +139,56 @@
 }
 
 .valueReceived {
-    color: #4ade80; /* Verde */
+    color: #4ade80;
 }
 
 .valueToReceive {
-    color: #f59e0b; /* Amarelo/Laranja */
+    color: #f59e0b;
 }
 
 .messageState {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 400px; /* Altura menor que no dashboard para se encaixar melhor aqui */
+    min-height: 400px;
     font-size: 1.1rem;
     font-weight: 500;
     color: var(--colab-text-secondary);
     text-align: center;
 }
 
-@media (max-width: 768px) {
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 900px) {
+    .desktopActionsContainer {
+        display: none; /* Esconde filtros de desktop */
+    }
+    .mobileActionsContainer {
+        display: flex; /* Mostra filtros de mobile */
+    }
     .toolbar {
         flex-direction: column;
         align-items: flex-start;
     }
+    .pageWrapper {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
 
-    .actionsContainer {
+@media (max-width: 768px) {
+    .pageWrapper {
+        padding-top: 72px;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+    .pageTitle {
+        font-size: 28px;
+    }
+    .mobileActionsContainer {
         width: 100%;
         justify-content: space-between;
+    }
+    .addButton, .filterToggleButton {
+        flex-grow: 1; /* Faz os botões dividirem o espaço */
     }
 }

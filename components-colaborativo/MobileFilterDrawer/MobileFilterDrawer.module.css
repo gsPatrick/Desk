@@ -1,0 +1,98 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end; /* Abre da parte de baixo */
+  justify-content: center;
+}
+
+.drawer {
+  background-color: var(--colab-surface);
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  width: 100%;
+  max-width: 500px; /* Largura máxima para não ficar muito grande em tablets */
+  max-height: 90vh; /* Altura máxima */
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 -10px 20px rgba(0, 0, 0, 0.3);
+  overflow-y: auto; /* Rolagem interna se o conteúdo for grande */
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--colab-border);
+  flex-shrink: 0;
+}
+.header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--colab-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.closeButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--colab-text-secondary);
+  padding: 4px;
+  border-radius: 50%;
+  transition: background-color 0.2s, color 0.2s;
+}
+.closeButton:hover { background-color: rgba(255, 255, 255, 0.1); color: var(--colab-text-primary); }
+
+.filterSection {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--colab-border);
+}
+.filterSection:last-of-type { border-bottom: none; }
+.filterSection h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--colab-text-primary);
+  margin-bottom: 12px;
+}
+
+.footer {
+  display: flex;
+  gap: 12px;
+  padding: 20px 24px;
+  border-top: 1px solid var(--colab-border);
+  flex-shrink: 0;
+  justify-content: flex-end;
+}
+
+.clearButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  background-color: var(--colab-surface);
+  border: 1px solid var(--colab-border);
+  color: var(--colab-text-primary);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.clearButton:hover { background-color: var(--colab-border); }
+
+.applyButton {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  background-color: var(--colab-accent);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.applyButton:hover { background-color: var(--colab-accent-hover); }

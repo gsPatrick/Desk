@@ -5,7 +5,11 @@
     border-bottom: 1px solid var(--colab-border);
     padding: 0 24px;
     margin: -24px -24px 24px -24px;
+    overflow-x: auto; /* Permite rolagem horizontal em telas menores */
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
 }
+.tabs::-webkit-scrollbar { display: none; }
 
 .tabButton {
     padding: 10px 16px;
@@ -20,6 +24,8 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    white-space: nowrap; /* Evita que o texto da aba quebre */
+    flex-shrink: 0; /* Impede que os botões da aba encolham */
 }
 
 .tabButton:hover {
@@ -35,11 +41,12 @@
     min-height: 300px;
 }
 
-/* --- ESTILOS GERAIS --- */
+/* --- ESTILOS GERAIS DE ITENS E FORMULÁRIOS --- */
 .label {
   font-size: 13px;
   font-weight: 500;
   color: var(--colab-text-secondary);
+  text-transform: uppercase; /* Para rótulos */
 }
 
 .detailsGrid {
@@ -52,8 +59,7 @@
 .detailItem .value { font-size: 16px; font-weight: 500; color: var(--colab-text-primary); }
 .fullWidth { grid-column: 1 / -1; }
 
-/* --- VISÃO GERAL: PRIORIDADE --- */
-.prioritySelect {
+.editInput { /* Estilo para o select de prioridade e textareas editáveis */
   width: 100%;
   padding: 10px 12px;
   font-size: 14px;
@@ -62,35 +68,80 @@
   border-radius: 6px;
   color: var(--colab-text-primary);
   transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
 }
+.editInput:focus { outline: none; border-color: var(--colab-accent); box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); }
+.editInput[type="textarea"] { min-height: 100px; resize: vertical; }
 
-.prioritySelect:focus {
-  outline: none;
-  border-color: var(--colab-accent);
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+/* --- ABA: VISÃO GERAL --- */
+.overviewGrid { /* Usado para Visão Geral se for separada do docs */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
 }
+/* Estilos para o Status com cor no OverviewGrid (reutiliza classes do ProjectCard) */
+.statusInProgress { color: #60a5fa; }
+.statusCompleted { color: #4ade80; }
+.statusPaused { color: #fb923c; }
+.statusDraft { color: var(--colab-text-secondary); }
+.statusArchived { color: #6b7280; }
 
-/* --- ABA DE DOCUMENTAÇÃO --- */
-.docsSection { display: flex; flex-direction: column; gap: 16px; }
-.formGroup { display: flex; flex-direction: column; gap: 6px; }
-.docsSection textarea {
+
+/* --- ABA: DOCUMENTAÇÃO --- */
+.docsSection {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.formGroup { /* Reutilizado de outros formulários */
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.docsSection textarea { /* Já usa .editInput */ }
+
+/* --- ABA: PAGAMENTOS --- */
+.paymentControlSection {} /* Container principal da aba de pagamentos */
+
+.paymentSummary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--colab-border);
+}
+.paymentSummary .summaryItem { display: flex; flex-direction: column; gap: 4px; }
+.paymentSummary .summaryItem span { font-size: 12px; color: var(--colab-text-secondary); text-transform: uppercase; }
+.paymentSummary .receivedAmount { font-size: 24px; font-weight: 700; color: #4ade80; }
+.paymentSummary .remainingAmount { font-size: 24px; font-weight: 700; color: #f59e0b; }
+
+.fullPaymentContainer { margin-bottom: 24px; }
+.fullPaymentButton {
     width: 100%;
-    padding: 10px 12px;
-    font-size: 14px;
-    background-color: rgba(0, 0, 0, 0.2);
-    border: 1px solid var(--colab-border);
-    border-radius: 6px;
-    color: var(--colab-text-primary);
-    resize: vertical;
-    min-height: 100px;
-    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    background-color: rgba(74, 222, 128, 0.1);
+    border: 1px solid #4ade80;
+    color: #4ade80;
+    cursor: pointer;
+    transition: all 0.2s;
 }
-.docsSection textarea:focus { outline: none; border-color: var(--colab-accent); }
+.fullPaymentButton:hover { background-color: #4ade80; color: #fff; }
 
-/* --- ABA DE PAGAMENTOS --- */
-.paymentControlSection {}
-.paymentSummary { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
-.subTitle { font-size: 16px; font-weight: 600; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--colab-border); }
+.subTitle { 
+    font-size: 16px; 
+    font-weight: 600; 
+    margin-bottom: 12px; 
+    padding-bottom: 8px; 
+    border-bottom: 1px solid var(--colab-border); 
+    color: var(--colab-text-primary);
+}
 
 .transactionList {
     margin-top: 12px;
@@ -107,27 +158,11 @@
     padding: 10px 12px;
     border-bottom: 1px solid var(--colab-border);
 }
+.transactionItem:last-child { border-bottom: none; }
 
-.transactionItem:last-child {
-    border-bottom: none;
-}
-
-.transactionAmount {
-    font-weight: 600;
-    color: var(--colab-text-primary);
-}
-
-.transactionDate {
-    font-size: 12px;
-    color: var(--colab-text-secondary);
-}
-
-.noTransactions {
-    text-align: center;
-    padding: 20px;
-    color: var(--colab-text-secondary);
-    font-size: 14px;
-}
+.transactionAmount { font-weight: 600; color: var(--colab-text-primary); }
+.transactionDate { font-size: 12px; color: var(--colab-text-secondary); }
+.noTransactions { text-align: center; padding: 20px; color: var(--colab-text-secondary); font-size: 14px; }
 
 .deleteButton {
     background: none;
@@ -141,11 +176,7 @@
     align-items: center;
     justify-content: center;
 }
-
-.deleteButton:hover {
-    color: #f87171;
-    background-color: rgba(239, 68, 68, 0.1);
-}
+.deleteButton:hover { color: #f87171; background-color: rgba(239, 68, 68, 0.1); }
 
 .addTransactionForm {
     display: grid;
@@ -155,46 +186,11 @@
     border-top: 1px solid var(--colab-border);
     padding-top: 16px;
 }
-
-.addTransactionForm input {
-    width: 100%;
-    padding: 10px 12px;
-    font-size: 14px;
-    background-color: rgba(0, 0, 0, 0.2);
-    border: 1px solid var(--colab-border);
-    border-radius: 6px;
-    color: var(--colab-text-primary);
-}
-
-.addTransactionForm input:focus { outline: none; border-color: var(--colab-accent); }
-
-.fullPaymentContainer {
-    margin-bottom: 24px;
-}
-
-.fullPaymentButton {
-    width: 100%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-weight: 600;
-    background-color: rgba(74, 222, 128, 0.1); /* Verde claro */
-    border: 1px solid #4ade80; /* Borda Verde */
-    color: #4ade80; /* Texto Verde */
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.fullPaymentButton:hover {
-    background-color: #4ade80;
-    color: #fff;
-}
+.addTransactionForm input { /* Já usa .editInput */ }
+.addTransactionForm button { /* Já usa o saveButton */ }
 
 
-/* --- RODAPÉ --- */
+/* --- RODAPÉ DO MODAL --- */
 .modalFooter {
     display: flex;
     justify-content: space-between;
@@ -210,7 +206,7 @@
     gap: 12px;
 }
 
-.cancelButton {
+.cancelButton { /* Reutilizado de formStyles */
   padding: 10px 16px;
   border-radius: 8px;
   font-weight: 600;
@@ -220,12 +216,9 @@
   cursor: pointer;
   transition: background-color 0.2s;
 }
+.cancelButton:hover { background-color: var(--colab-border); }
 
-.cancelButton:hover {
-  background-color: var(--colab-border);
-}
-
-.saveButton {
+.saveButton { /* Reutilizado de formStyles */
   padding: 10px 20px;
   border-radius: 8px;
   font-weight: 600;
@@ -235,10 +228,7 @@
   cursor: pointer;
   transition: background-color 0.2s;
 }
-
-.saveButton:hover {
-  background-color: var(--colab-accent-hover);
-}
+.saveButton:hover { background-color: var(--colab-accent-hover); }
 
 .detailsButton {
     padding: 10px 16px;
@@ -254,8 +244,53 @@
     align-items: center;
     justify-content: center;
 }
+.detailsButton:hover { background-color: var(--colab-accent); color: #fff; }
 
-.detailsButton:hover {
-    background-color: var(--colab-accent);
-    color: #fff;
+
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 768px) {
+    .tabs {
+        margin-left: -24px;
+        margin-right: -24px;
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+    .detailsGrid { grid-template-columns: 1fr; gap: 16px; }
+    .paymentSummary { grid-template-columns: 1fr; gap: 16px; }
+    .addTransactionForm { grid-template-columns: 1fr; gap: 10px; }
+
+    .fullPaymentButton {
+        font-size: 13px;
+        padding: 10px;
+    }
+    .transactionItem {
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .transactionAmount {
+        width: 100%; /* Ocupa a largura total */
+        order: -1; /* Move para cima */
+    }
+    .transactionDate {
+        flex-grow: 1;
+    }
+    .deleteButton {
+        margin-left: auto;
+    }
+
+    .modalFooter {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    .detailsButton, .cancelButton, .saveButton {
+        width: 100%;
+        justify-content: center;
+    }
+    .footerActions {
+        width: 100%;
+        flex-direction: column;
+        gap: 12px;
+    }
 }

@@ -9,13 +9,14 @@ import EditableSection from '../../../../components-colaborativo/EditableSection
 import ClientInfoCard from '../../../../components-colaborativo/ClientInfoCard/ClientInfoCard';
 import TimeTracking from '../../../../components-colaborativo/TimeTracking/TimeTracking';
 import ExpenseTracker from '../../../../components-colaborativo/ExpenseTracker/ExpenseTracker';
+import ClientDetailsModal from '../../../../components-colaborativo/ClientDetailsModal/ClientDetailsModal'; // Importar o modal de detalhes do cliente
 
 // Estilos e Ícones
 import styles from './FullProjectView.module.css';
 import { 
     IoArrowBack, IoDocumentTextOutline, IoHourglassOutline, IoReceiptOutline, 
     IoWalletOutline, IoInformationCircleOutline, IoShieldCheckmarkOutline, IoPencil, 
-    IoTrash // <-- CORREÇÃO AQUI: IoTrash foi adicionado
+    IoTrash 
 } from 'react-icons/io5';
 
 // Helpers
@@ -59,7 +60,13 @@ export default function FullProjectViewPage() {
     const [formData, setFormData] = useState({}); // Estado para campos editáveis via input/textarea
     const [newTransaction, setNewTransaction] = useState({ amount: '', paymentDate: new Date().toISOString().split('T')[0] });
 
+    // --- ESTADOS PARA O MODAL DE DETALHES DO CLIENTE (para abrir da sidebar) ---
+    const [isClientDetailsModalOpen, setIsClientDetailsModalOpen] = useState(false);
+    const [selectedClientForModal, setSelectedClientForModal] = useState(null);
+
+
     // Função principal para buscar os dados completos do projeto e prioridades
+    // Esta função será passada para os componentes filhos para recarregar a página
     const fetchProjectAndPriorities = async () => {
         if (!projectId) return;
         try {
@@ -70,8 +77,7 @@ export default function FullProjectViewPage() {
             ]);
             setProject(projectResponse.data);
             setPriorities(prioritiesResponse.data);
-            // Inicializa formData com os dados do projeto para os campos de texto/select editáveis
-            setFormData({
+            setFormData({ // Inicializa formData com os dados do projeto para os campos de texto/select editáveis
                 description: projectResponse.data.description || '',
                 briefing: projectResponse.data.briefing || '',
                 notes: projectResponse.data.notes || '',
@@ -158,6 +164,16 @@ export default function FullProjectViewPage() {
     };
     // --- FIM LÓGICA DE PAGAMENTOS ---
 
+    // --- HANDLERS PARA O MODAL DE DETALHES DO CLIENTE ---
+    const handleOpenClientDetailsModal = (client) => {
+        setSelectedClientForModal(client);
+        setIsClientDetailsModalOpen(true);
+    };
+    const handleCloseClientDetailsModal = () => {
+        setSelectedClientForModal(null);
+        setIsClientDetailsModalOpen(false);
+    };
+
 
     if (isLoading || !project) { 
         return (
@@ -214,7 +230,7 @@ export default function FullProjectViewPage() {
                                             {priorities.map(p => (<option key={p.id} value={p.id}>{p.name}</option>))}
                                         </select>
                                     </div>
-                                    <div className={styles.fullWidth}><span className={styles.label}>Plataforma</span><p className={styles.value}>{project.platform || 'Sem plataforma'}</p></div>
+                                    <div className={styles.fullWidth}><span className={styles.label}>Plataforma</span><p className={styles.value}>{project.platform || 'Venda Direta'}</p></div>
                                 </div>
                             </div>
                         )}
@@ -269,17 +285,23 @@ export default function FullProjectViewPage() {
                         )}
 
                         {/* Aba: Horas */}
-                        {activeTab === 'hours' && <TimeTracking projectId={projectId} />}
+                        {activeTab === 'hours' && <TimeTracking projectId={projectId} onUpdateProjectData={fetchProjectAndPriorities} />}
 
                         {/* Aba: Despesas */}
                         {activeTab === 'expenses' && <ExpenseTracker projectId={projectId} onUpdateProjectData={fetchProjectAndPriorities} />}
                     </div>
                     <aside className={styles.sidebar}>
-                        <ClientInfoCard client={project.Client} />
+                        <ClientInfoCard client={project.Client} onOpenClientDetails={handleOpenClientDetailsModal} />
                         {/* Você pode adicionar mais cards de informação aqui no futuro */}
                     </aside>
                 </div>
             </main>
+             {/* Modal de Detalhes do Cliente (para abrir da sidebar) */}
+            <ClientDetailsModal
+                isOpen={isClientDetailsModalOpen}
+                onClose={handleCloseClientDetailsModal}
+                client={selectedClientForModal}
+            />
         </div>
     );
 }

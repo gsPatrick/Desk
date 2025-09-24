@@ -6,7 +6,7 @@ import Modal from '../Modal/Modal';
 import styles from './ProjectDetailsModal.module.css';
 import { getStatusInfo } from '../../utils/colaborativo-helpers';
 import api from '../../services/colaborativo-api';
-import { IoTrash, IoDocumentTextOutline, IoWalletOutline, IoInformationCircleOutline, IoShieldCheckmarkOutline } from 'react-icons/io5';
+import { IoTrash, IoDocumentTextOutline, IoWalletOutline, IoInformationCircleOutline, IoShieldCheckmarkOutline, IoPencil } from 'react-icons/io5';
 
 const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value || 0);
 
@@ -25,12 +25,23 @@ const DetailItem = ({ label, value }) => (
     </div>
 );
 
+// Este componente é usado para exibir textos longos em Documentação.
+// Foi renomeado para TextContentSection e agora é editável.
+const TextContentSection = ({ title, content, name, onChange, rows = 4 }) => {
+    return (
+        <div className={styles.formGroup}>
+            <label className={styles.label}>{title}</label>
+            <textarea name={name} value={content} onChange={onChange} rows={rows} className={styles.editInput}></textarea>
+        </div>
+    );
+};
+
 export default function ProjectDetailsModal({ project, isOpen, onClose, onDataChange, priorities }) {
     const [activeTab, setActiveTab] = useState('overview');
-    const [formData, setFormData] = useState({});
+    const [formData, setFormData] = useState({}); // Estado para campos editáveis (prioridade, doc)
     const [transactions, setTransactions] = useState([]);
     const [newTransaction, setNewTransaction] = useState({ amount: '', paymentDate: new Date().toISOString().split('T')[0] });
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingTransactions, setIsLoadingTransactions] = useState(false); // Renomeado para maior clareza
 
     useEffect(() => {
         if (project) {
@@ -49,7 +60,7 @@ export default function ProjectDetailsModal({ project, isOpen, onClose, onDataCh
 
     const fetchTransactions = async () => {
         if (!project) return;
-        setIsLoading(true);
+        setIsLoadingTransactions(true);
         try {
             const response = await api.get(`/projects/${project.id}/transactions`);
             setTransactions(response.data);
@@ -57,7 +68,7 @@ export default function ProjectDetailsModal({ project, isOpen, onClose, onDataCh
             console.error("Erro ao buscar transações", error);
             setTransactions([]);
         }
-        finally { setIsLoading(false); }
+        finally { setIsLoadingTransactions(false); }
     };
 
     const handleFormChange = (e) => setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -69,7 +80,9 @@ export default function ProjectDetailsModal({ project, isOpen, onClose, onDataCh
             setNewTransaction({ amount: '', paymentDate: new Date().toISOString().split('T')[0] });
             onDataChange();
             fetchTransactions();
-        } catch (error) { alert(error.response?.data?.message || "Erro ao adicionar transação."); }
+        } catch (error) { 
+            alert(error.response?.data?.message || "Erro ao adicionar transação."); 
+        }
     };
     
     const handleDeleteTransaction = async (transactionId) => {
@@ -78,16 +91,27 @@ export default function ProjectDetailsModal({ project, isOpen, onClose, onDataCh
                 await api.delete(`/transactions/${transactionId}`);
                 onDataChange();
                 fetchTransactions();
-            } catch (error) { alert(error.response?.data?.message || "Erro ao remover transação."); }
+            } catch (error) { 
+                alert(error.response?.data?.message || "Erro ao remover transação."); 
+            }
         }
     };
     
     const handleSaveChanges = async () => {
         try {
-            await api.patch(`/projects/${project.id}`, formData);
+            // Envia apenas os campos relevantes para o PATCH
+            const dataToPatch = {
+                priorityId: formData.priorityId,
+                description: formData.description,
+                briefing: formData.briefing,
+                notes: formData.notes
+            };
+            await api.patch(`/projects/${project.id}`, dataToPatch);
             onDataChange();
             onClose();
-        } catch (error) { alert(error.response?.data?.message || "Erro ao salvar alterações."); }
+        } catch (error) { 
+            alert(error.response?.data?.message || "Erro ao salvar alterações."); 
+        }
     };
 
     const statusInfo = getStatusInfo(project.status);
@@ -95,7 +119,8 @@ export default function ProjectDetailsModal({ project, isOpen, onClose, onDataCh
     const remainingAmount = parseFloat(project.budget) - totalPaid;
 
     const handleFullPayment = async () => {
-        if (remainingAmount <= 0) return;
+        if (remainingAmount <= 0.001) return;
+
         if (window.confirm(`Você confirma o registro de um pagamento de ${formatCurrency(remainingAmount)} para quitar este projeto?`)) {
             const fullPaymentTransaction = {
                 amount: remainingAmount,
@@ -121,6 +146,7 @@ export default function ProjectDetailsModal({ project, isOpen, onClose, onDataCh
             </div>
 
             <div className={styles.tabContent}>
+                {/* Aba de Visão Geral */}
                 {activeTab === 'overview' && (
                     <div className={styles.detailsGrid}>
                         <DetailItem label="Cliente" value={project.Client ? (project.Client.tradeName || project.Client.legalName) : 'N/A'} />
@@ -129,7 +155,7 @@ export default function ProjectDetailsModal({ project, isOpen, onClose, onDataCh
                         <DetailItem label="Orçamento Total" value={formatCurrency(project.budget)} />
                         <div className={`${styles.detailItem} ${styles.fullWidth}`}>
                             <label htmlFor="priority-select" className={styles.label}>Prioridade</label>
-                            <select id="priority-select" name="priorityId" value={formData.priorityId} onChange={handleFormChange} className={styles.prioritySelect}>
+                            <select id="priority-select" name="priorityId" value={formData.priorityId} onChange={handleFormChange} className={styles.editInput}>
                                 <option value="">Sem prioridade</option>
                                 {priorities && priorities.map(p => (<option key={p.id} value={p.id}>{p.name}</option>))}
                             </select>
@@ -137,14 +163,16 @@ export default function ProjectDetailsModal({ project, isOpen, onClose, onDataCh
                     </div>
                 )}
 
+                {/* Aba de Documentação */}
                 {activeTab === 'docs' && (
                     <div className={styles.docsSection}>
-                        <div className={styles.formGroup}><label className={styles.label}>Descrição</label><textarea name="description" value={formData.description} onChange={handleFormChange} rows="4"></textarea></div>
-                        <div className={styles.formGroup}><label className={styles.label}>Briefing</label><textarea name="briefing" value={formData.briefing} onChange={handleFormChange} rows="6"></textarea></div>
-                        <div className={styles.formGroup}><label className={styles.label}>Anotações Técnicas</label><textarea name="notes" value={formData.notes} onChange={handleFormChange} rows="6"></textarea></div>
+                        <TextContentSection title="Descrição" name="description" content={formData.description} onChange={handleFormChange} rows={4} />
+                        <TextContentSection title="Briefing" name="briefing" content={formData.briefing} onChange={handleFormChange} rows={6} />
+                        <TextContentSection title="Anotações Técnicas" name="notes" content={formData.notes} onChange={handleFormChange} rows={6} />
                     </div>
                 )}
                 
+                {/* Aba de Pagamentos */}
                 {activeTab === 'payments' && (
                     <div className={styles.paymentControlSection}>
                         <div className={styles.paymentSummary}>
@@ -155,16 +183,15 @@ export default function ProjectDetailsModal({ project, isOpen, onClose, onDataCh
                         {remainingAmount > 0.001 && (
                             <div className={styles.fullPaymentContainer}>
                                 <button className={styles.fullPaymentButton} onClick={handleFullPayment}>
-                                    <IoShieldCheckmarkOutline />
-                                    Registrar Pagamento Total
+                                    <IoShieldCheckmarkOutline /> Registrar Pagamento Total
                                 </button>
                             </div>
                         )}
 
                         <h3 className={styles.subTitle}>Histórico de Pagamentos</h3>
-                        {isLoading ? <p className={styles.noTransactions}>Carregando...</p> : (
+                        {isLoadingTransactions ? <p className={styles.noTransactions}>Carregando...</p> : (
                             <div className={styles.transactionList}>
-                                {transactions.length > 0 ? transactions.map(t => (
+                                {project.Transactions && project.Transactions.length > 0 ? project.Transactions.map(t => (
                                     <div key={t.id} className={styles.transactionItem}>
                                         <div><p className={styles.transactionAmount}>{formatCurrency(t.amount)}</p><p className={styles.transactionDate}>{formatDate(t.paymentDate)}</p></div>
                                         <button onClick={() => handleDeleteTransaction(t.id)} className={styles.deleteButton} title="Excluir"><IoTrash /></button>

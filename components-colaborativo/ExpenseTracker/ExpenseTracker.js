@@ -6,7 +6,7 @@ import { IoAdd, IoTrash, IoReceipt } from 'react-icons/io5';
 const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value || 0);
 const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
 
-export default function ExpenseTracker({ projectId, onUpdateProjectData }) {
+export default function ExpenseTracker({ projectId }) { // onUpdateProjectData foi removido das props
     const [expenses, setExpenses] = useState([]);
     const [newExpense, setNewExpense] = useState({
         description: '',
@@ -22,7 +22,7 @@ export default function ExpenseTracker({ projectId, onUpdateProjectData }) {
         try {
             const response = await api.get(`/expenses?projectId=${projectId}`);
             setExpenses(response.data);
-            if (onUpdateProjectData) onUpdateProjectData(); // Notifica a página pai para atualizar o projeto
+            // onUpdateProjectData() foi REMOVIDO daqui para evitar o loop
         } catch (error) {
             console.error("Erro ao buscar despesas", error);
         } finally {
@@ -42,7 +42,6 @@ export default function ExpenseTracker({ projectId, onUpdateProjectData }) {
         e.preventDefault();
         setFormError('');
         try {
-            // Garante que o valor é numérico e o link é tratado
             const expenseDataToSend = {
                 ...newExpense,
                 amount: parseFloat(newExpense.amount),
@@ -60,7 +59,7 @@ export default function ExpenseTracker({ projectId, onUpdateProjectData }) {
         if (window.confirm("Tem certeza que deseja excluir esta despesa?")) {
             try {
                 await api.delete(`/expenses/${expenseId}`);
-                fetchExpenses(); // Recarrega a lista
+                fetchExpenses();
             } catch (error) {
                 alert(error.response?.data?.message || "Erro ao excluir despesa.");
             }
