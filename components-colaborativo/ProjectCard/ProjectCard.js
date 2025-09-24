@@ -4,7 +4,7 @@ import styles from './ProjectCard.module.css';
 import { IoBriefcaseOutline, IoEllipsisVertical, IoCalendarClearOutline, IoWarningOutline, IoCheckmarkCircle, IoAlertCircle, IoEllipse, IoPencil, IoTrash, IoCodeSlashOutline, IoPeopleOutline } from 'react-icons/io5';
 import { Menu, Transition } from '@headlessui/react';
 import { differenceInDays, parseISO, isPast } from 'date-fns';
-import { STATUS_MAP, getStatusInfo, getPriorityInfo } from '../../../utils/colaborativo-helpers';
+import { STATUS_MAP, getStatusInfo, getPriorityInfo } from '../../utils/colaborativo-helpers';
 
 const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value || 0);
 
