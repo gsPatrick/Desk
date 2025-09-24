@@ -4,7 +4,7 @@ import styles from './ProjectCard.module.css';
 import { IoBriefcaseOutline, IoEllipsisVertical, IoCalendarClearOutline, IoWarningOutline, IoCheckmarkCircle, IoAlertCircle, IoEllipse, IoPencil, IoTrash, IoCodeSlashOutline, IoPeopleOutline } from 'react-icons/io5';
 import { Menu, Transition } from '@headlessui/react';
 import { differenceInDays, parseISO, isPast } from 'date-fns';
-import { STATUS_MAP, getStatusInfo, getPriorityInfo } from '../../utils/colaborativo-helpers';
+import { STATUS_MAP, getStatusInfo, getPriorityInfo } from '../../../utils/colaborativo-helpers';
 
 const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value || 0);
 
@@ -70,23 +70,29 @@ export default function ProjectCard({ project, onOpenModal, onStatusChange, onEd
         totalPartnersCommissions += partnerExpectedAmount;
     });
 
-    const ownerExpectedProfit = netAmountAfterPlatform - totalPartnersCommissions; // Lucro líquido do dono
+    const ownerExpectedProfit = netAmountAfterPlatform - totalPartnersCommissions; // Lucro líquido do dono (o que sobra pra ele)
 
-    let yourExpectedProfit = 0;
+    // Valores para o usuário logado
+    let yourTotalToReceive = 0; // O que o usuário logado (dono ou parceiro) deve receber
+    let yourAmountReceived = 0; // O que o usuário logado já recebeu
+    
     // Se o usuário logado for o DONO
     if (project.ownerId === currentUserId) {
-        yourExpectedProfit = ownerExpectedProfit;
+        yourTotalToReceive = ownerExpectedProfit;
+        yourAmountReceived = parseFloat(project.paymentDetails?.owner?.amountReceived || 0);
     } else { // Se o usuário logado for um PARCEIRO
         const userAsPartner = project.Partners?.find(p => p.id === currentUserId);
         if (userAsPartner) {
             const partnerShare = userAsPartner.ProjectShare;
             if (partnerShare.commissionType === 'percentage') {
-                yourExpectedProfit = netAmountAfterPlatform * (parseFloat(partnerShare.commissionValue) / 100);
+                yourTotalToReceive = netAmountAfterPlatform * (parseFloat(partnerShare.commissionValue) / 100);
             } else if (partnerShare.commissionType === 'fixed') {
-                yourExpectedProfit = parseFloat(partnerShare.commissionValue);
+                yourTotalToReceive = parseFloat(partnerShare.commissionValue);
             }
+            yourAmountReceived = parseFloat(partnerShare.amountPaid || 0);
         }
     }
+    const yourRemainingToReceive = yourTotalToReceive - yourAmountReceived;
 
 
     const statusOptions = Object.entries(STATUS_MAP).map(([value, { label }]) => ({ value, label }));
@@ -123,48 +129,24 @@ export default function ProjectCard({ project, onOpenModal, onStatusChange, onEd
             </div>
 
             <div className={styles.financialSection} onClick={() => onOpenModal(project)}>
+                {/* --- NOVOS ITENS FINANCEIROS PARA O CARD --- */}
                 <div className={styles.financialRow}>
                     <span className={styles.label}>Valor Bruto</span>
                     <span className={styles.value}>{formatCurrency(budget)}</span>
                 </div>
-                <div className={styles.paymentDetails}>
-                    {clientPayment.status === 'paid' && (
-                        <div className={styles.financialRow}><span className={styles.label}>Pagamento Total</span><span className={`${styles.paymentValue} ${styles.paymentPaid}`}>{formatCurrency(budget)}</span></div>
-                    )}
-                    {clientPayment.status === 'partial' && (
-                        <>
-                            <div className={styles.financialRow}><span className={styles.label}>Recebido (Cliente)</span><span className={`${styles.paymentValue} ${styles.paymentPaid}`}>{formatCurrency(amountPaidByClient)}</span></div>
-                            <div className={styles.financialRow}><span className={styles.label}>Falta Receber (Cliente)</span><span className={`${styles.paymentValue} ${styles.paymentRemaining}`}>{formatCurrency(remainingAmountToClient)}</span></div>
-                        </>
-                    )}
+                <div className={styles.financialRow}>
+                    <span className={styles.label}>Seu Líquido Total</span>
+                    <span className={styles.value}>{formatCurrency(yourTotalToReceive)}</span>
                 </div>
-                <div className={`${styles.financialRow} ${styles.profitRow}`}>
-                    <span className={styles.label}>Seu Líquido Esperado</span>
-                    <span className={styles.profitValue}>{formatCurrency(yourExpectedProfit)}</span>
+                 <div className={styles.financialRow}>
+                    <span className={styles.label}>Já Recebeu</span>
+                    <span className={`${styles.value} ${styles.valuePaid}`}>{formatCurrency(yourAmountReceived)}</span>
                 </div>
-                {/* --- EXIBIÇÃO DE COMISSÕES --- */}
-                {(platformFee > 0 || totalPartnersCommissions > 0) && (
-                    <div className={styles.costsSection}>
-                        {platformFee > 0 && (
-                            <div className={styles.costItem}>
-                                <span className={styles.costLabel}><IoCodeSlashOutline /> Plataforma ({platformCommissionPercent}%)</span>
-                                <span className={styles.costValue}>- {formatCurrency(platformFee)}</span>
-                            </div>
-                        )}
-                        {project.Partners?.map(partner => {
-                            const share = partner.ProjectShare;
-                            const partnerExpectedAmount = share.commissionType === 'percentage'
-                                ? netAmountAfterPlatform * (parseFloat(share.commissionValue) / 100)
-                                : parseFloat(share.commissionValue);
-                            return (
-                                <div key={partner.id} className={styles.costItem}>
-                                    <span className={styles.costLabel}><IoPeopleOutline /> {partner.name} ({share.commissionValue}{share.commissionType === 'percentage' ? '%' : ''})</span>
-                                    <span className={styles.costValue}>- {formatCurrency(partnerExpectedAmount)}</span>
-                                </div>
-                            );
-                        })}
-                    </div>
-                )}
+                <div className={styles.financialRow}>
+                    <span className={styles.label}>Falta Receber</span>
+                    <span className={`${styles.value} ${styles.valueRemaining}`}>{formatCurrency(yourRemainingToReceive)}</span>
+                </div>
+                {/* --- FIM DOS NOVOS ITENS FINANCEIROS --- */}
             </div>
 
             <div className={styles.cardFooter}>

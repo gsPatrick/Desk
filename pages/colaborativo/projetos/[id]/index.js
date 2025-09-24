@@ -16,7 +16,7 @@ import styles from './FullProjectView.module.css';
 import { 
     IoArrowBack, IoDocumentTextOutline, IoHourglassOutline, IoReceiptOutline, 
     IoWalletOutline, IoInformationCircleOutline, IoShieldCheckmarkOutline, IoPencil, 
-    IoTrash, IoPeopleOutline, IoCodeSlashOutline // IoPeopleOutline e IoCodeSlashOutline para custos
+    IoTrash, IoPeopleOutline, IoCodeSlashOutline 
 } from 'react-icons/io5';
 
 // Helpers
@@ -59,7 +59,9 @@ export default function FullProjectViewPage() {
     const [priorities, setPriorities] = useState([]); // Para a lista de prioridades
     const [formData, setFormData] = useState({}); // Estado para campos editáveis via input/textarea
     const [newTransaction, setNewTransaction] = useState({ amount: '', paymentDate: new Date().toISOString().split('T')[0] });
-    const [currentUserId, setCurrentUserId] = useState(null); // NOVO: Para calcular lucro do usuário logado
+
+    const [currentUserId, setCurrentUserId] = useState(null); // ID do usuário logado
+    const [currentUserRole, setCurrentUserRole] = useState(null); // Role do usuário logado
 
     // --- ESTADOS PARA O MODAL DE DETALHES DO CLIENTE (para abrir da sidebar) ---
     const [isClientDetailsModalOpen, setIsClientDetailsModalOpen] = useState(false);
@@ -72,14 +74,15 @@ export default function FullProjectViewPage() {
         if (!projectId) return;
         try {
             setIsLoading(true);
-            const [projectResponse, prioritiesResponse, meResponse] = await Promise.all([ // NOVO: Busca o user logado
+            const [projectResponse, prioritiesResponse, meResponse] = await Promise.all([
                 api.get(`/projects/${projectId}`),
                 api.get('/priorities'),
                 api.get('/users/me')
             ]);
             setProject(projectResponse.data);
             setPriorities(prioritiesResponse.data);
-            setCurrentUserId(meResponse.data.id); // Salva o ID do usuário logado
+            setCurrentUserId(meResponse.data.id); 
+            setCurrentUserRole(meResponse.data.label); 
             setFormData({ // Inicializa formData com os dados do projeto para os campos de texto/select editáveis
                 description: projectResponse.data.description || '',
                 briefing: projectResponse.data.briefing || '',
@@ -92,7 +95,7 @@ export default function FullProjectViewPage() {
             });
         } catch (error) { 
             console.error("Erro ao buscar detalhes do projeto ou prioridades", error);
-            setProject(null); // Limpa o projeto em caso de erro
+            setProject(null); 
         } finally { 
             setIsLoading(false); 
         }
@@ -352,7 +355,7 @@ export default function FullProjectViewPage() {
                                     </div>
                                 )}
                                 <form className={styles.addTransactionForm} onSubmit={handleAddTransaction}>
-                                    <input type="number" step="0.01" placeholder="Adicionar pagamento parcial do cliente" value={newTransaction.amount} onChange={e => setNewTransaction({ ...newTransaction, amount: e.target.value })} required />
+                                    <input type="number" step="0.01" placeholder="Adicionar pagamento parcial" value={newTransaction.amount} onChange={e => setNewTransaction({ ...newTransaction, amount: e.target.value })} required />
                                     <input type="date" value={newTransaction.paymentDate} onChange={e => setNewTransaction({ ...newTransaction, paymentDate: e.target.value })} required />
                                     <button type="submit" className={styles.saveButton}>Adicionar</button>
                                 </form>
