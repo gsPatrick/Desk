@@ -9,19 +9,21 @@ import RecentProjects from '../../components-colaborativo/RecentProjects/RecentP
 import UpcomingDeadlines from '../../components-colaborativo/UpcomingDeadlines/UpcomingDeadlines';
 import ProjectListModal from '../../components-colaborativo/ProjectListModal/ProjectListModal';
 import styles from './dashboard.module.css';
-import { IoArrowUp, IoReceipt, IoWallet } from 'react-icons/io5';
+import { IoArrowUp, IoReceipt, IoWallet, IoCashOutline, IoTrendingUpOutline } from 'react-icons/io5';
 
 const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value || 0);
 
 // Estrutura de dados inicial para evitar erros de 'undefined' antes do carregamento
 const initialDashboardData = {
     netProfitMonth: 0,
+    totalGrossBudget: 0,
     totalToReceive: 0,
     remainingToReceive: 0,
     activeProjects: [],
     profitChartData: [],
     recentCompletedProjects: [],
-    upcomingDeadlines: []
+    upcomingDeadlines: [],
+    totalExpensesMonth: 0
 };
 
 export default function DashboardPage() {
@@ -29,7 +31,6 @@ export default function DashboardPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Estados para o modal de lista
     const [isListModalOpen, setIsListModalOpen] = useState(false);
     const [modalTitle, setModalTitle] = useState('');
     const [projectsForModal, setProjectsForModal] = useState([]);
@@ -50,7 +51,6 @@ export default function DashboardPage() {
         fetchDashboardData();
     }, []);
 
-    // Handler para abrir o modal de lista
     const handleOpenListModal = (title, projects) => {
         if (projects && projects.length > 0) {
             setModalTitle(title);
@@ -59,7 +59,6 @@ export default function DashboardPage() {
         }
     };
 
-    // Estado de Carregamento
     if (isLoading) {
         return (
             <div className="colab-theme">
@@ -71,7 +70,6 @@ export default function DashboardPage() {
         );
     }
 
-    // Estado de Erro
     if (error) {
         return (
             <div className="colab-theme">
@@ -83,7 +81,6 @@ export default function DashboardPage() {
         );
     }
     
-    // Renderização Principal
     return (
         <div className="colab-theme">
             <Head>
@@ -97,8 +94,11 @@ export default function DashboardPage() {
                 </div>
 
                 <div className={styles.grid}>
-                    <StatCard title="Total a Receber" value={formatCurrency(dashboardData.totalToReceive)} icon={<IoArrowUp color="#4ade80" />} />
-                    <StatCard title="Falta Receber" value={formatCurrency(dashboardData.remainingToReceive)} icon={<IoReceipt color="#f59e0b" />} />
+                    <StatCard title="Valor Bruto (Projetos)" value={formatCurrency(dashboardData.totalGrossBudget)} icon={<IoCashOutline color="#4ade80" />} subtitle="Orçamento total de todos os projetos" />
+                    <StatCard title="Total a Receber" value={formatCurrency(dashboardData.totalToReceive)} icon={<IoTrendingUpOutline color="#f59e0b" />} subtitle="Seu líquido a receber" />
+                    <StatCard title="Falta Receber" value={formatCurrency(dashboardData.remainingToReceive)} icon={<IoReceipt color="#f87171" />} subtitle="Seu líquido que ainda não entrou" />
+                    <StatCard title="Total Despesas (Mês)" value={formatCurrency(dashboardData.totalExpensesMonth)} icon={<IoReceipt color="#f87171" />} />
+                    
                     <div className={styles.colSpan2}>
                         <StatCard 
                             title="Projetos Ativos" 

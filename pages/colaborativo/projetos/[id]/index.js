@@ -16,7 +16,7 @@ import styles from './FullProjectView.module.css';
 import { 
     IoArrowBack, IoDocumentTextOutline, IoHourglassOutline, IoReceiptOutline, 
     IoWalletOutline, IoInformationCircleOutline, IoShieldCheckmarkOutline, IoPencil, 
-    IoTrash 
+    IoTrash, IoPeopleOutline, IoCodeSlashOutline // IoPeopleOutline e IoCodeSlashOutline para custos
 } from 'react-icons/io5';
 
 // Helpers
@@ -59,6 +59,7 @@ export default function FullProjectViewPage() {
     const [priorities, setPriorities] = useState([]); // Para a lista de prioridades
     const [formData, setFormData] = useState({}); // Estado para campos editáveis via input/textarea
     const [newTransaction, setNewTransaction] = useState({ amount: '', paymentDate: new Date().toISOString().split('T')[0] });
+    const [currentUserId, setCurrentUserId] = useState(null); // NOVO: Para calcular lucro do usuário logado
 
     // --- ESTADOS PARA O MODAL DE DETALHES DO CLIENTE (para abrir da sidebar) ---
     const [isClientDetailsModalOpen, setIsClientDetailsModalOpen] = useState(false);
@@ -71,17 +72,23 @@ export default function FullProjectViewPage() {
         if (!projectId) return;
         try {
             setIsLoading(true);
-            const [projectResponse, prioritiesResponse] = await Promise.all([
+            const [projectResponse, prioritiesResponse, meResponse] = await Promise.all([ // NOVO: Busca o user logado
                 api.get(`/projects/${projectId}`),
-                api.get('/priorities')
+                api.get('/priorities'),
+                api.get('/users/me')
             ]);
             setProject(projectResponse.data);
             setPriorities(prioritiesResponse.data);
+            setCurrentUserId(meResponse.data.id); // Salva o ID do usuário logado
             setFormData({ // Inicializa formData com os dados do projeto para os campos de texto/select editáveis
                 description: projectResponse.data.description || '',
                 briefing: projectResponse.data.briefing || '',
                 notes: projectResponse.data.notes || '',
-                priorityId: projectResponse.data.priorityId || ''
+                priorityId: projectResponse.data.priorityId || '',
+                // Campos de comissão para a aba Overview, se forem editáveis lá
+                platformCommissionPercent: projectResponse.data.platformCommissionPercent || '',
+                ownerCommissionType: projectResponse.data.ownerCommissionType || '',
+                ownerCommissionValue: projectResponse.data.ownerCommissionValue || ''
             });
         } catch (error) { 
             console.error("Erro ao buscar detalhes do projeto ou prioridades", error);
@@ -112,10 +119,17 @@ export default function FullProjectViewPage() {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
-    // Salva alterações da aba "Documentação" ou "Visão Geral" (ex: prioridade)
+    // Salva alterações da aba "Documentação" ou "Visão Geral" (ex: prioridade, comissões)
     const handleSaveGeneralChanges = async () => {
         try {
-            await api.patch(`/projects/${projectId}`, formData);
+            // Converte valores numéricos para float antes de enviar
+            const dataToSave = {
+                ...formData,
+                platformCommissionPercent: parseFloat(formData.platformCommissionPercent) || 0,
+                ownerCommissionValue: parseFloat(formData.ownerCommissionValue) || 0,
+                priorityId: formData.priorityId === '' ? null : parseInt(formData.priorityId, 10)
+            };
+            await api.patch(`/projects/${projectId}`, dataToSave);
             fetchProjectAndPriorities(); // Recarrega para garantir que a UI reflita o novo estado
             alert('Alterações salvas com sucesso!');
         } catch (error) {
@@ -188,8 +202,43 @@ export default function FullProjectViewPage() {
 
     // Dados derivados para exibição
     const statusInfo = getStatusInfo(project.status);
-    const totalPaid = project.Transactions ? project.Transactions.reduce((sum, t) => sum + parseFloat(t.amount), 0) : 0;
-    const remainingAmount = parseFloat(project.budget) - totalPaid;
+    const totalPaidByClient = project.Transactions ? project.Transactions.reduce((sum, t) => sum + parseFloat(t.amount), 0) : 0;
+    const remainingAmountToClient = parseFloat(project.budget) - totalPaidByClient;
+
+    // --- CÁLCULO DE COMISSÕES E LUCRO LÍQUIDO DO DONO / PARCEIRO ---
+    const budget = parseFloat(project.budget || 0);
+    const platformCommissionPercent = parseFloat(project.platformCommissionPercent || 0);
+    const platformFee = budget * (platformCommissionPercent / 100);
+
+    let netAmountAfterPlatform = budget - platformFee;
+    let totalPartnersCommissions = 0; // Soma das comissões de todos os parceiros
+
+    project.Partners?.forEach(partner => {
+        const share = partner.ProjectShare;
+        const partnerExpectedAmount = share.commissionType === 'percentage'
+            ? netAmountAfterPlatform * (parseFloat(share.commissionValue) / 100)
+            : parseFloat(share.commissionValue);
+        totalPartnersCommissions += partnerExpectedAmount;
+    });
+
+    const ownerExpectedProfit = netAmountAfterPlatform - totalPartnersCommissions; // Lucro líquido do dono
+
+    let yourExpectedProfit = 0;
+    // Se o usuário logado for o DONO
+    if (project.ownerId === currentUserId) {
+        yourExpectedProfit = ownerExpectedProfit;
+    } else { // Se o usuário logado for um PARCEIRO
+        const userAsPartner = project.Partners?.find(p => p.id === currentUserId);
+        if (userAsPartner) {
+            const partnerShare = userAsPartner.ProjectShare;
+            if (partnerShare.commissionType === 'percentage') {
+                yourExpectedProfit = netAmountAfterPlatform * (parseFloat(partnerShare.commissionValue) / 100);
+            } else if (partnerShare.commissionType === 'fixed') {
+                yourExpectedProfit = parseFloat(partnerShare.commissionValue);
+            }
+        }
+    }
+
 
     return (
         <div className="colab-theme">
@@ -222,7 +271,7 @@ export default function FullProjectViewPage() {
                                 <div className={styles.overviewGrid}>
                                     <div><span className={styles.label}>Status</span><p className={`${styles.value} ${styles[statusInfo.className]}`}>{statusInfo.label}</p></div>
                                     <div><span className={styles.label}>Prazo Final</span><p className={styles.value}>{formatDate(project.deadline)}</p></div>
-                                    <div><span className={styles.label}>Orçamento Total</span><p className={styles.value}>{formatCurrency(project.budget)}</p></div>
+                                    <div><span className={styles.label}>Orçamento Total Bruto</span><p className={styles.value}>{formatCurrency(budget)}</p></div>
                                     
                                     <div className={styles.fullWidth}><span className={styles.label}>Prioridade</span>
                                         <select name="priorityId" value={formData.priorityId} onChange={handleFormChange} className={styles.editInput}>
@@ -231,7 +280,31 @@ export default function FullProjectViewPage() {
                                         </select>
                                     </div>
                                     <div className={styles.fullWidth}><span className={styles.label}>Plataforma</span><p className={styles.value}>{project.AssociatedPlatform?.name || 'Venda Direta'}</p></div>
-                                    <div className={styles.fullWidth}><span className={styles.label}>Comissão Plataforma</span><p className={styles.value}>{project.platformCommissionPercent || 0}%</p></div>
+                                    <div className={styles.fullWidth}><span className={styles.label}>Comissão Plataforma</span><p className={styles.value}>{platformCommissionPercent || 0}% ({formatCurrency(platformFee)})</p></div>
+                                    
+                                    <h3 className={styles.subTitle + ' ' + styles.fullWidth}>Sua Participação</h3>
+                                    <div className={styles.fullWidth}><span className={styles.label}>Seu Lucro Líquido Esperado</span><p className={styles.value}>{formatCurrency(yourExpectedProfit)}</p></div>
+
+                                    {/* --- DADOS DOS PARCEIROS (apenas se houver) --- */}
+                                    {project.Partners?.length > 0 && (
+                                        <>
+                                            <h3 className={styles.subTitle + ' ' + styles.fullWidth}>Comissões dos Parceiros</h3>
+                                            {project.Partners.map(partner => {
+                                                const share = partner.ProjectShare;
+                                                const partnerExpectedAmount = share.commissionType === 'percentage'
+                                                    ? netAmountAfterPlatform * (parseFloat(share.commissionValue) / 100)
+                                                    : parseFloat(share.commissionValue);
+                                                return (
+                                                    <div key={partner.id} className={styles.fullWidth}>
+                                                        <span className={styles.label}>{partner.name}</span>
+                                                        <p className={styles.value}>
+                                                            {share.commissionValue}{share.commissionType === 'percentage' ? '%' : ' (fixo)'} ({formatCurrency(partnerExpectedAmount)})
+                                                        </p>
+                                                    </div>
+                                                );
+                                            })}
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         )}
@@ -256,17 +329,18 @@ export default function FullProjectViewPage() {
                             <div className={styles.section}>
                                 <h2>Pagamentos</h2>
                                 <div className={styles.paymentSummary}>
-                                    <div className={styles.summaryItem}><span>Total Recebido</span><p className={styles.receivedAmount}>{formatCurrency(totalPaid)}</p></div>
-                                    <div className={styles.summaryItem}><span>Valor Restante</span><p className={styles.remainingAmount}>{formatCurrency(remainingAmount)}</p></div>
+                                    <div className={styles.summaryItem}><span>Total Recebido do Cliente</span><p className={styles.receivedAmount}>{formatCurrency(totalPaidByClient)}</p></div>
+                                    <div className={styles.summaryItem}><span>Valor Restante do Cliente</span><p className={styles.remainingAmount}>{formatCurrency(remainingAmountToClient)}</p></div>
+                                    <div className={styles.summaryItem}><span>Seu Líquido Esperado</span><p className={styles.receivedAmount}>{formatCurrency(yourExpectedProfit)}</p></div>
                                 </div>
-                                {remainingAmount > 0.001 && (
+                                {remainingAmountToClient > 0.001 && (
                                     <div className={styles.fullPaymentContainer}>
                                         <button className={styles.fullPaymentButton} onClick={handleFullPayment}>
-                                            <IoShieldCheckmarkOutline /> Registrar Pagamento Total
+                                            <IoShieldCheckmarkOutline /> Registrar Pagamento Total do Cliente
                                         </button>
                                     </div>
                                 )}
-                                <h3 className={styles.subTitle}>Histórico de Pagamentos</h3>
+                                <h3 className={styles.subTitle}>Histórico de Pagamentos do Cliente</h3>
                                 {isLoading ? <p className={styles.noTransactions}>Carregando...</p> : (
                                     <div className={styles.transactionList}>
                                         {project.Transactions && project.Transactions.length > 0 ? project.Transactions.map(t => (
@@ -274,11 +348,11 @@ export default function FullProjectViewPage() {
                                                 <div><p className={styles.transactionAmount}>{formatCurrency(t.amount)}</p><p className={styles.transactionDate}>{formatDate(t.paymentDate)}</p></div>
                                                 <button onClick={() => handleDeleteTransaction(t.id)} className={styles.deleteButton} title="Excluir"><IoTrash /></button>
                                             </div>
-                                        )) : <p className={styles.noTransactions}>Nenhum pagamento registrado.</p>}
+                                        )) : <p className={styles.noTransactions}>Nenhum pagamento registrado do cliente.</p>}
                                     </div>
                                 )}
                                 <form className={styles.addTransactionForm} onSubmit={handleAddTransaction}>
-                                    <input type="number" step="0.01" placeholder="Adicionar pagamento parcial" value={newTransaction.amount} onChange={e => setNewTransaction({ ...newTransaction, amount: e.target.value })} required />
+                                    <input type="number" step="0.01" placeholder="Adicionar pagamento parcial do cliente" value={newTransaction.amount} onChange={e => setNewTransaction({ ...newTransaction, amount: e.target.value })} required />
                                     <input type="date" value={newTransaction.paymentDate} onChange={e => setNewTransaction({ ...newTransaction, paymentDate: e.target.value })} required />
                                     <button type="submit" className={styles.saveButton}>Adicionar</button>
                                 </form>

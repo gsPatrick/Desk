@@ -1,0 +1,138 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end; /* Abre da parte de baixo */
+  justify-content: center;
+}
+
+.drawer {
+  background-color: var(--colab-background); /* Fundo do drawer */
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 -10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--colab-border);
+  flex-shrink: 0;
+}
+.header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--colab-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.closeButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--colab-text-secondary);
+  padding: 4px;
+  border-radius: 50%;
+  transition: background-color 0.2s, color 0.2s;
+}
+.closeButton:hover { background-color: var(--colab-border); color: var(--colab-text-primary); }
+
+.filtersContent { /* Permite rolagem do conteúdo dos filtros */
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 0 24px; /* Padding vertical das seções de filtro */
+}
+
+.filterSection {
+  padding: 16px 0; /* Padding interno das seções de filtro */
+  border-bottom: 1px solid var(--colab-border);
+}
+.filterSection:last-of-type { border-bottom: none; }
+.filterSection h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--colab-text-primary);
+  margin-bottom: 12px;
+}
+
+.budgetInputs {
+    display: flex;
+    gap: 12px;
+}
+.input, .selectInput { /* Estilos genéricos para inputs/selects dentro do drawer */
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--colab-border);
+    border-radius: 6px;
+    color: var(--colab-text-primary);
+    font-family: inherit;
+}
+.input:focus, .selectInput:focus { outline: none; border-color: var(--colab-accent); box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); }
+
+/* Sobrescreve estilos de componentes de filtro internos */
+.filterSection :global(.filterContainer) { /* :global permite estilizar componentes aninhados */
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    flex-wrap: wrap; /* Permite que os botões quebrem linha */
+    gap: 8px; /* Reduz o gap entre os botões */
+}
+.filterSection :global(.filterButton) {
+    flex-grow: 1; /* Faz os botões dividirem o espaço */
+    justify-content: center;
+    padding: 8px 12px;
+    font-size: 13px;
+}
+
+
+.footer {
+  display: flex;
+  gap: 12px;
+  padding: 20px 24px;
+  border-top: 1px solid var(--colab-border);
+  flex-shrink: 0;
+  justify-content: flex-end;
+}
+
+.clearButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  background-color: var(--colab-background);
+  border: 1px solid var(--colab-border);
+  color: var(--colab-text-primary);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.clearButton:hover { background-color: var(--colab-border); }
+
+.applyButton {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  background-color: var(--colab-accent);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.applyButton:hover { background-color: var(--colab-accent-hover); }

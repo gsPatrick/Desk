@@ -1,7 +1,7 @@
 .pageWrapper {
   padding: 84px 24px 24px 24px;
   width: 100%;
-  max-width: 1400px; /* Dashboard pode ser mais largo */
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -29,8 +29,32 @@
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
+/* Em telas maiores, forçamos 4 colunas */
+@media (min-width: 1280px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  /* Ajusta o span para que os cards se alinhem corretamente */
+  .colSpan2 {
+      grid-column: span 2;
+  }
+  .rowSpan2 {
+      grid-row: span 2;
+  }
+}
 
-/* --- INÍCIO: NOVO ESTILO PARA MENSAGENS DE ESTADO --- */
+
+/* Classes de helper para controlar o tamanho dos cards */
+/* NOTA: Essas classes precisarão de media queries inversas para mobile, se o grid muda para 1 coluna */
+.colSpan2 {
+  grid-column: span 2;
+}
+.rowSpan2 {
+  grid-row: span 2;
+}
+
+
+/* --- NOVO ESTILO PARA MENSAGENS DE ESTADO --- */
 .messageState {
     display: flex;
     justify-content: center;
@@ -40,39 +64,25 @@
     font-weight: 500;
     color: var(--colab-text-secondary);
 }
-/* Em telas maiores, forçamos 4 colunas */
-@media (min-width: 1280px) {
-  .grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
 
-/* Classes de helper para controlar o tamanho dos cards */
-.colSpan2 {
-  grid-column: span 2;
-}
-.rowSpan2 {
-  grid-row: span 2;
-}
 
-/* --- INÍCIO: NOVOS ESTILOS PARA RESPONSIVIDADE MOBILE --- */
+/* --- RESPONSIVIDADE (MOBILE) --- */
 @media (max-width: 768px) {
   .pageWrapper {
-    padding: 72px 16px 16px; /* Padding menor para telas pequenas */
+    padding: 72px 16px 16px;
   }
 
   .headerValue {
-    font-size: 36px; /* Fonte do título principal menor no mobile */
+    font-size: 36px;
   }
 
   .grid {
     grid-template-columns: 1fr; /* Força uma única coluna */
   }
 
+  /* Reseta a expansão dos cards para que todos tenham o mesmo tamanho */
   .colSpan2, .rowSpan2 {
-    /* Reseta a expansão dos cards para que todos tenham o mesmo tamanho */
     grid-column: auto;
     grid-row: auto;
   }
 }
-/* --- FIM: NOVOS ESTILOS PARA RESPONSIVIDADE MOBILE --- */

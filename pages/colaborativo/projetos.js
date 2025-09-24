@@ -10,7 +10,7 @@ import StatusFilter from '../../components-colaborativo/StatusFilter/StatusFilte
 import PriorityFilter from '../../components-colaborativo/PriorityFilter/PriorityFilter';
 import DateFilter from '../../components-colaborativo/DateFilter/DateFilter';
 import Pagination from '../../components-colaborativo/Pagination/Pagination';
-import MobileFilterDrawer from '../../components-colaborativo/MobileFilterDrawer/MobileFilterDrawer';
+import ProjectFilterDrawer from '../../components-colaborativo/ProjectFilterDrawer/ProjectFilterDrawer'; // NOVO IMPORT
 import styles from './projetos.module.css';
 import { IoAdd, IoRefresh, IoFilter } from 'react-icons/io5';
 
@@ -18,11 +18,11 @@ const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', { style: 'curre
 const PROJECTS_PER_PAGE = 6;
 
 // Estruturas de dados iniciais para evitar erros antes do carregamento
-const initialFinancialSummary = { totalBudget: 0, totalReceived: 0, totalToReceive: 0 };
+const initialFinancialSummary = { totalBudget: 0, totalReceived: 0, totalToReceive: 0, remainingToReceive: 0 };
 const initialPaginationInfo = { totalProjects: 0, totalPages: 1, currentPage: 1 };
 
 export default function ProjetosPage() {
-  const [currentUserRole, setCurrentUserRole] = useState('dev');
+  const [currentUserRole, setCurrentUserRole] = useState('dev'); // Será usado para calcular lucro no ProjectCard
   const [currentUserId, setCurrentUserId] = useState(null);
 
   // Estados para os dados da API
@@ -31,8 +31,8 @@ export default function ProjetosPage() {
   const [paginationInfo, setPaginationInfo] = useState(initialPaginationInfo);
   const [clientList, setClientList] = useState([]);
   const [collaborators, setCollaborators] = useState([]);
-  const [priorityList, setPriorities] = useState([]);
-  const [platformList, setPlatformList] = useState([]); // NOVO ESTADO
+  const [priorityList, setPriorityList] = useState([]);
+  const [platformList, setPlatformList] = useState([]); // Para filtro de plataforma
 
   // Estados de controle da UI
   const [isLoading, setIsLoading] = useState(true);
@@ -42,6 +42,13 @@ export default function ProjetosPage() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('all');
   const [priorityFilter, setPriorityFilter] = useState('all');
+  const [minBudget, setMinBudget] = useState(''); // NOVO
+  const [maxBudget, setMaxBudget] = useState(''); // NOVO
+  const [platformFilter, setPlatformFilter] = useState(''); // NOVO
+  const [clientFilter, setClientFilter] = useState(''); // NOVO
+  const [sortBy, setSortBy] = useState('createdAt'); // NOVO: Padrão por criação
+  const [sortOrder, setSortOrder] = useState('desc'); // NOVO: Padrão descendente
+
   const [currentPage, setCurrentPage] = useState(1);
   const [isAnyFilterActive, setIsAnyFilterActive] = useState(false);
 
@@ -51,8 +58,8 @@ export default function ProjetosPage() {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [projectToEdit, setProjectToEdit] = useState(null);
 
-  // Estado para o drawer de filtros mobile
-  const [isMobileFilterDrawerOpen, setIsMobileFilterDrawerOpen] = useState(false);
+  // --- NOVO ESTADO PARA O DRAWER DE FILTROS MOBILE/DESKTOP ---
+  const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
 
 
   // Função centralizada para buscar projetos
@@ -63,10 +70,16 @@ export default function ProjetosPage() {
       const params = {
         page: currentPage,
         limit: PROJECTS_PER_PAGE,
+        status: statusFilter,
+        deadline: dateFilter,
+        priorityId: priorityFilter,
+        minBudget: minBudget,
+        maxBudget: maxBudget,
+        platformId: platformFilter,
+        clientId: clientFilter,
+        sortBy: sortBy,
+        sortOrder: sortOrder,
       };
-      if (statusFilter !== 'all') params.status = statusFilter;
-      if (priorityFilter !== 'all') params.priorityId = priorityFilter;
-      if (dateFilter !== 'all') params.deadline = dateFilter;
 
       const response = await api.get('/projects', { params });
       setProjects(response.data.projects || []);
@@ -81,12 +94,14 @@ export default function ProjetosPage() {
     }
   };
 
-  // Efeito para buscar dados auxiliares para os modais
+  // Efeito para buscar dados auxiliares para os modais e filtros
   useEffect(() => {
-    const fetchModalData = async () => {
+    const fetchModalAndFilterData = async () => {
         try {
             const meResponse = await api.get('/users/me');
             setCurrentUserId(meResponse.data.id);
+            // Assumimos que o role do usuário é o do banco de dados
+            setCurrentUserRole(meResponse.data.label); 
             
             const [clientsResponse, collabsResponse, prioritiesResponse, platformsResponse] = await Promise.all([
                 api.get('/clients'),
@@ -97,26 +112,30 @@ export default function ProjetosPage() {
 
             setClientList(clientsResponse.data || []);
             setCollaborators(collabsResponse.data || []);
-            setPriorities(prioritiesResponse.data || []);
+            setPriorityList(prioritiesResponse.data || []);
             setPlatformList(platformsResponse.data || []);
             
         } catch (err) {
-            console.error("Não foi possível carregar dados para os formulários.", err);
+            console.error("Não foi possível carregar dados para os formulários/filtros.", err);
         }
     };
-    fetchModalData();
+    fetchModalAndFilterData();
   }, []);
 
   // Efeito para re-buscar projetos quando filtros ou página mudam
   useEffect(() => {
     fetchProjects();
-  }, [currentPage, statusFilter, dateFilter, priorityFilter]);
+  }, [currentPage, statusFilter, dateFilter, priorityFilter, minBudget, maxBudget, platformFilter, clientFilter, sortBy, sortOrder]);
 
   // Efeito para resetar a página e checar filtros ativos
   useEffect(() => {
     setCurrentPage(1);
-    setIsAnyFilterActive(statusFilter !== 'all' || dateFilter !== 'all' || priorityFilter !== 'all');
-  }, [statusFilter, dateFilter, priorityFilter]);
+    setIsAnyFilterActive(
+        statusFilter !== 'all' || dateFilter !== 'all' || priorityFilter !== 'all' ||
+        minBudget !== '' || maxBudget !== '' || platformFilter !== '' || clientFilter !== '' ||
+        sortBy !== 'createdAt' || sortOrder !== 'desc'
+    );
+  }, [statusFilter, dateFilter, priorityFilter, minBudget, maxBudget, platformFilter, clientFilter, sortBy, sortOrder]);
 
   // --- Handlers para Ações ---
   const handleSaveProject = async (projectData) => {
@@ -180,7 +199,19 @@ export default function ProjetosPage() {
   };
   const handleOpenCreateModal = () => { setProjectToEdit(null); setIsFormModalOpen(true); };
   const handleCloseFormModal = () => setIsFormModalOpen(false);
-  const handleClearFilters = () => { setStatusFilter('all'); setDateFilter('all'); setPriorityFilter('all'); };
+
+  // --- HANDLER PARA LIMPAR TODOS OS FILTROS ---
+  const handleClearFilters = () => { 
+    setStatusFilter('all'); 
+    setDateFilter('all'); 
+    setPriorityFilter('all');
+    setMinBudget('');
+    setMaxBudget('');
+    setPlatformFilter('');
+    setClientFilter('');
+    setSortBy('createdAt');
+    setSortOrder('desc');
+  };
 
   return (
     <div className="colab-theme">
@@ -196,26 +227,23 @@ export default function ProjetosPage() {
             </div>
             {/* --- FILTROS PARA DESKTOP --- */}
             <div className={styles.desktopActionsContainer}>
-              <StatusFilter activeFilter={statusFilter} onFilterChange={setStatusFilter} />
-              <PriorityFilter 
-                  activeFilter={priorityFilter} 
-                  onFilterChange={setPriorityFilter} 
-                  priorities={priorityList} 
-              />
-              <DateFilter activeFilter={dateFilter} onFilterChange={setDateFilter} />
+              {/* REMOVIDO os filtros Status, Prioridade, Data. Serão no Drawer */}
               {isAnyFilterActive && (
                 <button className={styles.clearButton} onClick={handleClearFilters} title="Limpar todos os filtros">
                   <IoRefresh size={18} />
                 </button>
               )}
+              <button onClick={() => setIsFilterDrawerOpen(true)} className={styles.filterToggleButton}> {/* Botão para abrir o Drawer */}
+                    <IoFilter size={20} /> Filtros
+                </button>
               <button className={styles.addButton} onClick={handleOpenCreateModal}>
                   <IoAdd size={20} />
                   Novo Projeto
               </button>
             </div>
-            {/* --- BOTÃO DE FILTROS PARA MOBILE --- */}
+            {/* --- BOTÃO DE FILTROS PARA MOBILE (REUTILIZADO AGORA PARA AMBOS) --- */}
             <div className={styles.mobileActionsContainer}>
-                <button onClick={() => setIsMobileFilterDrawerOpen(true)} className={styles.filterToggleButton}>
+                <button onClick={() => setIsFilterDrawerOpen(true)} className={styles.filterToggleButton}>
                     <IoFilter size={20} /> Filtros
                 </button>
                 <button className={styles.addButton} onClick={handleOpenCreateModal}>
@@ -226,16 +254,20 @@ export default function ProjetosPage() {
         
         <div className={styles.financialSummary}>
             <div className={styles.summaryCard}>
-                <p className={styles.summaryLabel}>Valor Total (Filtrado)</p>
+                <p className={styles.summaryLabel}>Valor Total (Bruto)</p>
                 <h2 className={styles.summaryValue}>{formatCurrency(financialSummary.totalBudget)}</h2>
             </div>
             <div className={styles.summaryCard}>
-                <p className={styles.summaryLabel}>Valor Recebido</p>
+                <p className={styles.summaryLabel}>Valor Recebido (Cliente)</p>
                 <h2 className={`${styles.summaryValue} ${styles.valueReceived}`}>{formatCurrency(financialSummary.totalReceived)}</h2>
             </div>
             <div className={styles.summaryCard}>
-                <p className={styles.summaryLabel}>Valor a Receber</p>
+                <p className={styles.summaryLabel}>Seu Líquido a Receber</p>
                 <h2 className={`${styles.summaryValue} ${styles.valueToReceive}`}>{formatCurrency(financialSummary.totalToReceive)}</h2>
+            </div>
+             <div className={styles.summaryCard}>
+                <p className={styles.summaryLabel}>Seu Líquido Restante</p>
+                <h2 className={`${styles.summaryValue} ${styles.valueToReceive}`}>{formatCurrency(financialSummary.remainingToReceive)}</h2>
             </div>
         </div>
         
@@ -252,7 +284,8 @@ export default function ProjetosPage() {
                   onPriorityChange={handlePriorityChange}
                   onEdit={handleEdit}
                   onDelete={handleDelete}
-                  currentUserRole={"dev"} // Ou pegue do contexto do usuário
+                  currentUserRole={currentUserRole} // Passa o role
+                  currentUserId={currentUserId} // Passa o ID para ProjectCard calcular lucro
                   priorities={priorityList}
                 />
             ) : (
@@ -276,6 +309,7 @@ export default function ProjetosPage() {
         onClose={handleCloseDetailsModal}
         onDataChange={fetchProjects}
         priorities={priorityList}
+        currentUserId={currentUserId} // Passa para o modal calcular lucro
       />
       <ProjectFormModal
         isOpen={isFormModalOpen}
@@ -287,17 +321,22 @@ export default function ProjetosPage() {
         currentUserId={currentUserId}
         platforms={platformList}
       />
-      {/* --- DRAWER DE FILTROS PARA MOBILE --- */}
-      <MobileFilterDrawer
-        isOpen={isMobileFilterDrawerOpen}
-        onClose={() => setIsMobileFilterDrawerOpen(false)}
-        statusFilter={statusFilter}
-        setStatusFilter={setStatusFilter}
-        priorityFilter={priorityFilter}
-        setPriorityFilter={setPriorityFilter}
-        dateFilter={dateFilter}
-        setDateFilter={setDateFilter}
+      {/* --- DRAWER DE FILTROS PARA DESKTOP E MOBILE --- */}
+      <ProjectFilterDrawer
+        isOpen={isFilterDrawerOpen}
+        onClose={() => setIsFilterDrawerOpen(false)}
+        statusFilter={statusFilter} setStatusFilter={setStatusFilter}
+        priorityFilter={priorityFilter} setPriorityFilter={setPriorityFilter}
+        dateFilter={dateFilter} setDateFilter={setDateFilter}
+        minBudget={minBudget} setMinBudget={setMinBudget}
+        maxBudget={maxBudget} setMaxBudget={setMaxBudget}
+        platformFilter={platformFilter} setPlatformFilter={setPlatformFilter}
+        clientFilter={clientFilter} setClientFilter={setClientFilter}
+        sortBy={sortBy} setSortBy={setSortBy}
+        sortOrder={sortOrder} setSortOrder={setSortOrder}
         priorities={priorityList}
+        clients={clientList}
+        platforms={platformList}
         onClearFilters={handleClearFilters}
       />
     </div>

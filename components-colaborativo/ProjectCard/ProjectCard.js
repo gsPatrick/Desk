@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
 import Image from 'next/image';
 import styles from './ProjectCard.module.css';
-import { IoBriefcaseOutline, IoEllipsisVertical, IoCalendarClearOutline, IoWarningOutline, IoCheckmarkCircle, IoAlertCircle, IoEllipse, IoPencil, IoTrash } from 'react-icons/io5';
+import { IoBriefcaseOutline, IoEllipsisVertical, IoCalendarClearOutline, IoWarningOutline, IoCheckmarkCircle, IoAlertCircle, IoEllipse, IoPencil, IoTrash, IoCodeSlashOutline, IoPeopleOutline } from 'react-icons/io5';
 import { Menu, Transition } from '@headlessui/react';
 import { differenceInDays, parseISO, isPast } from 'date-fns';
 import { STATUS_MAP, getStatusInfo, getPriorityInfo } from '../../utils/colaborativo-helpers';
@@ -29,55 +29,62 @@ const getDeadlineInfo = (deadline) => {
 };
 
 const getPaymentStatusInfo = (payment) => {
-    if (!payment || !payment.client) return { Icon: IoAlertCircle, className: styles.paymentStatusUnpaid, title: 'Status de pagamento não definido' };
-    const { status: clientStatus } = payment.client;
-    if (clientStatus === 'paid') {
-        return { Icon: IoCheckmarkCircle, className: styles.paymentStatusPaid, title: 'Totalmente pago' };
+    // Agora o paymentDetails vem com client: {status, amountPaid}
+    const clientPayment = payment?.client;
+    if (!clientPayment) return { Icon: IoAlertCircle, className: styles.paymentStatusUnpaid, title: 'Status de pagamento do cliente não definido' };
+    
+    const { status } = clientPayment;
+    if (status === 'paid') {
+        return { Icon: IoCheckmarkCircle, className: styles.paymentStatusPaid, title: 'Cliente pagou o valor total' };
     }
-    if (clientStatus === 'partial') {
-        return { Icon: IoEllipse, className: styles.paymentStatusPartial, title: 'Pagamento parcial recebido' };
+    if (status === 'partial') {
+        return { Icon: IoEllipse, className: styles.paymentStatusPartial, title: 'Cliente pagou parcialmente' };
     }
-    return { Icon: IoAlertCircle, className: styles.paymentStatusUnpaid, title: 'Pagamento pendente' };
+    return { Icon: IoAlertCircle, className: styles.paymentStatusUnpaid, title: 'Cliente não pagou' };
 };
 
-export default function ProjectCard({ project, onOpenModal, onStatusChange, onEdit, onDelete, currentUserRole, priorities }) {
+export default function ProjectCard({ project, onOpenModal, onStatusChange, onEdit, onDelete, currentUserRole, currentUserId, priorities }) {
     
     const statusInfo = getStatusInfo(project.status);
     const priorityInfo = getPriorityInfo(project.priorityId, priorities);
     const { className: deadlineClass, text: deadlineText } = getDeadlineInfo(project.deadline);
     const { Icon: PaymentIcon, className: paymentClass, title: paymentTitle } = getPaymentStatusInfo(project.paymentDetails);
     
-    const budget = parseFloat(project.budget || 0);
-    const paymentDetails = project.paymentDetails?.client || {}; // Acessa o objeto client dentro de paymentDetails
-    const amountPaid = parseFloat(paymentDetails.amountPaid || 0);
-    const remainingAmount = budget - amountPaid;
+    const budget = parseFloat(project.budget) || 0;
+    const clientPayment = project.paymentDetails?.client || {};
+    const amountPaidByClient = parseFloat(clientPayment.amountPaid || 0);
+    const remainingAmountToClient = budget - amountPaidByClient;
     
-    // Calcula comissão da plataforma
+    // --- CÁLCULO DE COMISSÕES E LUCRO LÍQUIDO (MAIS PRECISO) ---
     const platformCommissionPercent = parseFloat(project.platformCommissionPercent || 0);
     const platformFee = budget * (platformCommissionPercent / 100);
 
-    // Calcula comissão do dono (se houver parceiros)
-    const ownerCommissionType = project.ownerCommissionType;
-    const ownerCommissionValue = parseFloat(project.ownerCommissionValue || 0);
-    let ownerFee = 0;
-    if (ownerCommissionType === 'percentage') {
-        ownerFee = budget * (ownerCommissionValue / 100);
-    } else if (ownerCommissionType === 'fixed') {
-        ownerFee = ownerCommissionValue;
-    }
+    let netAmountAfterPlatform = budget - platformFee;
+    let totalPartnersCommissions = 0; // Soma das comissões de todos os parceiros
 
-    // Lucro do dono (o que sobra do bruto após plataforma e comissão de parceiros)
-    let netProfitToShow = budget - platformFee - ownerFee;
+    project.Partners?.forEach(partner => {
+        const share = partner.ProjectShare;
+        const partnerExpectedAmount = share.commissionType === 'percentage'
+            ? netAmountAfterPlatform * (parseFloat(share.commissionValue) / 100)
+            : parseFloat(share.commissionValue);
+        totalPartnersCommissions += partnerExpectedAmount;
+    });
 
-    // Se o usuário logado for um PARCEIRO, mostra o lucro dele (comissão)
-    const userAsPartner = project.Partners?.find(p => p.id === currentUserRole); // Assumindo currentUserRole é o ID do usuário
-    if (userAsPartner) {
-        // A comissão do parceiro vem diretamente da ProjectShare
-        const partnerShare = userAsPartner.ProjectShare;
-        if (partnerShare.commissionType === 'percentage') {
-            netProfitToShow = budget * (parseFloat(partnerShare.commissionValue) / 100);
-        } else if (partnerShare.commissionType === 'fixed') {
-            netProfitToShow = parseFloat(partnerShare.commissionValue);
+    const ownerExpectedProfit = netAmountAfterPlatform - totalPartnersCommissions; // Lucro líquido do dono
+
+    let yourExpectedProfit = 0;
+    // Se o usuário logado for o DONO
+    if (project.ownerId === currentUserId) {
+        yourExpectedProfit = ownerExpectedProfit;
+    } else { // Se o usuário logado for um PARCEIRO
+        const userAsPartner = project.Partners?.find(p => p.id === currentUserId);
+        if (userAsPartner) {
+            const partnerShare = userAsPartner.ProjectShare;
+            if (partnerShare.commissionType === 'percentage') {
+                yourExpectedProfit = netAmountAfterPlatform * (parseFloat(partnerShare.commissionValue) / 100);
+            } else if (partnerShare.commissionType === 'fixed') {
+                yourExpectedProfit = parseFloat(partnerShare.commissionValue);
+            }
         }
     }
 
@@ -117,24 +124,47 @@ export default function ProjectCard({ project, onOpenModal, onStatusChange, onEd
 
             <div className={styles.financialSection} onClick={() => onOpenModal(project)}>
                 <div className={styles.financialRow}>
-                    <span className={styles.label}>Valor Total</span>
+                    <span className={styles.label}>Valor Bruto</span>
                     <span className={styles.value}>{formatCurrency(budget)}</span>
                 </div>
                 <div className={styles.paymentDetails}>
-                    {paymentDetails.status === 'paid' && (
+                    {clientPayment.status === 'paid' && (
                         <div className={styles.financialRow}><span className={styles.label}>Pagamento Total</span><span className={`${styles.paymentValue} ${styles.paymentPaid}`}>{formatCurrency(budget)}</span></div>
                     )}
-                    {paymentDetails.status === 'partial' && (
+                    {clientPayment.status === 'partial' && (
                         <>
-                            <div className={styles.financialRow}><span className={styles.label}>Recebido</span><span className={`${styles.paymentValue} ${styles.paymentPaid}`}>{formatCurrency(amountPaid)}</span></div>
-                            <div className={styles.financialRow}><span className={styles.label}>Falta Receber</span><span className={`${styles.paymentValue} ${styles.paymentRemaining}`}>{formatCurrency(remainingAmount)}</span></div>
+                            <div className={styles.financialRow}><span className={styles.label}>Recebido (Cliente)</span><span className={`${styles.paymentValue} ${styles.paymentPaid}`}>{formatCurrency(amountPaidByClient)}</span></div>
+                            <div className={styles.financialRow}><span className={styles.label}>Falta Receber (Cliente)</span><span className={`${styles.paymentValue} ${styles.paymentRemaining}`}>{formatCurrency(remainingAmountToClient)}</span></div>
                         </>
                     )}
                 </div>
                 <div className={`${styles.financialRow} ${styles.profitRow}`}>
-                    <span className={styles.label}>Seu Lucro Líquido</span>
-                    <span className={styles.profitValue}>{formatCurrency(netProfitToShow)}</span>
+                    <span className={styles.label}>Seu Líquido Esperado</span>
+                    <span className={styles.profitValue}>{formatCurrency(yourExpectedProfit)}</span>
                 </div>
+                {/* --- EXIBIÇÃO DE COMISSÕES --- */}
+                {(platformFee > 0 || totalPartnersCommissions > 0) && (
+                    <div className={styles.costsSection}>
+                        {platformFee > 0 && (
+                            <div className={styles.costItem}>
+                                <span className={styles.costLabel}><IoCodeSlashOutline /> Plataforma ({platformCommissionPercent}%)</span>
+                                <span className={styles.costValue}>- {formatCurrency(platformFee)}</span>
+                            </div>
+                        )}
+                        {project.Partners?.map(partner => {
+                            const share = partner.ProjectShare;
+                            const partnerExpectedAmount = share.commissionType === 'percentage'
+                                ? netAmountAfterPlatform * (parseFloat(share.commissionValue) / 100)
+                                : parseFloat(share.commissionValue);
+                            return (
+                                <div key={partner.id} className={styles.costItem}>
+                                    <span className={styles.costLabel}><IoPeopleOutline /> {partner.name} ({share.commissionValue}{share.commissionType === 'percentage' ? '%' : ''})</span>
+                                    <span className={styles.costValue}>- {formatCurrency(partnerExpectedAmount)}</span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
             </div>
 
             <div className={styles.cardFooter}>
@@ -144,7 +174,6 @@ export default function ProjectCard({ project, onOpenModal, onStatusChange, onEd
                     <div className={`${styles.paymentStatusIcon} ${paymentClass}`} title={paymentTitle}><PaymentIcon size={18} /></div>
                     <div className={`${styles.statusIndicator} ${styles[statusInfo.className]}`}>{statusInfo.label}</div>
                 </div>
-                {/* --- EXIBIÇÃO DA PLATAFORMA --- */}
                 {project.AssociatedPlatform && (
                     <div className={styles.platformLogoContainer}>
                         {project.AssociatedPlatform.logoUrl && (
@@ -155,9 +184,9 @@ export default function ProjectCard({ project, onOpenModal, onStatusChange, onEd
                         )}
                     </div>
                 )}
-                {!project.AssociatedPlatform && project.platformCommissionPercent > 0 && (
+                {!project.AssociatedPlatform && platformCommissionPercent > 0 && (
                     <div className={styles.platformLogoContainer}>
-                        <span className={styles.platformNameText}>Plataforma Externa ({project.platformCommissionPercent}%)</span>
+                        <span className={styles.platformNameText}>Plataforma Externa ({platformCommissionPercent}%)</span>
                     </div>
                 )}
             </div>
