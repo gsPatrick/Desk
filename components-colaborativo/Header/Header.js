@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import api from '../../services/colaborativo-api';
 import styles from './Header.module.css';
-import { IoBriefcase, IoPeople, IoFolder, IoGrid, IoReceiptOutline, IoShareSocial,IoPerson, IoEye, IoEyeOff, IoExitOutline } from 'react-icons/io5';
+import { IoBriefcase, IoPeople, IoFolder, IoGrid, IoReceiptOutline, IoShareSocial,IoPerson, IoEye, IoEyeOff, IoExitOutline, IoSyncCircleOutline } from 'react-icons/io5'; // IoSyncCircleOutline para recorrências
 import { useRouter } from 'next/router';
 
 const NavLink = ({ href, icon, label, isActive }) => (
@@ -83,14 +83,16 @@ export default function Header({ activePage }) {
                 </button>
 
                 <div className={styles.separator}></div>
-                <nav className={`${styles.navLinks} ${isMenuOpen ? styles.active : ''}`}>
-                    <NavLink href="/colaborativo/dashboard" label="Dashboard" icon={<IoGrid size={20} />} isActive={activePage === 'dashboard'} />
-                    <NavLink href="/colaborativo/projetos" label="Projetos" icon={<IoFolder size={20} />} isActive={activePage === 'projetos'} />
-                    <NavLink href="/colaborativo/clientes" label="Clientes" icon={<IoBriefcase size={20} />} isActive={activePage === 'clientes'} />
-                    <NavLink href="/colaborativo/despesas" label="Despesas" icon={<IoReceiptOutline size={20} />} isActive={activePage === 'despesas'} />
-                    <NavLink href="/colaborativo/plataformas" label="Plataformas" icon={<IoShareSocial size={20} />} isActive={activePage === 'plataformas'} />
-                    <NavLink href="/colaborativo/colaboradores" label="Colaboradores" icon={<IoPeople size={20} />} isActive={activePage === 'colaboradores'} />
-                </nav>
+<nav className={`${styles.navLinks} ${isMenuOpen ? styles.active : ''}`}>
+    <NavLink href="/colaborativo/dashboard" label="Dashboard" icon={<IoGrid size={20} />} isActive={activePage === 'dashboard'} />
+    <NavLink href="/colaborativo/projetos" label="Projetos" icon={<IoFolder size={20} />} isActive={activePage === 'projetos'} />
+    <NavLink href="/colaborativo/clientes" label="Clientes" icon={<IoBriefcase size={20} />} isActive={activePage === 'clientes'} />
+    <NavLink href="/colaborativo/despesas" label="Despesas" icon={<IoReceiptOutline size={20} />} isActive={activePage === 'despesas'} />
+    {/* --- NOVO LINK --- */}
+    <NavLink href="/colaborativo/recorrencias" label="Recorrências" icon={<IoSyncCircleOutline size={20} />} isActive={activePage === 'recorrencias'} />
+    <NavLink href="/colaborativo/plataformas" label="Plataformas" icon={<IoShareSocial size={20} />} isActive={activePage === 'plataformas'} />
+    <NavLink href="/colaborativo/colaboradores" label="Colaboradores" icon={<IoPeople size={20} />} isActive={activePage === 'colaboradores'} />
+</nav>
             </div>
 
             <div className={styles.rightSection}>

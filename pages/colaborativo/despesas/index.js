@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import api from '../../../services/colaborativo-api';
 import Header from '../../../components-colaborativo/Header/Header';
-import AddExpenseModal from '../../../components-colaborativo/AddExpenseModal/AddExpenseModal'; // Importa o novo modal
+import AddExpenseModal from '../../../components-colaborativo/AddExpenseModal/AddExpenseModal';
 import styles from './Despesas.module.css';
 import { IoAdd, IoTrash } from 'react-icons/io5';
 
@@ -27,7 +27,7 @@ const ExpenseCard = ({ expense, onDelete }) => (
 
 export default function DespesasPage() {
     const [expenses, setExpenses] = useState([]);
-    const [clientsWithProjects, setClientsWithProjects] = useState([]); // Para o filtro e modal
+    const [clientsWithProjects, setClientsWithProjects] = useState([]);
     const [activeProjectFilter, setActiveProjectFilter] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -48,6 +48,7 @@ export default function DespesasPage() {
 
     const fetchClientsAndProjectsForFilter = async () => {
         try {
+            // A API de projetos já retorna com Client e ProjectShares incluídos
             const projectsResponse = await api.get('/projects');
             // Agrupa projetos por cliente para exibição hierárquica no filtro
             const grouped = projectsResponse.data.projects.reduce((acc, proj) => {
@@ -60,6 +61,7 @@ export default function DespesasPage() {
                         Projects: [] 
                     };
                 }
+                // Adiciona o projeto ao cliente correspondente
                 acc[clientId].Projects.push(proj);
                 return acc;
             }, {});
