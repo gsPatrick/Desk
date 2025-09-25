@@ -29,14 +29,14 @@
   font-weight: 700;
   color: var(--colab-text-primary);
   text-decoration: none;
-  flex-shrink: 0; /* Impede que o logo encolha */
+  flex-shrink: 0;
 }
 
 .separator {
   width: 1px;
   height: 20px;
   background-color: var(--colab-border);
-  margin-right: -8px; /* Ajusta o espaçamento ao lado dos links */
+  margin-right: -8px;
   flex-shrink: 0;
 }
 
@@ -45,12 +45,12 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  overflow-x: auto; /* Adiciona rolagem horizontal se necessário */
-  -webkit-overflow-scrolling: touch; /* Rolagem suave em iOS */
-  scrollbar-width: none; /* Esconde a barra de rolagem no Firefox */
-  padding-bottom: 5px; /* Espaço para não cortar sombra ou borda em alguns browsers */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 5px;
 }
-.navLinks::-webkit-scrollbar { display: none; /* Esconde a barra de rolagem no Webkit */ }
+.navLinks::-webkit-scrollbar { display: none; }
 
 
 .navLink {
@@ -65,11 +65,11 @@
   transition: background-color 0.2s ease, color 0.2s ease;
   cursor: pointer;
   text-decoration: none;
-  flex-shrink: 0; /* Impede que os links encolham para caber na rolagem */
+  flex-shrink: 0;
 }
 
 .navLink span {
-  display: none; /* Esconde o texto do link por padrão */
+  display: none;
 }
 
 .navLink:hover {
@@ -85,7 +85,7 @@
   padding-right: 16px;
 }
 .navLink.active span {
-  display: inline; /* Mostra o texto APENAS no link ativo */
+  display: inline;
 }
 
 
@@ -98,12 +98,16 @@
     border-radius: 8px;
     text-decoration: none;
     transition: background-color 0.2s;
-    white-space: nowrap; /* Evita quebra de linha no nome/CNPJ */
+    white-space: nowrap;
 }
 
 .userProfile:hover {
     background-color: var(--colab-surface);
 }
+.userProfile.profileActive {
+    background-color: var(--colab-surface);
+}
+
 
 .userAvatar {
     width: 32px;
@@ -129,9 +133,42 @@
     color: var(--colab-text-primary);
 }
 
-.userRole {
+.docInfoWrapper { /* Novo wrapper para o documento e o botão */
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.userDocLabel {
     font-size: 12px;
     color: var(--colab-text-secondary);
+    font-weight: 500;
+}
+
+.toggleDocButton, .logoutButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--colab-text-secondary);
+    padding: 2px; /* Reduz padding */
+    border-radius: 4px;
+    transition: color 0.2s, background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.toggleDocButton:hover, .logoutButton:hover {
+    color: var(--colab-text-primary);
+    background-color: rgba(255,255,255,0.1);
+}
+
+.logoutButton {
+    margin-left: 8px; /* Espaçamento do restante do perfil */
+    color: #f87171; /* Cor para o ícone de logout */
+}
+.logoutButton:hover {
+    color: #ef4444;
+    background-color: rgba(239, 68, 68, 0.1);
 }
 
 .userProfilePlaceholder {
@@ -147,14 +184,14 @@
 
 /* --- RESPONSIVIDADE (MOBILE) --- */
 .menuToggle {
-    display: none; /* Escondido por padrão, só aparece no mobile */
+    display: none;
     background: none;
     border: none;
     cursor: pointer;
     padding: 8px;
-    margin-left: 16px; /* Espaçamento do logo */
+    margin-left: 16px;
     flex-shrink: 0;
-    z-index: 101; /* Fica acima do menu */
+    z-index: 101;
 }
 
 .hamburger {
@@ -196,23 +233,23 @@
     }
 
     .separator {
-        display: none; /* Esconde o separador no mobile */
+        display: none;
     }
 
     .menuToggle {
-        display: flex; /* Mostra o botão de menu no mobile */
+        display: flex;
     }
 
     .navLinks {
         position: fixed;
-        top: 60px; /* Abaixo do header */
+        top: 60px;
         left: 0;
         right: 0;
         bottom: 0;
         flex-direction: column;
         background-color: var(--colab-background);
         padding: 24px;
-        transform: translateX(-100%); /* Esconde o menu */
+        transform: translateX(-100%);
         transition: transform 0.3s ease-in-out;
         box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         z-index: 99;
@@ -220,7 +257,7 @@
     }
 
     .navLinks.active {
-        transform: translateX(0); /* Mostra o menu */
+        transform: translateX(0);
     }
 
     .navLink {
@@ -230,10 +267,10 @@
         padding: 12px 16px;
     }
     .navLink span {
-        display: inline; /* Sempre mostra o texto no menu mobile */
+        display: inline;
     }
     .navLink.active {
-        padding-left: 16px; /* Ajusta padding para o active state no mobile */
+        padding-left: 16px;
         padding-right: 16px;
     }
 
@@ -241,6 +278,9 @@
         display: none; /* Esconde nome/CNPJ no perfil no mobile para economizar espaço */
     }
     .userProfile {
-        padding: 4px; /* Reduz padding */
+        padding: 4px;
+    }
+    .logoutButton {
+        margin-left: 4px; /* Reduz espaçamento no mobile */
     }
 }

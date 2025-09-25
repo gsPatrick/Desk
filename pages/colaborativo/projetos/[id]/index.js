@@ -16,7 +16,7 @@ import styles from './FullProjectView.module.css';
 import { 
     IoArrowBack, IoDocumentTextOutline, IoHourglassOutline, IoReceiptOutline, 
     IoWalletOutline, IoInformationCircleOutline, IoShieldCheckmarkOutline, IoPencil, 
-    IoTrash, IoPeopleOutline, IoCodeSlashOutline 
+    IoTrash 
 } from 'react-icons/io5';
 
 // Helpers
@@ -83,12 +83,11 @@ export default function FullProjectViewPage() {
             setPriorities(prioritiesResponse.data);
             setCurrentUserId(meResponse.data.id); 
             setCurrentUserRole(meResponse.data.label); 
-            setFormData({ // Inicializa formData com os dados do projeto para os campos de texto/select editáveis
+            setFormData({ // Inicializa formData com os dados do projectResponse.data
                 description: projectResponse.data.description || '',
                 briefing: projectResponse.data.briefing || '',
                 notes: projectResponse.data.notes || '',
                 priorityId: projectResponse.data.priorityId || '',
-                // Campos de comissão para a aba Overview, se forem editáveis lá
                 platformCommissionPercent: projectResponse.data.platformCommissionPercent || '',
                 ownerCommissionType: projectResponse.data.ownerCommissionType || '',
                 ownerCommissionValue: projectResponse.data.ownerCommissionValue || ''
@@ -160,22 +159,19 @@ export default function FullProjectViewPage() {
         }
     };
 
+    // --- CORREÇÃO AQUI: handleFullPayment usa yourRemainingToReceive ---
     const handleFullPayment = async () => {
-        const totalPaid = project.Transactions ? project.Transactions.reduce((sum, t) => sum + parseFloat(t.amount), 0) : 0;
-        const remainingAmount = parseFloat(project.budget) - totalPaid;
-        if (remainingAmount <= 0.001) return; // Pequena tolerância para float
+        const yourRemainingToReceive = parseFloat(project.yourRemainingToReceive || 0); // Pega o valor já calculado do project
+        if (yourRemainingToReceive <= 0.001) return;
 
-        if (window.confirm(`Você confirma o registro de um pagamento de ${formatCurrency(remainingAmount)} para quitar este projeto?`)) {
-            const fullPaymentTransaction = {
-                amount: remainingAmount,
-                paymentDate: new Date().toISOString().split('T')[0],
-                description: 'Pagamento total do projeto'
-            };
+        if (window.confirm(`Você confirma o registro de um recebimento de ${formatCurrency(yourRemainingToReceive)} para quitar sua parte neste projeto?`)) {
             try {
-                await api.post(`/projects/${projectId}/transactions`, fullPaymentTransaction);
+                // A API precisa de um endpoint para registrar o recebimento da SUA PARTE
+                // Vamos usar um endpoint específico para isso no backend
+                await api.patch(`/projects/${projectId}/register-receipt`, { amount: yourRemainingToReceive, isFullPayment: true });
                 fetchProjectAndPriorities();
             } catch (error) {
-                alert(error.response?.data?.message || "Erro ao registrar pagamento total.");
+                alert(error.response?.data?.message || "Erro ao registrar recebimento total da sua parte.");
             }
         }
     };
@@ -205,42 +201,20 @@ export default function FullProjectViewPage() {
 
     // Dados derivados para exibição
     const statusInfo = getStatusInfo(project.status);
-    const totalPaidByClient = project.Transactions ? project.Transactions.reduce((sum, t) => sum + parseFloat(t.amount), 0) : 0;
-    const remainingAmountToClient = parseFloat(project.budget) - totalPaidByClient;
+    const totalPaidByClient = parseFloat(project.paymentDetails?.client?.amountPaid || 0); // Já é o total pago pelo cliente
+    const remainingAmountToClient = parseFloat(project.budget || 0) - totalPaidByClient; // O que falta o cliente pagar
 
-    // --- CÁLCULO DE COMISSÕES E LUCRO LÍQUIDO DO DONO / PARCEIRO ---
+    // --- CÁLCULO DE COMISSÕES E LUCRO LÍQUIDO DO DONO / PARCEIRO (APENAS PARA EXIBIÇÃO) ---
+    // Estes valores já vêm pré-calculados do backend no objeto `project`
     const budget = parseFloat(project.budget || 0);
     const platformCommissionPercent = parseFloat(project.platformCommissionPercent || 0);
     const platformFee = budget * (platformCommissionPercent / 100);
 
-    let netAmountAfterPlatform = budget - platformFee;
-    let totalPartnersCommissions = 0; // Soma das comissões de todos os parceiros
+    const yourTotalToReceive = parseFloat(project.yourTotalToReceive || 0);
+    const yourAmountReceived = parseFloat(project.yourAmountReceived || 0);
+    const yourRemainingToReceive = parseFloat(project.yourRemainingToReceive || 0);
 
-    project.Partners?.forEach(partner => {
-        const share = partner.ProjectShare;
-        const partnerExpectedAmount = share.commissionType === 'percentage'
-            ? netAmountAfterPlatform * (parseFloat(share.commissionValue) / 100)
-            : parseFloat(share.commissionValue);
-        totalPartnersCommissions += partnerExpectedAmount;
-    });
-
-    const ownerExpectedProfit = netAmountAfterPlatform - totalPartnersCommissions; // Lucro líquido do dono
-
-    let yourExpectedProfit = 0;
-    // Se o usuário logado for o DONO
-    if (project.ownerId === currentUserId) {
-        yourExpectedProfit = ownerExpectedProfit;
-    } else { // Se o usuário logado for um PARCEIRO
-        const userAsPartner = project.Partners?.find(p => p.id === currentUserId);
-        if (userAsPartner) {
-            const partnerShare = userAsPartner.ProjectShare;
-            if (partnerShare.commissionType === 'percentage') {
-                yourExpectedProfit = netAmountAfterPlatform * (parseFloat(partnerShare.commissionValue) / 100);
-            } else if (partnerShare.commissionType === 'fixed') {
-                yourExpectedProfit = parseFloat(partnerShare.commissionValue);
-            }
-        }
-    }
+    const netAmountAfterPlatform = budget - platformFee;
 
 
     return (
@@ -286,7 +260,7 @@ export default function FullProjectViewPage() {
                                     <div className={styles.fullWidth}><span className={styles.label}>Comissão Plataforma</span><p className={styles.value}>{platformCommissionPercent || 0}% ({formatCurrency(platformFee)})</p></div>
                                     
                                     <h3 className={styles.subTitle + ' ' + styles.fullWidth}>Sua Participação</h3>
-                                    <div className={styles.fullWidth}><span className={styles.label}>Seu Lucro Líquido Esperado</span><p className={styles.value}>{formatCurrency(yourExpectedProfit)}</p></div>
+                                    <div className={styles.fullWidth}><span className={styles.label}>Seu Líquido Total Esperado</span><p className={styles.value}>{formatCurrency(yourTotalToReceive)}</p></div>
 
                                     {/* --- DADOS DOS PARCEIROS (apenas se houver) --- */}
                                     {project.Partners?.length > 0 && (
@@ -334,12 +308,14 @@ export default function FullProjectViewPage() {
                                 <div className={styles.paymentSummary}>
                                     <div className={styles.summaryItem}><span>Total Recebido do Cliente</span><p className={styles.receivedAmount}>{formatCurrency(totalPaidByClient)}</p></div>
                                     <div className={styles.summaryItem}><span>Valor Restante do Cliente</span><p className={styles.remainingAmount}>{formatCurrency(remainingAmountToClient)}</p></div>
-                                    <div className={styles.summaryItem}><span>Seu Líquido Esperado</span><p className={styles.receivedAmount}>{formatCurrency(yourExpectedProfit)}</p></div>
+                                    <div className={styles.summaryItem}><span>Seu Líquido Total</span><p className={styles.receivedAmount}>{formatCurrency(yourTotalToReceive)}</p></div>
+                                    <div className={styles.summaryItem}><span>Seu Líquido Já Recebido</span><p className={styles.receivedAmount}>{formatCurrency(yourAmountReceived)}</p></div>
+                                    <div className={styles.summaryItem}><span>Seu Líquido Restante</span><p className={styles.remainingAmount}>{formatCurrency(yourRemainingToReceive)}</p></div>
                                 </div>
-                                {remainingAmountToClient > 0.001 && (
+                                {yourRemainingToReceive > 0.001 && ( // Alterado para seuRemainingToReceive
                                     <div className={styles.fullPaymentContainer}>
                                         <button className={styles.fullPaymentButton} onClick={handleFullPayment}>
-                                            <IoShieldCheckmarkOutline /> Registrar Pagamento Total do Cliente
+                                            <IoShieldCheckmarkOutline /> Registrar Recebimento Total (Sua Parte)
                                         </button>
                                     </div>
                                 )}

@@ -1,0 +1,67 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 10000; /* Acima do LoadingModal */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalCard {
+  width: 100%;
+  max-width: 400px;
+  min-height: 250px;
+  /* --- CORREÇÃO AQUI: Fundo azul com gradiente --- */
+  background: linear-gradient(135deg, var(--colab-accent) 0%, #2563eb 100%); /* Gradiente azul */
+  /* --- FIM DA CORREÇÃO --- */
+  border-radius: 16px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+  color: #f0f0f0; /* Cor de texto primária clara (dark-text) */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Borda mais suave */
+}
+
+.iconWrapper {
+  margin-bottom: 24px;
+}
+.icon {
+  color: #fff; /* Ícone branco para contrastar com o fundo azul */
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #fff; /* Título branco */
+}
+
+.description {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9); /* Descrição branca com opacidade */
+  margin-bottom: 32px;
+  max-width: 80%;
+}
+
+.loginButton {
+  padding: 12px 24px;
+  background-color: #0056b3; /* Um azul mais escuro para o botão */
+  color: white;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+  max-width: 200px;
+}
+
+.loginButton:hover {
+  background-color: #004080; /* Um azul ainda mais escuro no hover */
+}

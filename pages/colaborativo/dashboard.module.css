@@ -1,13 +1,20 @@
 .pageWrapper {
-  padding: 84px 24px 24px 24px;
+  padding: 65px 24px 24px 24px;
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
+  /* --- CORREÇÃO PARA DESKTOP: SEM SCROLL, USA 100% DA ALTURA --- */
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  /* --- FIM DA CORREÇÃO --- */
 }
 
 .header {
   text-align: center;
   margin-bottom: 32px;
+  flex-shrink: 0; /* Impede que o header seja comprimido */
 }
 
 .headerLabel {
@@ -25,27 +32,38 @@
 .grid {
   display: grid;
   gap: 24px;
-  /* Grid de 4 colunas que se adapta */
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  /* --- CORREÇÃO PARA USAR 100% DA ALTURA SEM SCROLL NO DESKTOP --- */
+  flex: 1; /* Ocupa todo espaço restante */
+  min-height: 0; /* Permite que o grid seja comprimido se necessário */
+  /* --- FIM DA CORREÇÃO --- */
 }
 
 /* Em telas maiores, forçamos 4 colunas */
 @media (min-width: 1280px) {
+  .pageWrapper {
+    height: calc(100vh - 60px); /* ALTURA FIXA NO DESKTOP */
+    max-height: calc(100vh - 60px);
+    overflow: hidden; /* SEM SCROLL NO DESKTOP */
+  }
+  
   .grid {
     grid-template-columns: repeat(4, 1fr);
   }
-  /* Ajusta o span para que os cards se alinhem corretamente */
   .colSpan2 {
       grid-column: span 2;
   }
   .rowSpan2 {
+      /* --- CORREÇÃO PARA PREENCHER VERTICALMENTE --- */
       grid-row: span 2;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      /* --- FIM DA CORREÇÃO --- */
   }
 }
 
-
 /* Classes de helper para controlar o tamanho dos cards */
-/* NOTA: Essas classes precisarão de media queries inversas para mobile, se o grid muda para 1 coluna */
 .colSpan2 {
   grid-column: span 2;
 }
@@ -53,23 +71,23 @@
   grid-row: span 2;
 }
 
-
-/* --- NOVO ESTILO PARA MENSAGENS DE ESTADO --- */
+/* --- ESTILO PARA MENSAGENS DE ESTADO (AJUSTADO) --- */
 .messageState {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 50vh;
+    height: 100%; /* Usa toda altura disponível do grid */
     font-size: 1.1rem;
     font-weight: 500;
     color: var(--colab-text-secondary);
 }
 
-
 /* --- RESPONSIVIDADE (MOBILE) --- */
 @media (max-width: 768px) {
   .pageWrapper {
-    padding: 72px 16px 16px;
+    padding: 72px 16px 16px 16px;
+    min-height: calc(100vh - 60px - 16px - 16px); /* MOBILE: PODE TER SCROLL */
+    /* Sem height fixo no mobile - permite scroll natural */
   }
 
   .headerValue {
@@ -78,6 +96,7 @@
 
   .grid {
     grid-template-columns: 1fr; /* Força uma única coluna */
+    gap: 16px; /* Reduz gap no mobile para economizar espaço */
   }
 
   /* Reseta a expansão dos cards para que todos tenham o mesmo tamanho */

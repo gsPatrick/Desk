@@ -2,8 +2,8 @@ import { useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import api from '../../../services/colaborativo-api';
+import LoadingModal from '../../../components-colaborativo/LoadingModal/LoadingModal';
 import styles from './Login.module.css';
-import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -11,6 +11,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [userLabel, setUserLabel] = useState('dev'); // Para a animação: assume 'dev' ou busca do user
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,22 +21,23 @@ export default function LoginPage() {
     try {
       const response = await api.post('/users/login', { email, password });
       
-      // Se a API retornou um token, o login foi bem-sucedido
       if (response.data.token) {
-        // Salva o token no localStorage para ser usado em futuras requisições
         localStorage.setItem('authToken', response.data.token);
+        // Pega o tipo de usuário do retorno da API para a animação
+        setUserLabel(response.data.user.label); 
         
-        // Redireciona o usuário para o dashboard
-        router.push('/colaborativo/dashboard');
+        // Simula um pequeno delay para a animação ser visível e suave
+        setTimeout(() => {
+          router.push('/colaborativo/dashboard');
+        }, 3000); // Exibe o modal por 3 segundos para a animação
       } else {
         setError('Ocorreu um erro inesperado. Tente novamente.');
+        setIsLoading(false); // Esconde o modal de loading em caso de erro
       }
     } catch (err) {
-      // Pega a mensagem de erro da API (ex: "Credenciais inválidas")
       const errorMessage = err.response?.data?.error || 'Não foi possível fazer login. Verifique seu e-mail e senha.';
       setError(errorMessage);
-    } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Esconde o modal de loading em caso de erro
     }
   };
 
@@ -83,9 +85,12 @@ export default function LoginPage() {
 
         <p className={styles.footerText}>
           Não tem uma conta?{' '}
-          <Link href="/colaborativo/register">Registrar</Link>
+          <a href="/colaborativo/register">Cadastre-se</a>
         </p>
       </div>
+      
+      {/* --- MODAL DE LOADING --- */}
+      <LoadingModal isOpen={isLoading} userType={userLabel} />
     </div>
   );
-}   
+}

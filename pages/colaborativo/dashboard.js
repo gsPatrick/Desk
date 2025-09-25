@@ -1,3 +1,4 @@
+// DashboardPage.js
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import api from '../../services/colaborativo-api';
@@ -9,7 +10,7 @@ import RecentProjects from '../../components-colaborativo/RecentProjects/RecentP
 import UpcomingDeadlines from '../../components-colaborativo/UpcomingDeadlines/UpcomingDeadlines';
 import ProjectListModal from '../../components-colaborativo/ProjectListModal/ProjectListModal';
 import styles from './dashboard.module.css';
-import { IoArrowUp, IoReceipt, IoWallet, IoCashOutline, IoTrendingUpOutline } from 'react-icons/io5';
+import { IoArrowUp, IoReceipt, IoWallet, IoCashOutline, IoTrendingUpOutline, IoEyeOutline, IoEyeOffOutline } from 'react-icons/io5';
 
 const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value || 0);
 
@@ -30,11 +31,13 @@ export default function DashboardPage() {
     const [dashboardData, setDashboardData] = useState(initialDashboardData);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isValuesHidden, setIsValuesHidden] = useState(false); // Estado inicial pode ser false, mas será sobrescrito pelo localStorage
 
     const [isListModalOpen, setIsListModalOpen] = useState(false);
     const [modalTitle, setModalTitle] = useState('');
     const [projectsForModal, setProjectsForModal] = useState([]);
 
+    // Efeito para carregar os dados do dashboard
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
@@ -49,7 +52,28 @@ export default function DashboardPage() {
         };
 
         fetchDashboardData();
-    }, []);
+    }, []); // Dependência vazia, executa apenas na montagem
+
+    // Efeito para carregar e salvar a preferência de visibilidade
+    useEffect(() => {
+        // Carregar a preferência de visibilidade do localStorage na montagem
+        // Certifique-se de que estamos no ambiente do navegador antes de acessar localStorage
+        if (typeof window !== 'undefined') {
+            const storedVisibility = localStorage.getItem('hideDashboardValues');
+            if (storedVisibility !== null) {
+                setIsValuesHidden(JSON.parse(storedVisibility));
+            }
+        }
+    }, []); // Dependência vazia, executa apenas na montagem inicial para carregar
+
+    // Efeito para salvar a preferência de visibilidade no localStorage sempre que 'isValuesHidden' mudar
+    useEffect(() => {
+        // Certifique-se de que estamos no ambiente do navegador antes de acessar localStorage
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('hideDashboardValues', JSON.stringify(isValuesHidden));
+        }
+    }, [isValuesHidden]); // Este useEffect reage apenas às mudanças de isValuesHidden
+
 
     const handleOpenListModal = (title, projects) => {
         if (projects && projects.length > 0) {
@@ -57,6 +81,14 @@ export default function DashboardPage() {
             setProjectsForModal(projects);
             setIsListModalOpen(true);
         }
+    };
+
+    const toggleValuesVisibility = () => {
+        setIsValuesHidden(prev => !prev); // Usar a função de atualização para garantir o estado mais recente
+    };
+
+    const displayValue = (value) => {
+        return isValuesHidden ? '********' : value;
     };
 
     if (isLoading) {
@@ -90,14 +122,42 @@ export default function DashboardPage() {
             <main className={styles.pageWrapper}>
                 <div className={styles.header}>
                     <p className={styles.headerLabel}>Lucro Líquido (Mês)</p>
-                    <h1 className={styles.headerValue}>{formatCurrency(dashboardData.netProfitMonth)}</h1>
+                    <div className={styles.headerValueContainer}>
+                        <h1 className={styles.headerValue}>{displayValue(formatCurrency(dashboardData.netProfitMonth))}</h1>
+                        <button onClick={toggleValuesVisibility} className={styles.visibilityToggle}>
+                            {isValuesHidden ? <IoEyeOffOutline size={24} /> : <IoEyeOutline size={24} />}
+                        </button>
+                    </div>
                 </div>
 
                 <div className={styles.grid}>
-                    <StatCard title="Valor Bruto (Projetos)" value={formatCurrency(dashboardData.totalGrossBudget)} icon={<IoCashOutline color="#4ade80" />} subtitle="Orçamento total de todos os projetos" />
-                    <StatCard title="Total a Receber" value={formatCurrency(dashboardData.totalToReceive)} icon={<IoTrendingUpOutline color="#f59e0b" />} subtitle="Seu líquido a receber" />
-                    <StatCard title="Falta Receber" value={formatCurrency(dashboardData.remainingToReceive)} icon={<IoReceipt color="#f87171" />} subtitle="Seu líquido que ainda não entrou" />
-                    <StatCard title="Total Despesas (Mês)" value={formatCurrency(dashboardData.totalExpensesMonth)} icon={<IoReceipt color="#f87171" />} />
+                    <StatCard 
+                        title="Valor Bruto (Projetos)" 
+                        value={displayValue(formatCurrency(dashboardData.totalGrossBudget))} 
+                        icon={<IoCashOutline color="#4ade80" />} 
+                        subtitle="Orçamento total de todos os projetos" 
+                        isValuesHidden={isValuesHidden} // Passa a prop para o StatCard
+                    />
+                    <StatCard 
+                        title="Total a Receber" 
+                        value={displayValue(formatCurrency(dashboardData.totalToReceive))} 
+                        icon={<IoTrendingUpOutline color="#f59e0b" />} 
+                        subtitle="Seu líquido a receber" 
+                        isValuesHidden={isValuesHidden} // Passa a prop para o StatCard
+                    />
+                    <StatCard 
+                        title="Falta Receber" 
+                        value={displayValue(formatCurrency(dashboardData.remainingToReceive))} 
+                        icon={<IoReceipt color="#f87171" />} 
+                        subtitle="Seu líquido que ainda não entrou" 
+                        isValuesHidden={isValuesHidden} // Passa a prop para o StatCard
+                    />
+                    <StatCard 
+                        title="Total Despesas (Mês)" 
+                        value={displayValue(formatCurrency(dashboardData.totalExpensesMonth))} 
+                        icon={<IoReceipt color="#f87171" />} 
+                        isValuesHidden={isValuesHidden} // Passa a prop para o StatCard
+                    />
                     
                     <div className={styles.colSpan2}>
                         <StatCard 
@@ -109,7 +169,7 @@ export default function DashboardPage() {
                     </div>
                     
                     <div className={`${styles.colSpan2} ${styles.rowSpan2}`}>
-                        <ProfitChart data={dashboardData.profitChartData.length > 0 ? dashboardData.profitChartData : []} />
+                        <ProfitChart data={dashboardData.profitChartData.length > 0 ? dashboardData.profitChartData : []} isValuesHidden={isValuesHidden} /> {/* Passa a prop para o ProfitChart */}
                     </div>
                     <div className={styles.rowSpan2}>
                         <RecentProjects 

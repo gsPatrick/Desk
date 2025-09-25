@@ -10,7 +10,7 @@ import StatusFilter from '../../components-colaborativo/StatusFilter/StatusFilte
 import PriorityFilter from '../../components-colaborativo/PriorityFilter/PriorityFilter';
 import DateFilter from '../../components-colaborativo/DateFilter/DateFilter';
 import Pagination from '../../components-colaborativo/Pagination/Pagination';
-import ProjectFilterDrawer from '../../components-colaborativo/ProjectFilterDrawer/ProjectFilterDrawer'; // NOVO IMPORT
+import ProjectFilterDrawer from '../../components-colaborativo/ProjectFilterDrawer/ProjectFilterDrawer';
 import styles from './projetos.module.css';
 import { IoAdd, IoRefresh, IoFilter } from 'react-icons/io5';
 
@@ -22,7 +22,7 @@ const initialFinancialSummary = { totalBudget: 0, totalReceived: 0, totalToRecei
 const initialPaginationInfo = { totalProjects: 0, totalPages: 1, currentPage: 1 };
 
 export default function ProjetosPage() {
-  const [currentUserRole, setCurrentUserRole] = useState('dev'); // Será usado para calcular lucro no ProjectCard
+  const [currentUserRole, setCurrentUserRole] = useState('dev');
   const [currentUserId, setCurrentUserId] = useState(null);
 
   // Estados para os dados da API
@@ -32,7 +32,7 @@ export default function ProjetosPage() {
   const [clientList, setClientList] = useState([]);
   const [collaborators, setCollaborators] = useState([]);
   const [priorityList, setPriorityList] = useState([]);
-  const [platformList, setPlatformList] = useState([]); // Para filtro de plataforma
+  const [platformList, setPlatformList] = useState([]);
 
   // Estados de controle da UI
   const [isLoading, setIsLoading] = useState(true);
@@ -42,12 +42,12 @@ export default function ProjetosPage() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('all');
   const [priorityFilter, setPriorityFilter] = useState('all');
-  const [minBudget, setMinBudget] = useState(''); // NOVO
-  const [maxBudget, setMaxBudget] = useState(''); // NOVO
-  const [platformFilter, setPlatformFilter] = useState(''); // NOVO
-  const [clientFilter, setClientFilter] = useState(''); // NOVO
-  const [sortBy, setSortBy] = useState('createdAt'); // NOVO: Padrão por criação
-  const [sortOrder, setSortOrder] = useState('desc'); // NOVO: Padrão descendente
+  const [minBudget, setMinBudget] = useState('');
+  const [maxBudget, setMaxBudget] = useState('');
+  const [platformFilter, setPlatformFilter] = useState('');
+  const [clientFilter, setClientFilter] = useState('');
+  const [sortBy, setSortBy] = useState('createdAt');
+  const [sortOrder, setSortOrder] = useState('desc');
 
   const [currentPage, setCurrentPage] = useState(1);
   const [isAnyFilterActive, setIsAnyFilterActive] = useState(false);
@@ -58,7 +58,6 @@ export default function ProjetosPage() {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [projectToEdit, setProjectToEdit] = useState(null);
 
-  // --- NOVO ESTADO PARA O DRAWER DE FILTROS MOBILE/DESKTOP ---
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
 
 
@@ -100,7 +99,6 @@ export default function ProjetosPage() {
         try {
             const meResponse = await api.get('/users/me');
             setCurrentUserId(meResponse.data.id);
-            // Assumimos que o role do usuário é o do banco de dados
             setCurrentUserRole(meResponse.data.label); 
             
             const [clientsResponse, collabsResponse, prioritiesResponse, platformsResponse] = await Promise.all([
@@ -227,7 +225,6 @@ export default function ProjetosPage() {
             </div>
             {/* --- FILTROS PARA DESKTOP --- */}
             <div className={styles.desktopActionsContainer}>
-              {/* REMOVIDO os filtros Status, Prioridade, Data. Serão no Drawer */}
               {isAnyFilterActive && (
                 <button className={styles.clearButton} onClick={handleClearFilters} title="Limpar todos os filtros">
                   <IoRefresh size={18} />
@@ -263,11 +260,11 @@ export default function ProjetosPage() {
             </div>
             <div className={styles.summaryCard}>
                 <p className={styles.summaryLabel}>Seu Líquido a Receber</p>
-                <h2 className={`${styles.summaryValue} ${styles.valueToReceive}`}>{formatCurrency(financialSummary.totalToReceive)}</h2>
+                <h2 className={`${styles.summaryValue} ${styles.valueProfit}`}>{formatCurrency(financialSummary.totalToReceive)}</h2>
             </div>
              <div className={styles.summaryCard}>
                 <p className={styles.summaryLabel}>Seu Líquido Restante</p>
-                <h2 className={`${styles.summaryValue} ${styles.valueToReceive}`}>{formatCurrency(financialSummary.remainingToReceive)}</h2>
+                <h2 className={`${styles.summaryValue} ${styles.valueRemaining}`}>{formatCurrency(financialSummary.remainingToReceive)}</h2>
             </div>
         </div>
         
@@ -284,8 +281,8 @@ export default function ProjetosPage() {
                   onPriorityChange={handlePriorityChange}
                   onEdit={handleEdit}
                   onDelete={handleDelete}
-                  currentUserRole={currentUserRole} // Passa o role
-                  currentUserId={currentUserId} // Passa o ID para ProjectCard calcular lucro
+                  currentUserRole={currentUserRole}
+                  currentUserId={currentUserId}
                   priorities={priorityList}
                 />
             ) : (
@@ -304,12 +301,12 @@ export default function ProjetosPage() {
       </main>
 
       <ProjectDetailsModal 
-        project={selectedProject}
+        project={selectedProject} // selectedProject já contém os dados financeiros do projeto
         isOpen={isDetailsModalOpen}
         onClose={handleCloseDetailsModal}
-        onDataChange={fetchProjects}
+        onDataChange={fetchProjects} // Atualiza a lista principal
         priorities={priorityList}
-        currentUserId={currentUserId} // Passa para o modal calcular lucro
+        currentUserId={currentUserId}
       />
       <ProjectFormModal
         isOpen={isFormModalOpen}

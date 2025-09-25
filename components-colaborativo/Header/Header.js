@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import api from '../../services/colaborativo-api';
 import styles from './Header.module.css';
-import { IoBriefcase, IoPeople, IoFolder, IoGrid, IoReceiptOutline, IoPerson, IoShareSocial } from 'react-icons/io5';
+import { IoBriefcase, IoPeople, IoFolder, IoGrid, IoReceiptOutline, IoShareSocial,IoPerson, IoEye, IoEyeOff, IoExitOutline } from 'react-icons/io5';
+import { useRouter } from 'next/router';
 
 const NavLink = ({ href, icon, label, isActive }) => (
     <Link href={href} className={`${styles.navLink} ${isActive ? styles.active : ''}`}>
@@ -12,8 +13,11 @@ const NavLink = ({ href, icon, label, isActive }) => (
 );
 
 export default function Header({ activePage }) {
+    const router = useRouter();
     const [user, setUser] = useState(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    // --- NOVO ESTADO PARA VISIBILIDADE DE DOCUMENTOS ---
+    const [showDoc, setShowDoc] = useState(true); // Padrão visível
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -22,17 +26,47 @@ export default function Header({ activePage }) {
                 setUser(response.data);
             } catch (error) {
                 console.error("Erro ao buscar dados do usuário no header:", error);
-                // Em caso de erro (ex: token inválido), redirecionar para o login
-                // if (typeof window !== 'undefined' && window.location.pathname !== '/colaborativo/login' && window.location.pathname !== '/colaborativo/register') {
-                //     window.location.href = '/colaborativo/login';
-                // }
+                // Redirecionar para o login se não houver token ou for inválido
+                if (!localStorage.getItem('authToken') && !router.pathname.startsWith('/colaborativo/login') && !router.pathname.startsWith('/colaborativo/register')) {
+                    router.push('/colaborativo/login');
+                }
             }
         };
         fetchUser();
-    }, []);
+
+        // --- PERSISTÊNCIA: Carrega estado do localStorage ---
+        const storedShowDoc = localStorage.getItem('showDocInHeader');
+        if (storedShowDoc !== null) {
+            setShowDoc(JSON.parse(storedShowDoc));
+        }
+    }, [router.pathname]);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
+    };
+
+    // --- NOVO HANDLER PARA TOGGLE DO CPF/CNPJ ---
+    const toggleShowDoc = () => {
+        const newState = !showDoc;
+        setShowDoc(newState);
+        localStorage.setItem('showDocInHeader', JSON.stringify(newState)); // Salva no localStorage
+    };
+
+    // --- NOVO HANDLER PARA LOGOUT ---
+    const handleLogout = () => {
+        localStorage.removeItem('authToken'); // Limpa o token
+        router.push('/colaborativo/login'); // Redireciona para o login
+    };
+
+    const formatCnpjCpfForDisplay = (doc) => {
+        if (!doc) return '';
+        doc = doc.replace(/\D/g, ''); // Remove não dígitos
+        if (doc.length === 11) { // CPF
+            return doc.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        } else if (doc.length === 14) { // CNPJ
+            return doc.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+        }
+        return doc;
     };
 
     return (
@@ -67,13 +101,32 @@ export default function Header({ activePage }) {
                         </div>
                         <div className={styles.userInfo}>
                             <span className={styles.userName}>{user.name}</span>
-                            {user.label === 'agency' && user.companyFantasyName && (
-                                <span className={styles.userRole}>{user.companyFantasyName}</span>
+                            {/* --- EXIBIÇÃO DINÂMICA E BOTÃO DE TOGGLE --- */}
+                            {user.label === 'agency' && (user.companyCnpj || user.companyFantasyName) && (
+                                <div className={styles.docInfoWrapper}>
+                                    <span className={styles.userDocLabel}>
+                                        {showDoc ? (user.companyCnpj ? formatCnpjCpfForDisplay(user.companyCnpj) : user.companyFantasyName) : '•••.•••.•••-••'}
+                                    </span>
+                                    <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleShowDoc(); }} className={styles.toggleDocButton}>
+                                        {showDoc ? <IoEyeOff size={16} /> : <IoEye size={16} />}
+                                    </button>
+                                </div>
                             )}
                             {user.label === 'dev' && user.cpf && (
-                                <span className={styles.userRole}>CPF: {user.cpf}</span>
+                                <div className={styles.docInfoWrapper}>
+                                    <span className={styles.userDocLabel}>
+                                        {showDoc ? formatCnpjCpfForDisplay(user.cpf) : '•••.•••.•••-••'}
+                                    </span>
+                                    <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleShowDoc(); }} className={styles.toggleDocButton}>
+                                        {showDoc ? <IoEyeOff size={16} /> : <IoEye size={16} />}
+                                    </button>
+                                </div>
                             )}
                         </div>
+                        {/* --- BOTÃO DE LOGOUT --- */}
+                        <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleLogout(); }} className={styles.logoutButton} title="Sair da conta">
+                            <IoExitOutline size={20} />
+                        </button>
                     </Link>
                 ) : (
                     <div className={styles.userProfilePlaceholder}>

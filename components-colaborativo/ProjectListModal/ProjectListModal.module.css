@@ -1,4 +1,3 @@
-
 .listContainer {
     max-height: 60vh;
     overflow-y: auto;
@@ -11,15 +10,28 @@
 }
 
 .projectItem {
+    border-bottom: 1px solid var(--colab-border);
+}
+.projectItem:last-child {
+    border-bottom: none;
+}
+
+/* --- ESTILOS PARA O LINK DO PROJETO --- */
+.projectLink {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 12px 8px;
     font-size: 15px;
     font-weight: 500;
     color: var(--colab-text-primary);
-    border-bottom: 1px solid var(--colab-border);
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
 }
 
-.projectItem:last-child {
-    border-bottom: none;
+.projectLink:hover {
+    background-color: var(--colab-border);
+    color: var(--colab-accent);
 }
 
 .emptyMessage {

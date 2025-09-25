@@ -1,29 +1,55 @@
 import axios from 'axios';
 
-// Define a URL base da sua API
 const API_URL = 'https://n8n-colaborativo-api.r954jc.easypanel.host/api';
 
-// Cria uma instância do Axios com a configuração base
 const api = axios.create({
   baseURL: API_URL,
 });
 
-// Isso é um "interceptor". Ele executa um código ANTES de cada requisição ser enviada.
-// Aqui, ele vai pegar o token de autenticação do localStorage e adicioná-lo ao cabeçalho.
+// Removido: let openSessionExpiredModalGlobally e setGlobalSessionExpiredModal
+// Removido: export let isSessionExpired = false;
+
+// Interceptor de requisições
 api.interceptors.request.use(
   (config) => {
-    // Assumimos que o token é salvo no localStorage após o login com a chave 'authToken'
-    const token = localStorage.getItem('authToken'); 
-    
+    // --- NOVO: Verifica se o token ainda existe antes de enviar.
+    // Se o token foi removido por um 401 anterior, não tenta mais requisições.
+    const token = localStorage.getItem('authToken');
+    if (!token && !config.url.includes('/users/login') && !config.url.includes('/users/register')) {
+        // Se não há token e não é login/register, cancela a requisição para evitar loops.
+        return Promise.reject(new axios.Cancel('Nenhum token. Redirecionando para login.'));
+    }
+
     if (token) {
-      // Se o token existir, adiciona ao cabeçalho 'Authorization'
       config.headers['Authorization'] = `Bearer ${token}`;
     }
-    
     return config;
   },
   (error) => {
-    // Se houver um erro na configuração, a promessa é rejeitada
+    return Promise.reject(error);
+  }
+);
+
+// Interceptor de respostas
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (axios.isCancel(error)) {
+        return Promise.reject(error); // Retorna o cancelamento sem processar como erro
+    }
+
+    if (error.response && error.response.status === 401) {
+      // --- CORREÇÃO CRÍTICA AQUI: Redireciona diretamente para a nova página ---
+      localStorage.removeItem('authToken'); // Limpa o token imediatamente
+      // Apenas redireciona se não estiver já na página de sessão expirada ou login
+      if (!window.location.pathname.startsWith('/colaborativo/session-expired') && 
+          !window.location.pathname.startsWith('/colaborativo/login') &&
+          !window.location.pathname.startsWith('/colaborativo/register')) {
+        window.location.href = '/colaborativo/session-expired'; 
+      }
+    }
     return Promise.reject(error);
   }
 );

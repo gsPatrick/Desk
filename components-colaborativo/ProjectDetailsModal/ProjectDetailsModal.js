@@ -36,12 +36,12 @@ const TextContentSection = ({ title, content, name, onChange, rows = 4 }) => {
     );
 };
 
-export default function ProjectDetailsModal({ project, isOpen, onClose, onDataChange, priorities }) {
+export default function ProjectDetailsModal({ project, isOpen, onClose, onDataChange, priorities, currentUserId }) {
     const [activeTab, setActiveTab] = useState('overview');
     const [formData, setFormData] = useState({}); // Estado para campos editáveis (prioridade, doc)
     const [transactions, setTransactions] = useState([]);
     const [newTransaction, setNewTransaction] = useState({ amount: '', paymentDate: new Date().toISOString().split('T')[0] });
-    const [isLoadingTransactions, setIsLoadingTransactions] = useState(false); // Renomeado para maior clareza
+    const [isLoadingTransactions, setIsLoadingTransactions] = useState(false);
 
     useEffect(() => {
         if (project) {
@@ -78,8 +78,8 @@ export default function ProjectDetailsModal({ project, isOpen, onClose, onDataCh
         try {
             await api.post(`/projects/${project.id}/transactions`, newTransaction);
             setNewTransaction({ amount: '', paymentDate: new Date().toISOString().split('T')[0] });
-            onDataChange();
-            fetchTransactions();
+            onDataChange(); // Notifica a página pai para recarregar
+            fetchTransactions(); // Re-busca transações para o modal
         } catch (error) { 
             alert(error.response?.data?.message || "Erro ao adicionar transação."); 
         }
@@ -101,7 +101,7 @@ export default function ProjectDetailsModal({ project, isOpen, onClose, onDataCh
         try {
             // Envia apenas os campos relevantes para o PATCH
             const dataToPatch = {
-                priorityId: formData.priorityId,
+                priorityId: formData.priorityId === '' ? null : parseInt(formData.priorityId, 10),
                 description: formData.description,
                 briefing: formData.briefing,
                 notes: formData.notes
@@ -114,28 +114,33 @@ export default function ProjectDetailsModal({ project, isOpen, onClose, onDataCh
         }
     };
 
-    const statusInfo = getStatusInfo(project.status);
-    const totalPaid = transactions.reduce((sum, t) => sum + parseFloat(t.amount), 0);
-    const remainingAmount = parseFloat(project.budget) - totalPaid;
-
+    // --- CORREÇÃO AQUI: handleFullPayment usa yourRemainingToReceive ---
     const handleFullPayment = async () => {
-        if (remainingAmount <= 0.001) return;
+        const yourRemainingToReceive = parseFloat(project.yourRemainingToReceive || 0); // Usa o valor pré-calculado
+        if (yourRemainingToReceive <= 0.001) return;
 
-        if (window.confirm(`Você confirma o registro de um pagamento de ${formatCurrency(remainingAmount)} para quitar este projeto?`)) {
-            const fullPaymentTransaction = {
-                amount: remainingAmount,
-                paymentDate: new Date().toISOString().split('T')[0],
-                description: 'Pagamento total do projeto'
-            };
+        if (window.confirm(`Você confirma o registro de um recebimento de ${formatCurrency(yourRemainingToReceive)} para quitar sua parte neste projeto?`)) {
             try {
-                await api.post(`/projects/${project.id}/transactions`, fullPaymentTransaction);
+                // Endpoint para registrar o recebimento da SUA PARTE
+                await api.patch(`/projects/${project.id}/register-receipt`, { amount: yourRemainingToReceive, isFullPayment: true });
                 onDataChange();
-                fetchTransactions();
+                fetchTransactions(); // Re-busca as transações para atualizar o modal
             } catch (error) {
-                alert(error.response?.data?.message || "Erro ao registrar pagamento total.");
+                alert(error.response?.data?.message || "Erro ao registrar recebimento total da sua parte.");
             }
         }
     };
+    // --- FIM LÓGICA DE PAGAMENTOS ---
+
+    const statusInfo = getStatusInfo(project.status);
+    const totalPaidByClient = parseFloat(project.paymentDetails?.client?.amountPaid || 0); // Já é o total pago pelo cliente
+    const remainingAmountToClient = parseFloat(project.budget || 0) - totalPaidByClient; // O que falta o cliente pagar
+
+    // Valores financeiros pré-calculados do projeto
+    const yourTotalToReceive = parseFloat(project.yourTotalToReceive || 0);
+    const yourAmountReceived = parseFloat(project.yourAmountReceived || 0);
+    const yourRemainingToReceive = parseFloat(project.yourRemainingToReceive || 0);
+
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} title={project.name}>
@@ -146,7 +151,6 @@ export default function ProjectDetailsModal({ project, isOpen, onClose, onDataCh
             </div>
 
             <div className={styles.tabContent}>
-                {/* Aba de Visão Geral */}
                 {activeTab === 'overview' && (
                     <div className={styles.detailsGrid}>
                         <DetailItem label="Cliente" value={project.Client ? (project.Client.tradeName || project.Client.legalName) : 'N/A'} />
@@ -163,7 +167,6 @@ export default function ProjectDetailsModal({ project, isOpen, onClose, onDataCh
                     </div>
                 )}
 
-                {/* Aba de Documentação */}
                 {activeTab === 'docs' && (
                     <div className={styles.docsSection}>
                         <TextContentSection title="Descrição" name="description" content={formData.description} onChange={handleFormChange} rows={4} />
@@ -172,23 +175,23 @@ export default function ProjectDetailsModal({ project, isOpen, onClose, onDataCh
                     </div>
                 )}
                 
-                {/* Aba de Pagamentos */}
                 {activeTab === 'payments' && (
                     <div className={styles.paymentControlSection}>
                         <div className={styles.paymentSummary}>
-                            <DetailItem label="Total Recebido" value={formatCurrency(totalPaid)} />
-                            <DetailItem label="Valor Restante" value={formatCurrency(remainingAmount)} />
+                            <div className={styles.summaryItem}><span>Total Recebido do Cliente</span><p className={styles.receivedAmount}>{formatCurrency(totalPaidByClient)}</p></div>
+                            <div className={styles.summaryItem}><span>Valor Restante do Cliente</span><p className={styles.remainingAmount}>{formatCurrency(remainingAmountToClient)}</p></div>
+                            <div className={styles.summaryItem}><span>Seu Líquido Total</span><p className={styles.receivedAmount}>{formatCurrency(yourTotalToReceive)}</p></div>
+                            <div className={styles.summaryItem}><span>Seu Líquido Já Recebido</span><p className={styles.receivedAmount}>{formatCurrency(yourAmountReceived)}</p></div>
+                            <div className={styles.summaryItem}><span>Seu Líquido Restante</span><p className={styles.remainingAmount}>{formatCurrency(yourRemainingToReceive)}</p></div>
                         </div>
-                        
-                        {remainingAmount > 0.001 && (
+                        {yourRemainingToReceive > 0.001 && ( // Alterado para seuRemainingToReceive
                             <div className={styles.fullPaymentContainer}>
                                 <button className={styles.fullPaymentButton} onClick={handleFullPayment}>
-                                    <IoShieldCheckmarkOutline /> Registrar Pagamento Total
+                                    <IoShieldCheckmarkOutline /> Registrar Recebimento Total (Sua Parte)
                                 </button>
                             </div>
                         )}
-
-                        <h3 className={styles.subTitle}>Histórico de Pagamentos</h3>
+                        <h3 className={styles.subTitle}>Histórico de Pagamentos do Cliente</h3>
                         {isLoadingTransactions ? <p className={styles.noTransactions}>Carregando...</p> : (
                             <div className={styles.transactionList}>
                                 {project.Transactions && project.Transactions.length > 0 ? project.Transactions.map(t => (
@@ -196,7 +199,7 @@ export default function ProjectDetailsModal({ project, isOpen, onClose, onDataCh
                                         <div><p className={styles.transactionAmount}>{formatCurrency(t.amount)}</p><p className={styles.transactionDate}>{formatDate(t.paymentDate)}</p></div>
                                         <button onClick={() => handleDeleteTransaction(t.id)} className={styles.deleteButton} title="Excluir"><IoTrash /></button>
                                     </div>
-                                )) : <p className={styles.noTransactions}>Nenhum pagamento registrado.</p>}
+                                )) : <p className={styles.noTransactions}>Nenhum pagamento registrado do cliente.</p>}
                             </div>
                         )}
                         <form className={styles.addTransactionForm} onSubmit={handleAddTransaction}>

@@ -29,7 +29,6 @@ const getDeadlineInfo = (deadline) => {
 };
 
 const getPaymentStatusInfo = (payment) => {
-    // Agora o paymentDetails vem com client: {status, amountPaid}
     const clientPayment = payment?.client;
     if (!clientPayment) return { Icon: IoAlertCircle, className: styles.paymentStatusUnpaid, title: 'Status de pagamento do cliente não definido' };
     
@@ -50,51 +49,21 @@ export default function ProjectCard({ project, onOpenModal, onStatusChange, onEd
     const { className: deadlineClass, text: deadlineText } = getDeadlineInfo(project.deadline);
     const { Icon: PaymentIcon, className: paymentClass, title: paymentTitle } = getPaymentStatusInfo(project.paymentDetails);
     
-    const budget = parseFloat(project.budget) || 0;
-    const clientPayment = project.paymentDetails?.client || {};
-    const amountPaidByClient = parseFloat(clientPayment.amountPaid || 0);
-    const remainingAmountToClient = budget - amountPaidByClient;
+    // --- CORREÇÃO AQUI: USA OS VALORES PRÉ-CALCULADOS DO BACKEND ---
+    // project.budget já é o valor bruto
+    const budget = parseFloat(project.budget || 0); 
+    const amountPaidByClient = parseFloat(project.paymentDetails?.client?.amountPaid || 0);
+    const yourTotalToReceive = parseFloat(project.yourTotalToReceive || 0);
+    const yourAmountReceived = parseFloat(project.yourAmountReceived || 0);
+    const yourRemainingToReceive = parseFloat(project.yourRemainingToReceive || 0);
     
-    // --- CÁLCULO DE COMISSÕES E LUCRO LÍQUIDO (MAIS PRECISO) ---
+    // Calcula comissão da plataforma para exibição (usando % e valor)
     const platformCommissionPercent = parseFloat(project.platformCommissionPercent || 0);
     const platformFee = budget * (platformCommissionPercent / 100);
 
-    let netAmountAfterPlatform = budget - platformFee;
-    let totalPartnersCommissions = 0; // Soma das comissões de todos os parceiros
-
-    project.Partners?.forEach(partner => {
-        const share = partner.ProjectShare;
-        const partnerExpectedAmount = share.commissionType === 'percentage'
-            ? netAmountAfterPlatform * (parseFloat(share.commissionValue) / 100)
-            : parseFloat(share.commissionValue);
-        totalPartnersCommissions += partnerExpectedAmount;
-    });
-
-    const ownerExpectedProfit = netAmountAfterPlatform - totalPartnersCommissions; // Lucro líquido do dono (o que sobra pra ele)
-
-    // Valores para o usuário logado
-    let yourTotalToReceive = 0; // O que o usuário logado (dono ou parceiro) deve receber
-    let yourAmountReceived = 0; // O que o usuário logado já recebeu
+    // Lista de comissões de parceiros para exibição
+    const partnersCommissionsList = project.partnersCommissionsList || []; // Pega a lista já calculada do backend
     
-    // Se o usuário logado for o DONO
-    if (project.ownerId === currentUserId) {
-        yourTotalToReceive = ownerExpectedProfit;
-        yourAmountReceived = parseFloat(project.paymentDetails?.owner?.amountReceived || 0);
-    } else { // Se o usuário logado for um PARCEIRO
-        const userAsPartner = project.Partners?.find(p => p.id === currentUserId);
-        if (userAsPartner) {
-            const partnerShare = userAsPartner.ProjectShare;
-            if (partnerShare.commissionType === 'percentage') {
-                yourTotalToReceive = netAmountAfterPlatform * (parseFloat(partnerShare.commissionValue) / 100);
-            } else if (partnerShare.commissionType === 'fixed') {
-                yourTotalToReceive = parseFloat(partnerShare.commissionValue);
-            }
-            yourAmountReceived = parseFloat(partnerShare.amountPaid || 0);
-        }
-    }
-    const yourRemainingToReceive = yourTotalToReceive - yourAmountReceived;
-
-
     const statusOptions = Object.entries(STATUS_MAP).map(([value, { label }]) => ({ value, label }));
 
     return (
@@ -129,24 +98,42 @@ export default function ProjectCard({ project, onOpenModal, onStatusChange, onEd
             </div>
 
             <div className={styles.financialSection} onClick={() => onOpenModal(project)}>
-                {/* --- NOVOS ITENS FINANCEIROS PARA O CARD --- */}
+                {/* --- ITENS FINANCEIROS PARA O CARD (CORRIGIDO PARA USAR OS VALORES DA API) --- */}
                 <div className={styles.financialRow}>
                     <span className={styles.label}>Valor Bruto</span>
                     <span className={styles.value}>{formatCurrency(budget)}</span>
                 </div>
                 <div className={styles.financialRow}>
-                    <span className={styles.label}>Seu Líquido Total</span>
-                    <span className={styles.value}>{formatCurrency(yourTotalToReceive)}</span>
+                    <span className={styles.label}>Recebido (Cliente)</span>
+                    <span className={`${styles.value} ${amountPaidByClient > 0 ? styles.valuePaid : ''}`}>{formatCurrency(amountPaidByClient)}</span>
                 </div>
                  <div className={styles.financialRow}>
-                    <span className={styles.label}>Já Recebeu</span>
-                    <span className={`${styles.value} ${styles.valuePaid}`}>{formatCurrency(yourAmountReceived)}</span>
+                    <span className={styles.label}>Seu Líquido Total</span>
+                    <span className={`${styles.value} ${yourTotalToReceive > 0 ? styles.valueProfit : ''}`}>{formatCurrency(yourTotalToReceive)}</span>
                 </div>
                 <div className={styles.financialRow}>
-                    <span className={styles.label}>Falta Receber</span>
-                    <span className={`${styles.value} ${styles.valueRemaining}`}>{formatCurrency(yourRemainingToReceive)}</span>
+                    <span className={styles.label}>Seu Líquido Restante</span>
+                    <span className={`${styles.value} ${yourRemainingToReceive > 0 ? styles.valueRemaining : ''}`}>{formatCurrency(yourRemainingToReceive)}</span>
                 </div>
                 {/* --- FIM DOS NOVOS ITENS FINANCEIROS --- */}
+                
+                {/* --- EXIBIÇÃO DE COMISSÕES --- */}
+                {(platformFee > 0 || partnersCommissionsList.length > 0) && (
+                    <div className={styles.costsSection}>
+                        {platformFee > 0 && (
+                            <div className={styles.costItem}>
+                                <span className={styles.costLabel}><IoCodeSlashOutline /> Plataforma ({platformCommissionPercent}%)</span>
+                                <span className={styles.costValue}>- {formatCurrency(platformFee)}</span>
+                            </div>
+                        )}
+                        {partnersCommissionsList.map(partner => (
+                            <div key={partner.id} className={styles.costItem}>
+                                <span className={styles.costLabel}><IoPeopleOutline /> {partner.name} ({partner.shareDetails.commissionValue}{partner.shareDetails.commissionType === 'percentage' ? '%' : ''})</span>
+                                <span className={styles.costValue}>- {formatCurrency(partner.expectedAmount)}</span>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
 
             <div className={styles.cardFooter}>
@@ -166,7 +153,7 @@ export default function ProjectCard({ project, onOpenModal, onStatusChange, onEd
                         )}
                     </div>
                 )}
-                {!project.AssociatedPlatform && platformCommissionPercent > 0 && (
+                {!project.AssociatedPlatform && platformCommissionPercent > 0 && ( // Caso seja uma plataforma externa sem registro
                     <div className={styles.platformLogoContainer}>
                         <span className={styles.platformNameText}>Plataforma Externa ({platformCommissionPercent}%)</span>
                     </div>

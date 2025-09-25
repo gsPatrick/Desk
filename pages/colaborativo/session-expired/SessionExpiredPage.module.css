@@ -1,0 +1,61 @@
+.pageContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: var(--colab-background); /* Fundo da página */
+}
+
+.contentCard {
+  width: 100%;
+  max-width: 500px;
+  background-color: var(--colab-surface);
+  border-radius: 16px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+  color: var(--colab-text-primary);
+  border: 1px solid var(--colab-border);
+}
+
+.iconWrapper {
+  margin-bottom: 32px;
+}
+.icon {
+  color: #ef4444; /* Vermelho para alerta */
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.description {
+  font-size: 18px;
+  color: var(--colab-text-secondary);
+  margin-bottom: 40px;
+  max-width: 80%;
+}
+
+.loginButton {
+  padding: 14px 28px;
+  background-color: var(--colab-accent);
+  color: white;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+  max-width: 250px;
+  font-size: 16px;
+}
+
+.loginButton:hover {
+  background-color: var(--colab-accent-hover);
+}

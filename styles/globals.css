@@ -1,5 +1,5 @@
 /* globals.css */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=Playfair+Display:wght@900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=Playfair+Display:wght=900&display=swap');
 
 @import "tailwindcss";
 
@@ -29,6 +29,13 @@
   --hover-bg-color: rgba(255, 255, 255, 0.1);
   --today-bg-color: rgba(59, 130, 246, 0.1);
   --accent-color: #3b82f6;       /* Mantido, mas poderia ser diferente para o tema escuro se desejado */
+}
+
+/* --- REMOVIDO: overflow-y: hidden !important; daqui --- */
+/* --- REMOVIDO: height: 100%; daqui --- */
+html, body {
+  margin: 0;
+  padding: 0;
 }
 
 .text-reveal-mask {
@@ -67,6 +74,8 @@
   font-family: var(--colab-font-sans);
   background-color: var(--colab-background);
   color: var(--colab-text-primary);
+
+  min-height: 100vh; /* Mantém para garantir que o tema cubra toda a tela */
 }
 
 /* 
@@ -77,11 +86,6 @@
 .colab-theme *::before,
 .colab-theme *::after {
   box-sizing: border-box;
-}
-
-/* Garante que a seção ocupe a altura total da tela */
-.colab-theme {
-  min-height: 100vh;
 }
 
 /* --- FIM: ESTILOS PARA O MÓDULO COLABORATIVO --- */
