@@ -5,6 +5,7 @@ import api from '../../../services/colaborativo-api';
 import LoadingModal from '../../../components-colaborativo/LoadingModal/LoadingModal';
 import styles from '../login/Login.module.css';
 import { AnimatePresence, motion } from 'framer-motion';
+import Link from 'next/link'; // Adicionar esta importação no topo
 
 const initialFormData = {
   name: '',
@@ -115,8 +116,11 @@ export default function RegisterPage() {
             <button type="submit" className={styles.button} disabled={isLoading || success}>{isLoading ? 'Cadastrando...' : 'Criar Conta'}</button>
         </form>
 
-        <p className={styles.footerText}>Já tem uma conta?{' '}<a href="/colaborativo/login">Faça login</a></p>
-      </div>
+       <p className={styles.footerText}>
+          Não tem uma conta?{' '}
+          <Link href="/colaborativo/register">Cadastre-se</Link>
+        </p>
+              </div>
       
       {/* --- MODAL DE LOADING --- */}
       <LoadingModal isOpen={isLoading} userType={label} />

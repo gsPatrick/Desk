@@ -4,6 +4,8 @@ import { useRouter } from 'next/router';
 import api from '../../../services/colaborativo-api';
 import LoadingModal from '../../../components-colaborativo/LoadingModal/LoadingModal';
 import styles from './Login.module.css';
+import Link from 'next/link'; // Adicionar esta importação no topo
+
 
 export default function LoginPage() {
   const router = useRouter();
@@ -85,7 +87,7 @@ export default function LoginPage() {
 
         <p className={styles.footerText}>
           Não tem uma conta?{' '}
-          <a href="/colaborativo/register">Cadastre-se</a>
+<Link href="/colaborativo/register">Cadastre-se</Link>
         </p>
       </div>
       
