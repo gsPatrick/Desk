@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { FaEnvelope, FaWhatsapp } from 'react-icons/fa';
+import { FaEnvelope, FaWhatsapp, FaFileDownload } from 'react-icons/fa';
 import styles from './Hiring.module.css';
 
 export default function Hiring() {
@@ -26,6 +26,28 @@ export default function Hiring() {
                     </p>
 
                     <div className={styles.actions}>
+                        <motion.a
+                            href="/CV_Patrick_Gomes_Siqueira_PT_Final.pdf"
+                            download
+                            className={styles.cvBtn}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                        >
+                            <FaFileDownload style={{ marginRight: '10px' }} />
+                            DOWNLOAD CV (PTBR)
+                        </motion.a>
+
+                        <motion.a
+                            href="/CV_Patrick_Gomes_Siqueira_EN_Final.pdf"
+                            download
+                            className={styles.cvBtn}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                        >
+                            <FaFileDownload style={{ marginRight: '10px' }} />
+                            DOWNLOAD CV (EN)
+                        </motion.a>
+
                         <motion.a
                             href="mailto:patricksiqueira.developer@gmail.com"
                             className={styles.mailBtn}

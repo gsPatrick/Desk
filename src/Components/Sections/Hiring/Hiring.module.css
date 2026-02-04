@@ -77,6 +77,24 @@
     background: #f0f0f0;
 }
 
+.cvBtn {
+    background: transparent;
+    color: #fff;
+    padding: 20px 40px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.cvBtn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #fff;
+    transform: translateY(-5px);
+}
+
 .whatsappBtn {
     background: rgba(255, 255, 255, 0.05);
     color: #fff;
@@ -106,7 +124,8 @@
     }
 
     .mailBtn,
-    .whatsappBtn {
+    .whatsappBtn,
+    .cvBtn {
         width: 100%;
         text-align: center;
     }
