@@ -62,32 +62,28 @@ const ProjectCard = ({ project, index, scrollYProgress, total }) => {
 
         let playTimeout;
         const handlePlayback = (progress) => {
-            // Check if the card is in the active focus range
-            const margin = isMobile ? 0.05 : 0.02;
-            const isVisible = progress >= (start - margin) && progress < (nextStart - margin);
+            // Broaden the margin slightly to ensure it triggers
+            const margin = isMobile ? 0.1 : 0.05;
+            const isVisible = progress >= (start - margin) && progress < (nextStart + margin);
 
             if (isVisible) {
-                // We use a local-ish check or let the video state handle it
                 if (videoRef.current && videoRef.current.paused) {
                     clearTimeout(playTimeout);
                     playTimeout = setTimeout(() => {
                         if (videoRef.current && videoRef.current.paused) {
-                            videoRef.current.play().then(() => {
-                                setIsPlaying(true);
-                            }).catch(() => { });
+                            videoRef.current.play().catch(() => { });
                         }
-                    }, 500);
+                    }, 300); // Slightly faster delay (300ms)
                 }
             } else {
                 clearTimeout(playTimeout);
                 if (videoRef.current && !videoRef.current.paused) {
                     videoRef.current.pause();
-                    setIsPlaying(false);
                 }
             }
         };
 
-        // Initial check on mount
+        // Initial check
         handlePlayback(scrollYProgress.get());
 
         const unsubscribe = scrollYProgress.on("change", handlePlayback);
@@ -102,7 +98,7 @@ const ProjectCard = ({ project, index, scrollYProgress, total }) => {
             className={styles.cardWrapper}
             initial={isMobile ? { opacity: 0, y: 50 } : {}}
             whileInView={isMobile ? { opacity: 1, y: 0 } : {}}
-            viewport={{ once: false, amount: 0.3 }}
+            viewport={{ once: false, amount: 0.1 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             style={{
                 y: isMobile ? 0 : y,
@@ -124,6 +120,7 @@ const ProjectCard = ({ project, index, scrollYProgress, total }) => {
                         {currentType === 'video' ? (
                             <video
                                 ref={videoRef}
+                                autoPlay
                                 muted
                                 loop
                                 playsInline
