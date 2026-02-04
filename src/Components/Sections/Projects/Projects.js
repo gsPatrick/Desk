@@ -1,22 +1,23 @@
 'use client';
 
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import styles from './Projects.module.css';
 import PROJECTS from '@/data/projects.json';
 
 const ProjectCard = ({ project, index, scrollYProgress, total }) => {
     const [viewMode, setViewMode] = useState('desktop');
+    const videoRef = useRef(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+
     // Mobile detection for initial state/layout
     const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
 
     // Determine current media based on viewMode and device
-    // If user hasn't toggled, use smart defaults. If they toggled, respect their choice.
     const currentUrl = viewMode === 'mobile' && project.urlMobile ? project.urlMobile : project.url;
     const currentType = viewMode === 'mobile' && project.typeMobile ? project.typeMobile : project.type;
 
     // Dynamic increments based on number of projects
-    // We reserve the first "step" for the intro text
     const step = 1 / (total + 1);
     const start = isMobile ? (0.12 + index * 0.15) : (step + index * step);
     const nextStart = isMobile ? (0.12 + (index + 1) * 0.15) : (start + step);
@@ -39,7 +40,7 @@ const ProjectCard = ({ project, index, scrollYProgress, total }) => {
     );
     const scale = isMobile ? 1 : scaleTransform;
 
-    // Use opacity based depth for Desktop only
+    // Opacity based depth
     const cardOpacityTransform = useTransform(
         scrollYProgress,
         [nextStart - (step * 0.2), nextStart],
@@ -47,13 +48,50 @@ const ProjectCard = ({ project, index, scrollYProgress, total }) => {
     );
     const cardOpacity = isMobile ? 1 : cardOpacityTransform;
 
-    // Desktop only filter
+    // Filter
     const brightnessTransform = useTransform(
         scrollYProgress,
         [nextStart - (step * 0.2), nextStart],
         ["brightness(1)", isLast ? "brightness(1) " : "brightness(0.3)"]
     );
     const brightness = isMobile ? "none" : brightnessTransform;
+
+    // Logic for playing video only when "parked"
+    useEffect(() => {
+        if (currentType !== 'video') return;
+
+        let playTimeout;
+        const handlePlayback = (progress) => {
+            // Check if the card is in the active focus range (approx at the top/center)
+            const margin = isMobile ? 0.05 : 0.02;
+            const isVisible = progress >= (start - margin) && progress < (nextStart - margin);
+
+            if (isVisible) {
+                if (!isPlaying) {
+                    // Debounce to avoid playing while scrolling rapidly
+                    clearTimeout(playTimeout);
+                    playTimeout = setTimeout(() => {
+                        if (videoRef.current) {
+                            videoRef.current.play().catch(() => { });
+                            setIsPlaying(true);
+                        }
+                    }, 500); // 500ms delay
+                }
+            } else {
+                clearTimeout(playTimeout);
+                if (videoRef.current && !videoRef.current.paused) {
+                    videoRef.current.pause();
+                    setIsPlaying(false);
+                }
+            }
+        };
+
+        const unsubscribe = scrollYProgress.on("change", handlePlayback);
+        return () => {
+            unsubscribe();
+            clearTimeout(playTimeout);
+        };
+    }, [scrollYProgress, start, nextStart, currentType, isPlaying, isMobile]);
 
     return (
         <motion.div
@@ -81,7 +119,7 @@ const ProjectCard = ({ project, index, scrollYProgress, total }) => {
                     >
                         {currentType === 'video' ? (
                             <video
-                                autoPlay
+                                ref={videoRef}
                                 muted
                                 loop
                                 playsInline
