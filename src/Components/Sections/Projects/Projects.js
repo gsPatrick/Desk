@@ -9,7 +9,6 @@ const ProjectCard = ({ project, index, scrollYProgress, total }) => {
     const [viewMode, setViewMode] = useState('desktop');
     const videoRef = useRef(null);
     const [isPlaying, setIsPlaying] = useState(false);
-    const [isLoaded, setIsLoaded] = useState(false);
 
     // Mobile detection for initial state/layout
     const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
@@ -123,36 +122,24 @@ const ProjectCard = ({ project, index, scrollYProgress, total }) => {
                         className={styles.mediaFrame}
                     >
                         {currentType === 'video' ? (
-                            <>
-                                {/* Loading Spinner */}
-                                <div
-                                    className={styles.loader}
-                                    style={{
-                                        opacity: isLoaded ? 0 : 1,
-                                        visibility: isLoaded ? 'hidden' : 'visible'
-                                    }}
-                                >
-                                    <div className={styles.spinner} />
-                                </div>
-                                <video
-                                    key={currentUrl} // Forces re-render when switching Desktop/Mobile
-                                    ref={videoRef}
-                                    muted
-                                    loop
-                                    playsInline
-                                    webkit-playsinline="true"
-                                    preload="auto" // Loads the first frame immediately
-                                    className={styles.image}
-                                    onLoadedData={() => setIsLoaded(true)}
-                                    src={currentUrl}
-                                    style={{
-                                        objectFit: project.objectFit || 'cover',
-                                        objectPosition: project.objectPosition || 'center center',
-                                        opacity: 1, // Ensures visibility
-                                        backgroundColor: '#000' // Fail-safe background
-                                    }}
-                                />
-                            </>
+                            <video
+                                key={currentUrl} // Forces re-render when switching Desktop/Mobile
+                                ref={videoRef}
+                                muted
+                                loop
+                                playsInline
+                                webkit-playsinline="true"
+                                preload="none" // Optimization: We have a poster, so we don't need to load video immediately
+                                className={styles.image}
+                                poster={viewMode === 'mobile' && project.posterMobile ? project.posterMobile : project.poster}
+                                src={currentUrl}
+                                style={{
+                                    objectFit: project.objectFit || 'cover',
+                                    objectPosition: project.objectPosition || 'center center',
+                                    opacity: 1, // Ensures visibility
+                                    backgroundColor: '#000' // Fail-safe background
+                                }}
+                            />
                         ) : (
                             <img
                                 src={currentUrl}

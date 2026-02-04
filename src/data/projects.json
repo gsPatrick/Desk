@@ -14,9 +14,11 @@
         "color": "#0a0a0a",
         "type": "video",
         "url": "/projetos/auttoma/auttoma.webm",
+        "poster": "/projetos/auttoma/auttoma-poster.jpg",
         "objectPosition": "center center",
         "typeMobile": "video",
-        "urlMobile": "/projetos/auttoma/auttoma-mobile.webm"
+        "urlMobile": "/projetos/auttoma/auttoma-mobile.webm",
+        "posterMobile": "/projetos/auttoma/auttoma-mobile-poster.jpg"
     },
     {
         "id": 2,
@@ -34,8 +36,10 @@
         "color": "#050505",
         "type": "video",
         "url": "/projetos/tersio/tersio.webm",
+        "poster": "/projetos/tersio/tersio-poster.jpg",
         "typeMobile": "video",
         "urlMobile": "/projetos/tersio/tersio-mobile.webm",
+        "posterMobile": "/projetos/tersio/tersio-mobile-poster.jpg",
         "objectFit": "cover",
         "objectPosition": "center center"
     },
@@ -55,8 +59,10 @@
         "color": "#080808",
         "type": "video",
         "url": "/projetos/kajoi/kajoi.webm",
+        "poster": "/projetos/kajoi/kajoi-poster.jpg",
         "typeMobile": "video",
         "urlMobile": "/projetos/kajoi/kajoi-mobile.webm",
+        "posterMobile": "/projetos/kajoi/kajoi-mobile-poster.jpg",
         "objectFit": "cover",
         "objectPosition": "center center"
     },
@@ -75,8 +81,10 @@
         "color": "#0a0a0a",
         "type": "video",
         "url": "/projetos/blendskin/blendskin.webm",
+        "poster": "/projetos/blendskin/blendskin-poster.jpg",
         "typeMobile": "video",
         "urlMobile": "/projetos/blendskin/blendskin-mobile.webm",
+        "posterMobile": "/projetos/blendskin/blendskin-mobile-poster.jpg",
         "objectFit": "cover",
         "objectPosition": "center center"
     },
@@ -95,8 +103,10 @@
         "color": "#0b0b0b",
         "type": "video",
         "url": "/projetos/superodds/superoddsa.webm",
+        "poster": "/projetos/superodds/superoddsa-poster.jpg",
         "typeMobile": "video",
         "urlMobile": "/projetos/superodds/superodds-mobile.webm",
+        "posterMobile": "/projetos/superodds/superodds-mobile-poster.jpg",
         "objectFit": "cover",
         "objectPosition": "center center"
     },
@@ -115,8 +125,10 @@
         "color": "#050505",
         "type": "video",
         "url": "/projetos/g5/g5.webm",
+        "poster": "/projetos/g5/g5-poster.jpg",
         "typeMobile": "video",
         "urlMobile": "/projetos/g5/g5-mobile.webm",
+        "posterMobile": "/projetos/g5/g5-mobile-poster.jpg",
         "objectFit": "cover",
         "objectPosition": "center center"
     }
