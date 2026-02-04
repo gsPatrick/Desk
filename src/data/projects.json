@@ -13,10 +13,10 @@
         "description": "Engenharia e automação inteligente para transformar e proteger seu patrimônio com máxima técnica e eficiência.",
         "color": "#0a0a0a",
         "type": "video",
-        "url": "/projetos/auttoma/auttoma.mp4",
+        "url": "/projetos/auttoma/auttoma.webm",
         "objectPosition": "center center",
         "typeMobile": "video",
-        "urlMobile": "/projetos/auttoma/auttoma-mobile.mp4"
+        "urlMobile": "/projetos/auttoma/auttoma-mobile.webm"
     },
     {
         "id": 2,
@@ -33,9 +33,9 @@
         "description": "Soluções jurídicas humanizadas e segurança estratégica para pessoas e empresas, com transparência total.",
         "color": "#050505",
         "type": "video",
-        "url": "/projetos/tersio/tersio.mp4",
+        "url": "/projetos/tersio/tersio.webm",
         "typeMobile": "video",
-        "urlMobile": "/projetos/tersio/tersio-mobile.mp4",
+        "urlMobile": "/projetos/tersio/tersio-mobile.webm",
         "objectFit": "cover",
         "objectPosition": "center center"
     },
@@ -54,9 +54,9 @@
         "description": "Reparos especializados de alta performance com agilidade, peças premium e garantia total para o seu dispositivo.",
         "color": "#080808",
         "type": "video",
-        "url": "/projetos/kajoi/kajoi.mp4",
+        "url": "/projetos/kajoi/kajoi.webm",
         "typeMobile": "video",
-        "urlMobile": "/projetos/kajoi/kajoi-mobile.mp4",
+        "urlMobile": "/projetos/kajoi/kajoi-mobile.webm",
         "objectFit": "cover",
         "objectPosition": "center center"
     },
@@ -74,9 +74,9 @@
         "description": "A união entre a ciência avançada e a tradição coreana para reparar, proteger e iluminar a beleza real da sua pele.",
         "color": "#0a0a0a",
         "type": "video",
-        "url": "/projetos/blendskin/blendskin.mp4",
+        "url": "/projetos/blendskin/blendskin.webm",
         "typeMobile": "video",
-        "urlMobile": "/projetos/blendskin/blendskin-mobile.mp4",
+        "urlMobile": "/projetos/blendskin/blendskin-mobile.webm",
         "objectFit": "cover",
         "objectPosition": "center center"
     },
@@ -94,9 +94,9 @@
         "description": "A maior comunidade de Super Odds do Brasil. Informação estratégica e entretenimento para quem joga com responsabilidade.",
         "color": "#0b0b0b",
         "type": "video",
-        "url": "/projetos/superodds/superoddsa.mp4",
+        "url": "/projetos/superodds/superoddsa.webm",
         "typeMobile": "video",
-        "urlMobile": "/projetos/superodds/superodds-mobile.mp4",
+        "urlMobile": "/projetos/superodds/superodds-mobile.webm",
         "objectFit": "cover",
         "objectPosition": "center center"
     },
@@ -114,9 +114,9 @@
         "description": "Metodologia de elite e gestão profissional para formação de atletas, criada por quem vive a essência do futebol.",
         "color": "#050505",
         "type": "video",
-        "url": "/projetos/g5/g5.mp4",
+        "url": "/projetos/g5/g5.webm",
         "typeMobile": "video",
-        "urlMobile": "/projetos/g5/g5-mobile.mp4",
+        "urlMobile": "/projetos/g5/g5-mobile.webm",
         "objectFit": "cover",
         "objectPosition": "center center"
     }
