@@ -62,20 +62,21 @@ const ProjectCard = ({ project, index, scrollYProgress, total }) => {
 
         let playTimeout;
         const handlePlayback = (progress) => {
-            // Check if the card is in the active focus range (approx at the top/center)
+            // Check if the card is in the active focus range
             const margin = isMobile ? 0.05 : 0.02;
             const isVisible = progress >= (start - margin) && progress < (nextStart - margin);
 
             if (isVisible) {
-                if (!isPlaying) {
-                    // Debounce to avoid playing while scrolling rapidly
+                // We use a local-ish check or let the video state handle it
+                if (videoRef.current && videoRef.current.paused) {
                     clearTimeout(playTimeout);
                     playTimeout = setTimeout(() => {
-                        if (videoRef.current) {
-                            videoRef.current.play().catch(() => { });
-                            setIsPlaying(true);
+                        if (videoRef.current && videoRef.current.paused) {
+                            videoRef.current.play().then(() => {
+                                setIsPlaying(true);
+                            }).catch(() => { });
                         }
-                    }, 500); // 500ms delay
+                    }, 500);
                 }
             } else {
                 clearTimeout(playTimeout);
@@ -86,12 +87,15 @@ const ProjectCard = ({ project, index, scrollYProgress, total }) => {
             }
         };
 
+        // Initial check on mount
+        handlePlayback(scrollYProgress.get());
+
         const unsubscribe = scrollYProgress.on("change", handlePlayback);
         return () => {
             unsubscribe();
             clearTimeout(playTimeout);
         };
-    }, [scrollYProgress, start, nextStart, currentType, isPlaying, isMobile]);
+    }, [scrollYProgress, start, nextStart, currentType, isMobile]);
 
     return (
         <motion.div
