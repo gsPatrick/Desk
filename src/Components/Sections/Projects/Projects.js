@@ -9,6 +9,7 @@ const ProjectCard = ({ project, index, scrollYProgress, total }) => {
     const [viewMode, setViewMode] = useState('desktop');
     const videoRef = useRef(null);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     // Mobile detection for initial state/layout
     const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
@@ -62,25 +63,27 @@ const ProjectCard = ({ project, index, scrollYProgress, total }) => {
 
         let playTimeout;
         const handlePlayback = (progress) => {
-            // Broaden the margin slightly to ensure it triggers
-            const margin = isMobile ? 0.15 : 0.05;
+            // Check if the card is in the active focus range
+            const margin = isMobile ? 0.1 : 0.05;
             const isVisible = progress >= (start - margin) && progress < (nextStart + margin);
 
             if (isVisible) {
-                // Play almost immediately when visible to ensure image appears
-                // Using a tiny debounce just to prevent scroll-flutter
+                // User is parked: wait 2.5s before playing
                 if (videoRef.current && videoRef.current.paused) {
                     clearTimeout(playTimeout);
                     playTimeout = setTimeout(() => {
                         if (videoRef.current && videoRef.current.paused) {
                             videoRef.current.play().catch(() => { });
                         }
-                    }, 100);
+                    }, 2500); // 2.5 seconds delay
                 }
             } else {
+                // Scroll away: pause immediately
                 clearTimeout(playTimeout);
                 if (videoRef.current && !videoRef.current.paused) {
                     videoRef.current.pause();
+                    // Optional: Reset to start to show "thumb" again
+                    // videoRef.current.currentTime = 0; 
                 }
             }
         };
@@ -120,23 +123,36 @@ const ProjectCard = ({ project, index, scrollYProgress, total }) => {
                         className={styles.mediaFrame}
                     >
                         {currentType === 'video' ? (
-                            <video
-                                key={currentUrl} // Forces re-render when switching Desktop/Mobile
-                                ref={videoRef}
-                                muted
-                                loop
-                                playsInline
-                                webkit-playsinline="true"
-                                preload="auto" // Loads the first frame immediately
-                                className={styles.image}
-                                src={currentUrl}
-                                style={{
-                                    objectFit: project.objectFit || 'cover',
-                                    objectPosition: project.objectPosition || 'center center',
-                                    opacity: 1, // Ensures visibility
-                                    backgroundColor: '#000' // Fail-safe background
-                                }}
-                            />
+                            <>
+                                {/* Loading Spinner */}
+                                <div
+                                    className={styles.loader}
+                                    style={{
+                                        opacity: isLoaded ? 0 : 1,
+                                        visibility: isLoaded ? 'hidden' : 'visible'
+                                    }}
+                                >
+                                    <div className={styles.spinner} />
+                                </div>
+                                <video
+                                    key={currentUrl} // Forces re-render when switching Desktop/Mobile
+                                    ref={videoRef}
+                                    muted
+                                    loop
+                                    playsInline
+                                    webkit-playsinline="true"
+                                    preload="auto" // Loads the first frame immediately
+                                    className={styles.image}
+                                    onLoadedData={() => setIsLoaded(true)}
+                                    src={currentUrl}
+                                    style={{
+                                        objectFit: project.objectFit || 'cover',
+                                        objectPosition: project.objectPosition || 'center center',
+                                        opacity: 1, // Ensures visibility
+                                        backgroundColor: '#000' // Fail-safe background
+                                    }}
+                                />
+                            </>
                         ) : (
                             <img
                                 src={currentUrl}
