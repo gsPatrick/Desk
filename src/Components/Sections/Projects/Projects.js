@@ -123,17 +123,20 @@ const ProjectCard = ({ project, index, scrollYProgress, total }) => {
                     >
                         {currentType === 'video' ? (
                             <video
+                                key={currentUrl} // Forces re-render when switching Desktop/Mobile
                                 ref={videoRef}
                                 muted
                                 loop
                                 playsInline
                                 webkit-playsinline="true"
-                                preload="metadata"
+                                preload="auto" // Loads the first frame immediately
                                 className={styles.image}
                                 src={currentUrl}
                                 style={{
                                     objectFit: project.objectFit || 'cover',
-                                    objectPosition: project.objectPosition || 'center center'
+                                    objectPosition: project.objectPosition || 'center center',
+                                    opacity: 1, // Ensures visibility
+                                    backgroundColor: '#000' // Fail-safe background
                                 }}
                             />
                         ) : (
