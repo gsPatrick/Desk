@@ -77,12 +77,12 @@ const ProjectCard = ({ project, index, scrollYProgress, total }) => {
                     }, 2500); // 2.5 seconds delay
                 }
             } else {
-                // Scroll away: pause immediately
+                // Scroll away: pause and reset to poster immediately
                 clearTimeout(playTimeout);
-                if (videoRef.current && !videoRef.current.paused) {
+                if (videoRef.current) {
                     videoRef.current.pause();
-                    // Optional: Reset to start to show "thumb" again
-                    // videoRef.current.currentTime = 0; 
+                    videoRef.current.currentTime = 0; // Reset time
+                    videoRef.current.load(); // Force reset to show poster again
                 }
             }
         };
