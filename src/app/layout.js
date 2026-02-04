@@ -88,6 +88,10 @@ const jsonLd = {
         "@type": "Organization",
         "name": "Patrick.Developer"
       },
+      "email": "patricksiqueira.developer@gmail.com",
+      "knowsAbout": [
+        "Next.js", "React", "Java", "Spring Boot", "TypeScript", "Node.js", "PostgreSQL", "Docker", "AWS", "Redis", "Linux", "CI/CD", "SEO", "UI/UX", "Full Stack Development"
+      ],
       "sameAs": [
         "https://github.com/gsPatrick",
         "https://wa.me/5571982862912",
@@ -108,6 +112,7 @@ const jsonLd = {
       "contactPoint": {
         "@type": "ContactPoint",
         "telephone": "+55-71-98286-2912",
+        "email": "patricksiqueira.developer@gmail.com",
         "contactType": "sales",
         "areaServed": "BR",
         "availableLanguage": ["Portuguese", "English"]

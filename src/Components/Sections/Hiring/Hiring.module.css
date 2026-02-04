@@ -1,0 +1,113 @@
+.hiring {
+    position: relative;
+    width: 100vw;
+    background-color: #050505;
+    padding: 120px 0;
+    overflow: hidden;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.label {
+    font-family: var(--font-geist-mono);
+    color: #ed213a;
+    /* Red/Orange accent for attention */
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.title {
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 30px;
+    letter-spacing: -0.04em;
+}
+
+.title span {
+    display: block;
+    background: linear-gradient(90deg, #fff, #888);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.description {
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    color: #999;
+    max-width: 800px;
+    line-height: 1.6;
+    margin-bottom: 50px;
+}
+
+.actions {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.mailBtn {
+    background: #fff;
+    color: #000;
+    padding: 20px 40px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-decoration: none;
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.mailBtn:hover {
+    transform: translateY(-5px);
+    background: #f0f0f0;
+}
+
+.whatsappBtn {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    padding: 20px 40px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.whatsappBtn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-5px);
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 20px;
+    }
+
+    .actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .mailBtn,
+    .whatsappBtn {
+        width: 100%;
+        text-align: center;
+    }
+}
