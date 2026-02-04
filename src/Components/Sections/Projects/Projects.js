@@ -62,27 +62,25 @@ const ProjectCard = ({ project, index, scrollYProgress, total }) => {
 
         let playTimeout;
         const handlePlayback = (progress) => {
-            // Check if the card is in the active focus range
-            const margin = isMobile ? 0.1 : 0.05;
+            // Broaden the margin slightly to ensure it triggers
+            const margin = isMobile ? 0.15 : 0.05;
             const isVisible = progress >= (start - margin) && progress < (nextStart + margin);
 
             if (isVisible) {
-                // User is parked: wait 2.5s before playing
+                // Play almost immediately when visible to ensure image appears
+                // Using a tiny debounce just to prevent scroll-flutter
                 if (videoRef.current && videoRef.current.paused) {
                     clearTimeout(playTimeout);
                     playTimeout = setTimeout(() => {
                         if (videoRef.current && videoRef.current.paused) {
                             videoRef.current.play().catch(() => { });
                         }
-                    }, 2500); // 2.5 seconds delay
+                    }, 100);
                 }
             } else {
-                // Scroll away: pause immediately
                 clearTimeout(playTimeout);
                 if (videoRef.current && !videoRef.current.paused) {
                     videoRef.current.pause();
-                    // Optional: Reset to start to show "thumb" again
-                    // videoRef.current.currentTime = 0; 
                 }
             }
         };
