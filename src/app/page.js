@@ -5,6 +5,7 @@ import Projects from '@/Components/Sections/Projects/Projects';
 import Business from '@/Components/Sections/Business/Business';
 import Contact from '@/Components/Sections/Contact/Contact';
 import ImpactSection from '@/Components/Sections/Impact/ImpactSection';
+import Workflow from '@/Components/Sections/Workflow/Workflow';
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
       <Capabilities />
       <ImpactSection />
       <Projects />
+      <Workflow />
       <Business />
       <Contact />
       <Footer />
