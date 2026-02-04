@@ -34,7 +34,11 @@ export default function Capabilities() {
 
     const techMarquee = [
         'NEXT.JS', 'REACT', 'JAVA', 'SPRING BOOT', 'TYPESCRIPT', 'NODE.JS',
-        'POSTGRESQL', 'DOCKER', 'AWS', 'REDIS', 'LINUX', 'CI/CD'
+        'POSTGRESQL', 'DOCKER', 'AWS', 'REDIS', 'LINUX', 'CI/CD',
+        'SEO', 'FRAMER MOTION', 'CSS MODULES', 'VITE', 'TAILWIND CSS',
+        'HTML5', 'JAVASCRIPT', 'UI/UX', 'STRIPE', 'FIREBASE', 'GIT',
+        'GITHUB', 'PYTHON', 'PHP', 'WORDPRESS', 'API', 'E-COMMERCE',
+        'FULL STACK', 'POSTGRESQL', 'DASHBOARD'
     ];
 
     const containerVariants = {
@@ -99,8 +103,8 @@ export default function Capabilities() {
                 <div className={styles.marqueeContainer}>
                     <motion.div
                         className={styles.marquee}
-                        animate={{ x: [0, -1000] }}
-                        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                        animate={{ x: [0, -2000] }}
+                        transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
                     >
                         {techMarquee.concat(techMarquee).map((tech, i) => (
                             <span key={i} className={styles.marqueeItem}>{tech}</span>
