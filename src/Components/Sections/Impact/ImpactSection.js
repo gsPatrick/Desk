@@ -41,9 +41,9 @@ export default function ImpactSection() {
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
                     >
-                        <h3 className={styles.subtitle}>ESTRATÉGIA</h3>
+                        <h3 className={styles.subtitle}>ESTRATÉGIA DE VALOR</h3>
                         <p className={styles.text}>
-                            Não entrego apenas código, entrego **valor de negócio**. Analiso cada projeto sob a ótica de conversão, experiência do usuário e escalabilidade, garantindo que sua marca lidere o mercado digital com soluções inteligentes.
+                            Não entrego apenas código, construo **ativos digitais**. Minha abordagem une análise de mercado e UX para transformar sua visão em uma ferramenta poderosa de conversão e lucro.
                         </p>
                     </motion.div>
 
@@ -87,9 +87,9 @@ export default function ImpactSection() {
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
                     >
-                        <h3 className={styles.subtitle}>EXECUÇÃO</h3>
+                        <h3 className={styles.subtitle}>EXECUÇÃO DE ELITE</h3>
                         <p className={styles.text}>
-                            Dominando as tecnologias mais modernas do mundo (**Next.js, IA, Java**), transformo designs complexos em interfaces cinematográficas fluidas, rápidas e seguras que prendem a atenção do primeiro ao último pixel.
+                            Performance brutal e estética premium. Utilizo o que há de mais moderno em **Next.js e IA** para criar experiências fluidas que prendem a atenção do primeiro ao último pixel.
                         </p>
                     </motion.div>
                 </div>
