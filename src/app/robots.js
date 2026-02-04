@@ -4,6 +4,6 @@ export default function robots() {
             userAgent: '*',
             allow: '/',
         },
-        sitemap: 'https://codebypatrick.com/sitemap.xml',
+        sitemap: 'https://www.codebypatrick.dev/sitemap.xml',
     }
 }

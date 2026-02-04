@@ -30,19 +30,19 @@ export const metadata = {
     "Blendskin",
     "Super Odds"
   ],
-  authors: [{ name: "Patrick Gomes Siqueira", url: "https://codebypatrick.com" }],
+  authors: [{ name: "Patrick Gomes Siqueira", url: "https://www.codebypatrick.dev" }],
   creator: "Patrick Gomes Siqueira",
   publisher: "Patrick.Developer",
   openGraph: {
     title: "Patrick Gomes Siqueira | Patrick.Developer",
     description: "Desenvolvimento de software de elite. Interfaces cinematográficas e sistemas robustos. Contrate Patrick Siqueira (CNPJ).",
-    url: "https://codebypatrick.com",
+    url: "https://www.codebypatrick.dev",
     siteName: "CodeByPatrick",
     locale: "pt_BR",
     type: "website",
     images: [
       {
-        url: "https://codebypatrick.com/og-image.png", // Ensure you have an OG image eventually
+        url: "https://www.codebypatrick.dev/og-image.png", // Ensure you have an OG image eventually
         width: 1200,
         height: 630,
         alt: "Patrick.Developer Portfolio",
@@ -61,7 +61,7 @@ export const metadata = {
     },
   },
   alternates: {
-    canonical: 'https://codebypatrick.com',
+    canonical: 'https://www.codebypatrick.dev',
   },
   icons: {
     icon: '/favicon.ico',
@@ -79,9 +79,9 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "Person",
-      "@id": "https://codebypatrick.com/#person",
+      "@id": "https://www.codebypatrick.dev/#person",
       "name": "Patrick Gomes Siqueira",
-      "url": "https://codebypatrick.com",
+      "url": "https://www.codebypatrick.dev",
       "alternateName": ["Patrick Dev", "Patrick Siqueira", "CodeByPatrick"],
       "jobTitle": "Senior Full Stack Developer",
       "worksFor": {
@@ -96,14 +96,14 @@ const jsonLd = {
     },
     {
       "@type": "Organization",
-      "@id": "https://codebypatrick.com/#organization",
+      "@id": "https://www.codebypatrick.dev/#organization",
       "name": "Patrick.Developer",
       "legalName": "Patrick.Developer Soluções em Tecnologia",
-      "url": "https://codebypatrick.com",
-      "logo": "https://codebypatrick.com/logo.png",
+      "url": "https://www.codebypatrick.dev",
+      "logo": "https://www.codebypatrick.dev/logo.png",
       "taxID": "CNPJ",
       "founder": {
-        "@id": "https://codebypatrick.com/#person"
+        "@id": "https://www.codebypatrick.dev/#person"
       },
       "contactPoint": {
         "@type": "ContactPoint",
@@ -115,7 +115,7 @@ const jsonLd = {
     },
     {
       "@type": "ItemList",
-      "@id": "https://codebypatrick.com/#projects",
+      "@id": "https://www.codebypatrick.dev/#projects",
       "name": "Projetos Desenvolvidos por Patrick Siqueira",
       "itemListElement": [
         {
@@ -123,28 +123,28 @@ const jsonLd = {
           "name": "Auttoma",
           "applicationCategory": "BusinessApplication",
           "operatingSystem": "Web",
-          "author": { "@id": "https://codebypatrick.com/#person" }
+          "author": { "@id": "https://www.codebypatrick.dev/#person" }
         },
         {
           "@type": "SoftwareApplication",
           "name": "Tersio Idbas",
           "applicationCategory": "LegalApplication",
           "operatingSystem": "Web",
-          "author": { "@id": "https://codebypatrick.com/#person" }
+          "author": { "@id": "https://www.codebypatrick.dev/#person" }
         },
         {
           "@type": "SoftwareApplication",
           "name": "G5 Futebol",
           "applicationCategory": "SportsApplication",
           "operatingSystem": "Web",
-          "author": { "@id": "https://codebypatrick.com/#person" }
+          "author": { "@id": "https://www.codebypatrick.dev/#person" }
         },
         {
           "@type": "SoftwareApplication",
           "name": "Super Odds",
           "applicationCategory": "SportsApplication",
           "operatingSystem": "Web",
-          "author": { "@id": "https://codebypatrick.com/#person" }
+          "author": { "@id": "https://www.codebypatrick.dev/#person" }
         }
       ]
     }
