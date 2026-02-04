@@ -43,8 +43,8 @@ export default function Services() {
                     transition={{ duration: 0.8 }}
                 >
                     <h2 className={styles.title}>
-                        SOLUÇÕES PARA
-                        <span>SEU NEGÓCIO</span>
+                        TIRE DO PAPEL
+                        <span>FAÇA UM ORÇAMENTO</span>
                     </h2>
                 </motion.div>
 
