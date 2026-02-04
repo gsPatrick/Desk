@@ -1,11 +1,20 @@
 'use client';
 
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import styles from './ImpactSection.module.css';
 
 export default function ImpactSection() {
     const containerRef = useRef(null);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
     const { scrollYProgress } = useScroll({
         target: containerRef,
         offset: ["start end", "end start"]
@@ -38,24 +47,31 @@ export default function ImpactSection() {
                         </p>
                     </motion.div>
 
-                    {/* Center Column: Avatar Video Placeholder */}
+                    {/* Center Column: Avatar Video */}
                     <motion.div
                         className={styles.avatarWrapper}
                         style={{ scale }}
                     >
                         <div className={styles.videoPlaceholder}>
                             <div className={styles.glow} />
-                            {/* Placeholder for Avatar Animation */}
-                            <video
-                                autoPlay
-                                muted
-                                loop
-                                playsInline
-                                className={styles.video}
-                                src="/patrick-hero.webm" // Using existing as placeholder
-                            />
+                            {isMobile ? (
+                                <img
+                                    src="/patrikc-confident.gif"
+                                    className={styles.video}
+                                    alt="Patrick Confidente"
+                                />
+                            ) : (
+                                <video
+                                    autoPlay
+                                    muted
+                                    loop
+                                    playsInline
+                                    className={styles.video}
+                                    src="/patrick-confident.webm"
+                                />
+                            )}
                             <div className={styles.videoOverlay}>
-                                <span>AVATAR 0</span>
+                                <span>PATRICK.DEVELOPER</span>
                             </div>
                         </div>
                     </motion.div>
