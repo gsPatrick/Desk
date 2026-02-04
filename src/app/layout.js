@@ -60,6 +60,18 @@ export const metadata = {
       'max-snippet': -1,
     },
   },
+  alternates: {
+    canonical: 'https://codebypatrick.com',
+  },
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/logo.png', // Assuming you'll have a logo.png, Google loves this for mobile results
+  },
+  verification: {
+    google: 'google-site-verification-code', // Placeholder for when you get the code
+  },
+  manifest: '/manifest.json',
 };
 
 const jsonLd = {
