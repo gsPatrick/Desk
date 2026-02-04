@@ -101,7 +101,7 @@ const jsonLd = {
       "legalName": "Patrick.Developer Soluções em Tecnologia",
       "url": "https://www.codebypatrick.dev",
       "logo": "https://www.codebypatrick.dev/logo.png",
-      "taxID": "CNPJ",
+      "taxID": "58.315.507/0001-14",
       "founder": {
         "@id": "https://www.codebypatrick.dev/#person"
       },
