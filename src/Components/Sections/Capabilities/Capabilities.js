@@ -95,7 +95,7 @@ export default function Capabilities() {
                         DIGITAIS QUE
                     </motion.h2>
                     <motion.h2 className={styles.title} variants={titleVariants}>
-                        DOMINAM A ATENÇÃO.
+                        CHAMAM A ATENÇÃO.
                     </motion.h2>
                 </motion.div>
 
@@ -145,7 +145,7 @@ export default function Capabilities() {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1, delay: 0.5 }}
                 >
-                    <p>SOU UM DESENVOLVEDOR <span>COMPLETO</span> QUE FOCO EM <span>RESOLVER PROBLEMAS</span>.</p>
+                    <p>SOU UM DESENVOLVEDOR <span>COMPLETO</span> COM FOCO EM <span>RESOLVER PROBLEMAS</span>.</p>
                 </motion.div>
             </div>
         </motion.section>
