@@ -69,7 +69,7 @@ export const metadata = {
     apple: '/logo.png', // Assuming you'll have a logo.png, Google loves this for mobile results
   },
   verification: {
-    google: 'google-site-verification-code', // Placeholder for when you get the code
+    google: '78_G3RXc60vhuNH3nCPFAUSBmvvAwFFhCdDF7qvPeZ8',
   },
   manifest: '/manifest.json',
 };
