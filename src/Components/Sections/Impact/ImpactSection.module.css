@@ -37,8 +37,8 @@
 
 .grid {
     display: grid;
-    grid-template-columns: 1fr 1.2fr 1fr;
-    gap: 4rem;
+    grid-template-columns: 1fr 1.5fr 1fr;
+    gap: 2rem;
     align-items: center;
     position: relative;
     z-index: 10;
@@ -48,6 +48,7 @@
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    max-width: 380px;
 }
 
 .subtitle {
@@ -62,7 +63,7 @@
 .text {
     font-size: 1.1rem;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .avatarWrapper {
@@ -75,20 +76,22 @@
 .videoPlaceholder {
     width: 100%;
     aspect-ratio: 4/5;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
+    border-radius: 24px;
     position: relative;
     overflow: hidden;
     backdrop-filter: blur(10px);
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
 }
 
 .video {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.6;
-    filter: grayscale(1);
+    opacity: 1;
+    /* Full color requested */
+    filter: none;
 }
 
 .videoOverlay {

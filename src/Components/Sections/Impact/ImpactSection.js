@@ -43,7 +43,7 @@ export default function ImpactSection() {
                     >
                         <h3 className={styles.subtitle}>ESTRATÉGIA</h3>
                         <p className={styles.text}>
-                            Não entrego apenas código. Entrego soluções que resolvem gargalos de negócio e potencializam a visão da sua marca.
+                            Não entrego apenas código, entrego **valor de negócio**. Analiso cada projeto sob a ótica de conversão, experiência do usuário e escalabilidade, garantindo que sua marca lidere o mercado digital com soluções inteligentes.
                         </p>
                     </motion.div>
 
@@ -56,17 +56,21 @@ export default function ImpactSection() {
                             <div className={styles.glow} />
                             {isMobile ? (
                                 <img
+                                    key="gif-avatar"
                                     src="/patrikc-confident.gif"
                                     className={styles.video}
-                                    alt="Patrick Confidente"
+                                    style={{ filter: 'none' }}
+                                    alt="Patrick Confiante"
                                 />
                             ) : (
                                 <video
+                                    key="video-avatar"
                                     autoPlay
                                     muted
                                     loop
                                     playsInline
                                     className={styles.video}
+                                    style={{ filter: 'none' }}
                                     src="/patrick-confident.webm"
                                 />
                             )}
@@ -85,7 +89,7 @@ export default function ImpactSection() {
                     >
                         <h3 className={styles.subtitle}>EXECUÇÃO</h3>
                         <p className={styles.text}>
-                            Alta performance e design cinemático. Cada pixel é pensado para prender a atenção e converter visitantes em clientes.
+                            Dominando as tecnologias mais modernas do mundo (**Next.js, IA, Java**), transformo designs complexos em interfaces cinematográficas fluidas, rápidas e seguras que prendem a atenção do primeiro ao último pixel.
                         </p>
                     </motion.div>
                 </div>
