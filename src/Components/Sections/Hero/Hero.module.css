@@ -1,0 +1,156 @@
+.hero {
+    min-height: 150vh;
+    /* Taller to allow sticky scroll room */
+    width: 100%;
+    background: #000;
+    position: relative;
+}
+
+.grid {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    width: 100%;
+    max-width: 2200px;
+    align-items: center;
+    padding: 0 5vw;
+    z-index: 10;
+    overflow: hidden;
+}
+
+.columnLeft {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4vh;
+}
+
+.intro {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 3.5rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    color: #fff;
+    /* Switched to white */
+    opacity: 0.8;
+}
+
+.nameStack {
+    display: flex;
+    flex-direction: column;
+}
+
+.massiveText {
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 12vw, 15rem);
+    font-weight: 900;
+    line-height: 0.8;
+    text-transform: uppercase;
+    letter-spacing: -0.06em;
+    color: #fff;
+    white-space: nowrap;
+}
+
+.roleTitle {
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 3vw, 3.5rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #fff;
+    /* White as requested */
+    margin-top: 1rem;
+    opacity: 0.9;
+    white-space: nowrap;
+}
+
+.columnRight {
+    position: relative;
+    width: 60vw;
+    /* Occupies center and right */
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+}
+
+@media (max-width: 1024px) {
+    .grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .columnLeft {
+        align-items: center;
+    }
+
+    .columnRight {
+        width: 100vw;
+        height: 60vh;
+    }
+}
+
+@media (max-width: 1279px) {
+    .grid {
+        grid-template-columns: 1.2fr 1fr;
+        padding: 0 4vw;
+        gap: 2rem;
+    }
+
+    .massiveText {
+        font-size: clamp(4rem, 10vw, 10rem);
+    }
+
+    .columnRight {
+        width: 100%;
+        height: 70vh;
+    }
+}
+
+@media (max-width: 767px) {
+    .grid {
+        grid-template-columns: 1fr;
+        height: auto;
+        min-height: 100vh;
+        padding: 12vh 6% 5vh;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 5vh;
+    }
+
+    .columnLeft {
+        align-items: center;
+        gap: 2.5vh;
+    }
+
+    .intro {
+        font-size: 1.2rem;
+        letter-spacing: 0.1em;
+    }
+
+    .massiveText {
+        font-size: clamp(3.5rem, 18vw, 8rem);
+        line-height: 0.85;
+        letter-spacing: -0.04em;
+    }
+
+    .roleTitle {
+        font-size: 1.1rem;
+        white-space: normal;
+        line-height: 1.4;
+        letter-spacing: 0.05em;
+    }
+
+    .columnRight {
+        width: 100%;
+        height: 50vh;
+        order: -1;
+        /* Character/Video above text on small mobile if needed, or keep same */
+    }
+}

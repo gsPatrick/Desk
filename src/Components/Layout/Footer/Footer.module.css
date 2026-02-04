@@ -1,0 +1,219 @@
+.footer {
+    background: #000;
+    color: #fff;
+    padding: 10vh 8% 4vh;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.bgVideo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.1;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.bgVideo video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.top {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 4rem;
+    margin-bottom: 15vh;
+}
+
+.ctaWrapper {
+    flex: 1;
+}
+
+.cta {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 10vw, 8rem);
+    font-weight: 900;
+    line-height: 0.85;
+    text-transform: uppercase;
+    letter-spacing: -0.05em;
+    margin: 0;
+}
+
+.cardGrid {
+    flex: 1.2;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.contactCard {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    padding: 2rem;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 150px;
+    transition: all 0.4s var(--ease-cinematic);
+    position: relative;
+}
+
+.contactCard:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cardName {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+}
+
+.cardDot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.cardValue {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
+    word-break: break-all;
+}
+
+.cardArrow {
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.2);
+    opacity: 0;
+    transform: translateX(-5px);
+    transition: all 0.3s ease;
+}
+
+.contactCard:hover .cardArrow {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.bottom {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-top: 3rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.socialIcons {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.socialIcons a {
+    color: rgba(255, 255, 255, 0.6);
+    transition: color 0.3s ease;
+}
+
+.socialIcons a:hover {
+    color: #fff;
+}
+
+.legalInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+    text-align: right;
+}
+
+.copyright,
+.cnpj {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.3);
+    letter-spacing: 0.05em;
+}
+
+@media (max-width: 1279px) {
+    .top {
+        flex-direction: column;
+        gap: 6vh;
+        margin-bottom: 10vh;
+    }
+
+    .cta {
+        font-size: clamp(3.5rem, 12vw, 6.5rem);
+    }
+
+    .cardGrid {
+        width: 100%;
+    }
+}
+
+@media (max-width: 767px) {
+    .footer {
+        padding: 8vh 6% 4vh;
+    }
+
+    .top {
+        text-align: center;
+        margin-bottom: 8vh;
+    }
+
+    .cta {
+        font-size: clamp(3rem, 15vw, 5.5rem);
+    }
+
+    .cardGrid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .contactCard {
+        padding: 2rem 1.5rem;
+        min-height: 120px;
+    }
+
+    .bottom {
+        flex-direction: column;
+        align-items: center;
+        gap: 2.5rem;
+        text-align: center;
+        padding-top: 2.5rem;
+    }
+
+    .legalInfo {
+        align-items: center;
+        text-align: center;
+    }
+
+    .socialIcons {
+        gap: 2rem;
+    }
+}

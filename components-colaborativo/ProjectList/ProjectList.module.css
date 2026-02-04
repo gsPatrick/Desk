@@ -1,6 +1,0 @@
-.projectGrid {
-    display: grid;
-    /* Cria colunas responsivas: 1 em telas pequenas, 2 em médias, 3 em grandes */
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 24px;
-}

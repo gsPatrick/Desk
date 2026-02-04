@@ -1,0 +1,319 @@
+.projects {
+    position: relative;
+    background: #000;
+}
+
+.introSection {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    background: #000;
+}
+
+.introGlow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60vw;
+    height: 60vw;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+    filter: blur(80px);
+}
+
+.textStack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1vh;
+    z-index: 10;
+    width: 100%;
+}
+
+.line,
+.lineSub {
+    overflow: hidden;
+    height: fit-content;
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 15vw, 15rem);
+    font-weight: 900;
+    line-height: 0.8;
+    text-transform: uppercase;
+    letter-spacing: -0.06em;
+    white-space: nowrap;
+    /* Prevents wrapping mid-word */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.line {
+    color: #fff;
+}
+
+.lineSub {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5);
+}
+
+.stickyContainer {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.cardWrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+    will-change: transform;
+}
+
+.card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    overflow: hidden;
+}
+
+.imageContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s ease;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #000 0%, transparent 20%, transparent 80%, #000 100%);
+}
+
+.info {
+    padding: 10% 8%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2.5rem;
+    background: #000;
+    /* Solid Black to prevent bleed-through */
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.number {
+    font-family: var(--font-mono);
+    color: var(--accent);
+    font-size: 0.9rem;
+    letter-spacing: 0.3rem;
+}
+
+.viewToggle {
+    display: flex;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px;
+    border-radius: 100px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.toggleBtn {
+    padding: 6px 16px;
+    border-radius: 100px;
+    border: none;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.toggleBtn.active {
+    background: #fff;
+    color: #000;
+}
+
+.mediaFrame {
+    width: 100%;
+    height: 100%;
+}
+
+.title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6vw, 8rem);
+    font-weight: 900;
+    line-height: 0.9;
+    text-transform: uppercase;
+    color: #fff;
+    letter-spacing: -0.05em;
+}
+
+.description {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.6;
+    max-width: 500px;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+.tag,
+.categoryTag {
+    padding: 0.5rem 1.2rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: var(--font-mono);
+}
+
+.categoryTag {
+    background: var(--accent);
+    color: #000;
+}
+
+.tag {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+}
+
+@media (max-width: 1279px) {
+    .card {
+        grid-template-columns: 1fr;
+    }
+
+    .imageContainer {
+        height: 60vh;
+    }
+
+    .info {
+        padding: 6vh 6%;
+        border-left: none;
+        box-shadow: 0 -20px 40px rgba(0, 0, 0, 0.5);
+        /* Shadow on top of card */
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .title {
+        font-size: clamp(2.5rem, 8vw, 5rem);
+    }
+
+    .line,
+    .lineSub {
+        font-size: clamp(2.5rem, 12vw, 8rem);
+    }
+}
+
+@media (max-width: 767px) {
+    .projects {
+        height: auto;
+        margin-top: 0;
+        /* Scroll Snap Container */
+        scroll-snap-type: y mandatory;
+    }
+
+    .introSection {
+        height: 60vh;
+        /* Tighter area for the intro text */
+        scroll-snap-align: start;
+        /* Snap to the top of the text */
+        padding: 10vh 6% 5vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .stickyContainer {
+        position: relative;
+        height: auto;
+        top: auto;
+        display: block;
+    }
+
+    .cardWrapper {
+        position: relative;
+        height: 100vh;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        scroll-snap-align: center;
+        /* Prevent accidental overlaps on snap */
+        margin-bottom: 0px;
+        will-change: auto;
+    }
+
+    .card {
+        grid-template-columns: 1fr;
+    }
+
+    .imageContainer {
+        height: 45vh;
+    }
+
+    .info {
+        padding: 5vh 6%;
+        gap: 1.5rem;
+    }
+
+    .title {
+        font-size: 2.2rem;
+        line-height: 1;
+    }
+
+    .description {
+        font-size: 1rem;
+    }
+
+    .line,
+    .lineSub {
+        font-size: clamp(1.8rem, 12vw, 3.5rem);
+        line-height: 0.75;
+    }
+
+    .button {
+        padding: 1rem 2.5rem;
+        font-size: 0.8rem;
+    }
+}

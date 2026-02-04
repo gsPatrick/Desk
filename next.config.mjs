@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  images: {
-    domains: ['placehold.co'],
-  },
+  /* config options here */
 };
 
 export default nextConfig;

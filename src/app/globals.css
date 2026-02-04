@@ -1,0 +1,81 @@
+:root {
+  --background: #050505;
+  --foreground: #ffffff;
+  --accent: #00f2ff;
+  --accent-rgb: 0, 242, 255;
+  --muted: #888888;
+  --surface: #0a0a0a;
+  --border: rgba(255, 255, 255, 0.1);
+
+  /* Typography */
+  --font-display: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Easings */
+  --ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+
+  /* Z-Index Scale */
+  --z-bg: -1;
+  --z-base: 1;
+  --z-mid: 10;
+  --z-fg: 50;
+  --z-nav: 100;
+  --z-overlay: 200;
+
+  /* Spacing Scale */
+  --space-unit: 1rem;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Cinematic Navigation Blur */
+#content-root {
+  transition: filter 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: filter, transform;
+  width: 100%;
+}
+
+body.is-blurring {
+  overflow: hidden;
+  /* Prevent manual scroll during transition */
+}
+
+body.is-blurring #content-root {
+  filter: blur(25px) brightness(1.2);
+  transform: scale(0.98);
+  pointer-events: none;
+}
+
+/* Smooth Scroll Heuristic */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Accessibility: Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

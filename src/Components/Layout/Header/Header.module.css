@@ -1,0 +1,125 @@
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 1.2rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: var(--z-nav);
+    transition: all 0.6s var(--ease-cinematic);
+}
+
+.scrolled {
+    padding: 0.8rem 5%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.logoContainer {
+    cursor: pointer;
+}
+
+.logo {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: #fff;
+}
+
+.navActions {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+}
+
+.linkContainer {
+    position: relative;
+}
+
+.link {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.4);
+    transition: color 0.3s ease;
+    text-decoration: none;
+}
+
+.link:hover {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.activeIndicator {
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: 15px;
+    height: 1px;
+    background: var(--accent);
+    transition: transform 0.4s var(--ease-cinematic);
+}
+
+.linkContainer:hover .activeIndicator {
+    transform: translateX(-50%) scaleX(1);
+}
+
+.whatsappCta {
+    padding: 0.7rem 1.4rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 100px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.whatsappCta:hover {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+}
+
+@media (max-width: 1279px) {
+    .nav {
+        display: none;
+    }
+
+    .navActions {
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 767px) {
+    .header {
+        padding: 1rem 6%;
+    }
+
+    .logo {
+        font-size: 1rem;
+    }
+
+    .whatsappCta {
+        padding: 0.6rem 1.1rem;
+        font-size: 0.65rem;
+    }
+}
