@@ -62,23 +62,27 @@ const ProjectCard = ({ project, index, scrollYProgress, total }) => {
 
         let playTimeout;
         const handlePlayback = (progress) => {
-            // Broaden the margin slightly to ensure it triggers
+            // Check if the card is in the active focus range
             const margin = isMobile ? 0.1 : 0.05;
             const isVisible = progress >= (start - margin) && progress < (nextStart + margin);
 
             if (isVisible) {
+                // User is parked: wait 2.5s before playing
                 if (videoRef.current && videoRef.current.paused) {
                     clearTimeout(playTimeout);
                     playTimeout = setTimeout(() => {
                         if (videoRef.current && videoRef.current.paused) {
                             videoRef.current.play().catch(() => { });
                         }
-                    }, 300); // Slightly faster delay (300ms)
+                    }, 2500); // 2.5 seconds delay
                 }
             } else {
+                // Scroll away: pause immediately
                 clearTimeout(playTimeout);
                 if (videoRef.current && !videoRef.current.paused) {
                     videoRef.current.pause();
+                    // Optional: Reset to start to show "thumb" again
+                    // videoRef.current.currentTime = 0; 
                 }
             }
         };
@@ -120,12 +124,11 @@ const ProjectCard = ({ project, index, scrollYProgress, total }) => {
                         {currentType === 'video' ? (
                             <video
                                 ref={videoRef}
-                                autoPlay
                                 muted
                                 loop
                                 playsInline
                                 webkit-playsinline="true"
-                                preload="auto"
+                                preload="metadata"
                                 className={styles.image}
                                 src={currentUrl}
                                 style={{
