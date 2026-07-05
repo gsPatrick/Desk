@@ -92,10 +92,10 @@ export default function Capabilities() {
                         CRIANDO EXPERIÊNCIAS
                     </motion.h2>
                     <motion.h2 className={styles.title} variants={titleVariants}>
-                        DIGITAIS QUE
+                        DIGITAIS DE ALTO IMPACTO
                     </motion.h2>
                     <motion.h2 className={styles.title} variants={titleVariants}>
-                        CHAMAM A ATENÇÃO.
+                        QUE TRANSFORMAM NEGÓCIOS.
                     </motion.h2>
                 </motion.div>
 

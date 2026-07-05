@@ -4,95 +4,186 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
 import styles from './ImpactSection.module.css';
 
+const PILLARS = [
+    {
+        index: '01',
+        title: 'ESTRATÉGIA',
+        text: 'Entendo o negócio antes do código. Cada decisão técnica nasce de um objetivo claro: resolver um problema real e gerar valor.',
+    },
+    {
+        index: '02',
+        title: 'EXECUÇÃO',
+        text: 'Desenvolvo do front ao deploy com padrão de produção. Você recebe um produto completo, performático e pronto para escalar.',
+    },
+];
+
+const METRICS = [
+    { value: 'MAIS DE 60', label: 'Projetos entregues' },
+    { value: 'Full Stack', label: 'Front · Back · DevOps' },
+    { value: 'End to End', label: 'Do conceito ao deploy' },
+];
+
+const reveal = {
+    hidden: { opacity: 0, y: 40 },
+    visible: (delay = 0) => ({
+        opacity: 1,
+        y: 0,
+        transition: { duration: 1.1, delay, ease: [0.22, 1, 0.36, 1] },
+    }),
+};
+
 export default function ImpactSection() {
     const containerRef = useRef(null);
+    const videoRef = useRef(null);
     const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
         const checkMobile = () => setIsMobile(window.innerWidth < 1024);
         checkMobile();
         window.addEventListener('resize', checkMobile);
+
+        if (videoRef.current) {
+            videoRef.current.play().catch(() => {});
+        }
+
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
     const { scrollYProgress } = useScroll({
         target: containerRef,
-        offset: ["start end", "end start"]
+        offset: ['start end', 'end start'],
     });
 
-    const yLeft = useTransform(scrollYProgress, [0, 1], [100, -100]);
-    const yRight = useTransform(scrollYProgress, [0, 1], [-50, 50]);
-    const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1, 0.8]);
+    const videoScale = useTransform(scrollYProgress, [0, 0.45, 1], [0.92, 1, 0.92]);
+    const headlineY = useTransform(scrollYProgress, [0, 1], [30, -30]);
 
     return (
-        <section ref={containerRef} className={styles.impact}>
+        <section ref={containerRef} className={styles.impact} id="about">
+            <div className={styles.letterboxTop} aria-hidden="true" />
+            <div className={styles.letterboxBottom} aria-hidden="true" />
+            <div className={styles.filmGrain} aria-hidden="true" />
+            <div className={styles.spotlight} aria-hidden="true" />
+
+            <div className={styles.bgWord} aria-hidden="true">DEVELOPER</div>
+
             <div className={styles.container}>
-                {/* Background numbers 4 - 4 */}
-                <div className={styles.bgNumberWrapper}>
-                    <motion.div style={{ y: yLeft }} className={styles.bgNumber}>4</motion.div>
-                    <motion.div style={{ y: yRight }} className={styles.bgNumber}>4</motion.div>
-                </div>
+                <motion.header
+                    className={styles.headerBlock}
+                    style={{ y: headlineY }}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.4 }}
+                    variants={{
+                        hidden: {},
+                        visible: { transition: { staggerChildren: 0.12 } },
+                    }}
+                >
+                    <motion.span className={styles.eyebrow} variants={reveal} custom={0}>
+                        Patrick Gomes Siqueira
+                    </motion.span>
+                    <motion.h2 className={styles.headline} variants={reveal} custom={0.1}>
+                        QUEM ESTÁ POR TRÁS
+                    </motion.h2>
+                    <motion.h2 className={styles.headline} variants={reveal} custom={0.2}>
+                        DO SEU PROJETO.
+                    </motion.h2>
+                    <motion.p className={styles.lead} variants={reveal} custom={0.35}>
+                        Desenvolvedor Full Stack com CNPJ. Transformo ideias em produtos digitais
+                        completos — da arquitetura ao pixel final.
+                    </motion.p>
+                </motion.header>
 
-                <div className={styles.grid}>
-                    {/* Left Column */}
-                    <motion.div
-                        className={styles.column}
-                        initial={{ opacity: 0, x: -50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+                <div className={styles.stage}>
+                    <motion.aside
+                        className={styles.pillar}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, amount: 0.3 }}
+                        variants={reveal}
+                        custom={0.2}
                     >
-                        <h3 className={styles.subtitle}>ESTRATÉGIA DE VALOR</h3>
-                        <p className={styles.text}>
-                            Não entrego apenas código, construo **ativos digitais**. Minha abordagem une análise de mercado e UX para transformar sua visão em uma ferramenta poderosa de conversão e lucro.
-                        </p>
-                    </motion.div>
+                        <span className={styles.pillarIndex}>{PILLARS[0].index}</span>
+                        <h3 className={styles.pillarTitle}>{PILLARS[0].title}</h3>
+                        <div className={styles.pillarLine} />
+                        <p className={styles.pillarText}>{PILLARS[0].text}</p>
+                    </motion.aside>
 
-                    {/* Center Column: Avatar Video */}
                     <motion.div
                         className={styles.avatarWrapper}
-                        style={{ scale }}
+                        style={{ scale: videoScale }}
+                        initial={{ opacity: 0, scale: 0.88 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true, amount: 0.3 }}
+                        transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
                     >
-                        <div className={styles.videoPlaceholder}>
-                            <div className={styles.glow} />
+                        <div className={styles.frameBarLeft} aria-hidden="true" />
+                        <div className={styles.frameBarRight} aria-hidden="true" />
+
+                        <div className={styles.videoFrame}>
                             {isMobile ? (
                                 <img
-                                    key="gif-avatar"
                                     src="/patrikc-confident.gif"
                                     className={styles.video}
-                                    style={{ filter: 'none' }}
-                                    alt="Patrick Confiante"
+                                    alt="Patrick Siqueira — Desenvolvedor Full Stack"
                                 />
                             ) : (
                                 <video
-                                    key="video-avatar"
+                                    ref={videoRef}
                                     autoPlay
                                     muted
                                     loop
                                     playsInline
+                                    preload="auto"
                                     className={styles.video}
-                                    style={{ filter: 'none' }}
                                     src="/patrick-confident.webm"
                                 />
                             )}
-                            <div className={styles.videoOverlay}>
-                                <span>PATRICK.DEVELOPER</span>
-                            </div>
+                            <div className={styles.videoVignette} aria-hidden="true" />
+                        </div>
+
+                        <div className={styles.identityBadge}>
+                            <span className={styles.badgeBrand}>PATRICK.DEVELOPER</span>
+                            <span className={styles.badgeRole}>Sites · Sistemas · Produtos digitais</span>
                         </div>
                     </motion.div>
 
-                    {/* Right Column */}
-                    <motion.div
-                        className={styles.column}
-                        initial={{ opacity: 0, x: 50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+                    <motion.aside
+                        className={`${styles.pillar} ${styles.pillarRight}`}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, amount: 0.3 }}
+                        variants={reveal}
+                        custom={0.3}
                     >
-                        <h3 className={styles.subtitle}>EXECUÇÃO DE ELITE</h3>
-                        <p className={styles.text}>
-                            Performance brutal e estética premium. Utilizo o que há de mais moderno em **Next.js e IA** para criar experiências fluidas que prendem a atenção do primeiro ao último pixel.
-                        </p>
-                    </motion.div>
+                        <span className={styles.pillarIndex}>{PILLARS[1].index}</span>
+                        <h3 className={styles.pillarTitle}>{PILLARS[1].title}</h3>
+                        <div className={styles.pillarLine} />
+                        <p className={styles.pillarText}>{PILLARS[1].text}</p>
+                    </motion.aside>
                 </div>
+
+                <motion.div
+                    className={styles.metrics}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.5 }}
+                    variants={{
+                        hidden: {},
+                        visible: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
+                    }}
+                >
+                    {METRICS.map((metric, i) => (
+                        <motion.div
+                            key={metric.label}
+                            className={styles.metricItem}
+                            variants={reveal}
+                            custom={0.1 + i * 0.1}
+                        >
+                            <span className={styles.metricValue}>{metric.value}</span>
+                            <span className={styles.metricLabel}>{metric.label}</span>
+                        </motion.div>
+                    ))}
+                </motion.div>
             </div>
         </section>
     );

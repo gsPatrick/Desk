@@ -42,8 +42,7 @@
 }
 
 .title span {
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5);
+    color: #fff;
 }
 
 .grid {
@@ -97,9 +96,10 @@
 
 .cardDesc {
     font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: #fff;
     line-height: 1.6;
     max-width: 320px;
+    opacity: 0.92;
 }
 
 @media (max-width: 1279px) {
@@ -115,11 +115,11 @@
 
 @media (max-width: 767px) {
     .business {
-        padding: 12vh 6% 5vh;
+        padding: 6vh 6% 3vh;
     }
 
     .container {
-        gap: 6vh;
+        gap: 3vh;
     }
 
     .grid {

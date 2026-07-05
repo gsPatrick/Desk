@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
 import styles from './Character.module.css';
 
@@ -17,9 +16,7 @@ export default function Character() {
         window.addEventListener('resize', checkMobile);
 
         if (videoRef.current) {
-            videoRef.current.play().catch(error => {
-                console.log("Autoplay blocked:", error);
-            });
+            videoRef.current.play().catch(() => {});
         }
 
         return () => window.removeEventListener('resize', checkMobile);
@@ -41,10 +38,8 @@ export default function Character() {
                         muted
                         loop
                         playsInline
-                        webkit-playsinline="true"
                         preload="auto"
                         className={styles.video}
-                        key="hero-video"
                     >
                         <source src="/patrick-hero.webm" type="video/webm" />
                         <source src="/patrick.mp4" type="video/mp4" />

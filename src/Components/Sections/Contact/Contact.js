@@ -37,7 +37,7 @@ export default function Contact() {
                         VAMOS CRIAR
                     </motion.h2>
                     <motion.h2
-                        className={styles.ctaTitleOutline}
+                        className={styles.ctaTitle}
                         variants={{
                             hidden: { y: 100, opacity: 0 },
                             visible: { y: 0, opacity: 1, transition: { duration: 1, delay: 0.1, ease: [0.22, 1, 0.36, 1] } }

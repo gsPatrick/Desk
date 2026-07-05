@@ -11,14 +11,14 @@ export default function Hero() {
             opacity: 1,
             transition: {
                 staggerChildren: 0.2,
-                delayChildren: 0.3
-            }
-        }
+                delayChildren: 0.3,
+            },
+        },
     };
 
     const itemVariants = {
         initial: { opacity: 0, x: -50 },
-        animate: { opacity: 1, x: 0, transition: { duration: 1.2, ease: [0.22, 1, 0.36, 1] } }
+        animate: { opacity: 1, x: 0, transition: { duration: 1.2, ease: [0.22, 1, 0.36, 1] } },
     };
 
     return (
@@ -29,10 +29,9 @@ export default function Hero() {
                 initial="initial"
                 animate="animate"
             >
-                {/* Left Column: Text Stack */}
                 <div className={styles.columnLeft}>
                     <motion.div className={styles.intro} variants={itemVariants}>
-                        Ola eu sou
+                        Olá, eu sou
                     </motion.div>
 
                     <div className={styles.nameStack}>
@@ -45,18 +44,12 @@ export default function Hero() {
                     </div>
 
                     <motion.h2 className={styles.roleTitle} variants={itemVariants}>
-                        Desenvolvedor Full stack
+                        Desenvolvedor Full Stack
                     </motion.h2>
                 </div>
 
-                {/* Right Column: Character (Expanded) */}
                 <div className={styles.columnRight}>
                     <Character />
-                </div>
-
-                {/* SEO Hidden Keywords */}
-                <div style={{ position: 'absolute', width: '1px', height: '1px', padding: '0', margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', border: '0' }}>
-                    Patrick Siqueira Patrick Dev Patrick.Developer CodeByPatrick Patrick Siqueira Dev
                 </div>
             </motion.div>
         </section>

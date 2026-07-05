@@ -56,13 +56,14 @@
 .titleWrapper {
     display: flex;
     flex-direction: column;
+    gap: clamp(1.25rem, 3.5vh, 3rem);
 }
 
 .title {
     font-family: var(--font-display);
     font-size: clamp(2.5rem, 8vw, 10rem);
     font-weight: 900;
-    line-height: 0.85;
+    line-height: 1;
     text-transform: uppercase;
     letter-spacing: -0.04em;
     color: #fff;
@@ -70,9 +71,11 @@
 }
 
 .title:nth-child(2) {
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
     transform: translateX(5vw);
+}
+
+.title:nth-child(3) {
+    transform: translateX(10vw);
 }
 
 /* Marquee Styles */
@@ -84,7 +87,6 @@
     padding: 2rem 0;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    transform: rotate(-1deg);
 }
 
 .marquee {
@@ -97,12 +99,12 @@
     font-family: var(--font-display);
     font-size: clamp(2rem, 5vw, 6rem);
     font-weight: 900;
-    color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.55);
     transition: color 0.3s ease;
 }
 
 .marqueeItem:hover {
-    color: #888;
+    color: #fff;
 }
 
 /* Grid Styles */
@@ -137,9 +139,8 @@
 
 .index {
     font-size: 0.8rem;
-    color: #888;
+    color: rgba(255, 255, 255, 0.75);
     font-family: var(--font-mono);
-    opacity: 0.6;
 }
 
 .label {
@@ -151,9 +152,10 @@
 }
 
 .cardDesc {
-    color: var(--muted);
+    color: #fff;
     line-height: 1.6;
     font-size: 1rem;
+    opacity: 0.92;
 }
 
 .tagGrid {
@@ -183,13 +185,11 @@
 .finalNote p {
     font-family: var(--font-display);
     font-size: clamp(2.5rem, 6vw, 6rem);
-    /* Larger text */
     font-weight: 900;
-    color: #333;
-    /* Slightly darker for better contrast in gray scale */
+    color: #fff;
     text-transform: uppercase;
     letter-spacing: 0.02em;
-    line-height: 1;
+    line-height: 1.1;
 }
 
 .finalNote span {
@@ -211,63 +211,101 @@
     }
 }
 
-@media (max-width: 767px) {
-    .capabilities {
-        padding: 10vh 0 0;
-        /* Zero bottom padding */
-        margin-top: -10vh;
-    }
-
-    .content {
-        gap: 6vh;
-        padding: 0 6%;
-    }
-
-    .title {
-        font-size: clamp(2.8rem, 15vw, 5rem);
-        line-height: 0.9;
-    }
-
-    .title:nth-child(2) {
-        transform: translateX(0);
-    }
-
-    .grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-
-    .card {
-        padding: 2.5rem 2rem;
-    }
-
-    .label {
-        font-size: 1.5rem;
-    }
-
-    .finalNote {
-        margin-top: 0;
-        padding-top: 5vh;
-        padding-bottom: 0;
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .finalNote p {
-        font-size: clamp(1.8rem, 10vw, 3.5rem);
-        margin: 0;
-    }
-}
-
 @media (max-width: 1024px) {
     .grid {
         grid-template-columns: 1fr;
     }
 
     .content {
-        gap: 8vh;
+        gap: 6vh;
     }
 
     .title {
         font-size: clamp(2.5rem, 12vw, 5rem);
+    }
+}
+
+@media (max-width: 767px) {
+    .capabilities {
+        padding: 0;
+        margin-top: -4vh;
+    }
+
+    .content {
+        gap: 5vh;
+        padding: 0;
+    }
+
+    .titleWrapper {
+        min-height: 92svh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: clamp(1rem, 3.5vh, 2.25rem);
+        padding: 10svh 6vw 6svh;
+    }
+
+    .title {
+        font-size: clamp(2.35rem, 11.5vw, 4.25rem);
+        line-height: 0.94;
+        letter-spacing: -0.04em;
+        width: 100%;
+    }
+
+    .title:nth-child(2),
+    .title:nth-child(3) {
+        transform: none;
+    }
+
+    .marqueeContainer {
+        padding: 1.5rem 0;
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .marqueeItem {
+        font-size: clamp(1.5rem, 7vw, 2.5rem);
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 0 6%;
+    }
+
+    .card {
+        padding: 2rem 1.5rem;
+        text-align: center;
+        align-items: center;
+    }
+
+    .cardHeader {
+        align-items: center;
+    }
+
+    .tagGrid {
+        justify-content: center;
+    }
+
+    .label {
+        font-size: 1.35rem;
+    }
+
+    .cardDesc {
+        font-size: 0.95rem;
+    }
+
+    .finalNote {
+        margin-top: 0;
+        padding: 3vh 6% 2vh;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .finalNote p {
+        font-size: clamp(1.85rem, 9.5vw, 3.25rem);
+        line-height: 1.08;
+        margin: 0;
     }
 }
