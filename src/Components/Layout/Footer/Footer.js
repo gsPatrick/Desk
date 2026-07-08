@@ -26,8 +26,8 @@ const CONTACT_CARDS = [
     },
     {
         name: 'E-mail',
-        value: 'patrick@siqueira.dev',
-        url: 'mailto:patrick@siqueira.dev',
+        value: 'patricksiqueira.developer@gmail.com',
+        url: 'mailto:patricksiqueira.developer@gmail.com',
         color: '#00ffff'
     }
 ];

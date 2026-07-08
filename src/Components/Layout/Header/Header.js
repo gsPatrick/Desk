@@ -2,6 +2,7 @@
 
 import { motion, useScroll } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { FiMail } from 'react-icons/fi';
 import styles from './Header.module.css';
 import clsx from 'clsx';
 
@@ -45,6 +46,7 @@ export default function Header() {
   };
 
   const whatsappUrl = "https://wa.me/5571982862912?text=Olá Patrick, gostaria de conversar sobre um projeto!";
+  const emailUrl = "mailto:patricksiqueira.developer@gmail.com";
 
   return (
     <motion.header
@@ -85,6 +87,20 @@ export default function Header() {
             </div>
           ))}
         </nav>
+
+        <motion.a
+          href={emailUrl}
+          className={styles.emailCta}
+          aria-label="Enviar e-mail para Patrick"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.7 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <FiMail className={styles.emailIcon} />
+          <span className={styles.emailLabel}>E-mail</span>
+        </motion.a>
 
         <motion.a
           href={whatsappUrl}
